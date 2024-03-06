@@ -103,6 +103,7 @@
         <field name="model">request.form</field>
         <field name="arch" type="xml">
             <search>
+                <field name="request_number" />
                 <field name="team_assigned_id"/>
                 <field name="submitter_name_id"/>
                 <field name="cr_Type"/>
