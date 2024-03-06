@@ -149,4 +149,4 @@ class RequestForm(models.Model):
             if not template:
                 _logger.warning("Email template 'email_template_second_approver' not found.")
             if not users:
-                _logger.warning("No users found in the 'Second Approvers' group.")
+                _logger.warning("No users found in the 'Secondary Approvers' group.")
