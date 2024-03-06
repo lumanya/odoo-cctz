@@ -77,6 +77,7 @@ class RequestForm(models.Model):
         if self.state == 'to_approve':
             self.state = 'second_approval'
             self.action_send_email()
+            self.send_email_to_second_approvers()
 
     def action_validate2(self):
         if self.state == 'second_approval':
@@ -126,3 +127,26 @@ class RequestForm(models.Model):
         else:
             _logger.warning("Email ID is not set for record ID: %s" % rec.id)
         return True  
+    
+    def _get_second_approvers_emails(self):
+        group = self.env.ref('cctz_request_form.group_custom_group')
+        users = group.users
+        return [user for user in users if user.email]
+    
+    def send_email_to_second_approvers(self):
+        group = self.env.ref('cctz_request_form.group_custom_group')
+        users = group.users
+        template = self.env.ref('cctz_request_form.email_template_second_approver')
+        
+        if template and users:
+            for user in users:
+                if user.email:
+                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.email})
+                    _logger.info("Email sent to %s (%s)" % (user.name, user.email))
+                else:
+                    _logger.warning("User %s does not have an email address." % user.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_second_approver' not found.")
+            if not users:
+                _logger.warning("No users found in the 'Second Approvers' group.")
