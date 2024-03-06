@@ -13,6 +13,7 @@
                     <field name="description_request"/>
                     <field name="date_submitted"/>
                     <field name="date_required"/>
+                    
                     <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'second_approval'" decoration-danger="state == 'rejected'"/>
                 </tree>
             </field>
