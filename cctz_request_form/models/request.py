@@ -1,5 +1,7 @@
 from odoo import models, fields, api,exceptions, _
 from odoo.tools.misc import xlwt
+from werkzeug.urls import url_encode
+from odoo.http import request
 from odoo.tools import email_split
 from odoo.exceptions import UserError
 from email.mime.text import MIMEText
@@ -82,8 +84,10 @@ class RequestForm(models.Model):
     def action_validate2(self):
         if self.state == 'second_approval':
             self.state = 'approved'
+            self._get_record_url()
             self.action_send_email()
             self.action_send_email_assigned()
+            
 
     def action_refuse1(self):
         if self.state in ['to_approve', 'second_approval']:
@@ -150,3 +154,16 @@ class RequestForm(models.Model):
                 _logger.warning("Email template 'email_template_second_approver' not found.")
             if not users:
                 _logger.warning("No users found in the 'Second Approvers' group.")
+
+    
+    def _get_record_url(self):
+        base_url = request.httprequest.base_url
+        params = {
+            'id': self.id,
+            'menu_id': self.env.context.get('menu_id', ''),  
+            'action': self.env.context.get('action', ''),  
+            'model': self._name,  
+            'view_type': self.env.context.get('view_type', ''),  
+        }
+        url_with_params = base_url + '?' + url_encode(params)
+        return url_with_params
