@@ -80,17 +80,19 @@ class RequestForm(models.Model):
         if self.state == 'second_approval':
             self.state = 'approved'
             self.action_send_email()
+            self.action_send_email_assigned()
 
     def action_refuse1(self):
         if self.state in ['to_approve', 'second_approval']:
             self.state = 'rejected'
             self.action_send_email()
+            self.action_send_email_assigned()
 
     def action_refuse2(self):
         if self.state in ['to_approve', 'second_approval']:
             self.state = 'rejected'
             self.action_send_email()
-
+            self.action_send_email_assigned()
     
     def create(self,vals):
         if vals.get('request_number', _('New'))== _('New'):
@@ -121,4 +123,10 @@ class RequestForm(models.Model):
         return True
 
 
-        
+    def action_send_email_assigned(self):
+        template1 = self.env.ref('RequestForm.assigned_change_template')
+        for rec in self:
+            template1.send_mail(rec.id, force_send=True)
+        else:
+            _logger.warning("Email ID is not set for record ID: %s" % rec.id)
+        return True  
