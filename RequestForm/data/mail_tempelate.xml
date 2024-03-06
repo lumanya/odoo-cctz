@@ -14,8 +14,6 @@
                 <p>Best regards,<br/>CCTZ</p>
             </field>
             <field name="auto_delete">False</field>
-            <field name="auto_delete">False</field>
-
         </record>
     </data>
 </odoo>
