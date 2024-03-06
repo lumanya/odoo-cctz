@@ -107,6 +107,7 @@ class RequestForm(models.Model):
             vals['request_number'] = self.env['ir.sequence'].next_by_code('request.number') or _('New')
             vals['state']='to_approve'
         res = super(RequestForm, self).create(vals)
+        res.send_email_to_first_approvers()
         return res
     
     @api.model
@@ -152,6 +153,29 @@ class RequestForm(models.Model):
         else:
             if not template:
                 _logger.warning("Email template 'email_template_second_approver' not found.")
+            if not users:
+                _logger.warning("No users found in the 'Second Approvers' group.")
+
+    def _get_first_approvers_emails(self):
+        group = self.env.ref('cctz_request_form.group_my_custom_group')
+        users = group.users
+        return [user for user in users if user.email]
+    
+    def send_email_to_first_approvers(self):
+        group = self.env.ref('cctz_request_form.group_my_custom_group')
+        users = group.users
+        template = self.env.ref('cctz_request_form.email_template_first_approver')
+        
+        if template and users:
+            for user in users:
+                if user.email:
+                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.email})
+                    _logger.info("Email sent to %s (%s)" % (user.name, user.email))
+                else:
+                    _logger.warning("User %s does not have an email address." % user.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_first_approver' not found.")
             if not users:
                 _logger.warning("No users found in the 'Second Approvers' group.")
 
