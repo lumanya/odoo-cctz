@@ -71,6 +71,8 @@ class RequestForm(models.Model):
 
     request_number = fields.Char(string='Change Request Number', copy=False, readonly=True, required=True, default=lambda self: _('New'))
 
+    _rec_name = 'request_number'
+
     def action_validate1(self):
         if self.state == 'to_approve':
             self.state = 'second_approval'
