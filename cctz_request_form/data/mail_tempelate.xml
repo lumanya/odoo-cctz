@@ -11,7 +11,7 @@
                 <p>Dear <t t-out="object.create_uid.name"/>,</p>
                 <p>The status of your request <strong><t t-out="object.request_number"/></strong> has been updated to <strong><t t-out="object.state"/></strong>.</p>
                 <p>Thank you for your attention to this matter.</p>
-                <p>Best regards,<br/>CCTZ</p>
+                <p>Best regards, <br/>CCTZ</p>
             </field>
             <field name="auto_delete">False</field>
         </record>
