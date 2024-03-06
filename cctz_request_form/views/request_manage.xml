@@ -15,10 +15,11 @@
                     <field name="date_submitted"/>
                     <field name="date_required"/>
                     <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'second_approval'" decoration-danger="state == 'rejected'"/>
-                    <button name="action_validate1" string="Validate" type="object" icon="fa-check" groups="RequestForm.group_my_custom_group,base.group_system" invisible="['second_approval','approved', 'rejected'].includes(state)"/>
-                    <button name="action_refuse1" string="Refuse" type="object" icon="fa-times" groups="RequestForm.group_my_custom_group,base.group_system" invisible="['second_approval','approved', 'rejected'].includes(state)"/>
-                    <button name="action_validate2" string="Validate" type="object" icon="fa-check" groups="RequestForm.group_custom_group,base.group_system" invisible="['to_approve','approved', 'rejected'].includes(state)"/>
-                    <button name="action_refuse2" string="Refuse" type="object" icon="fa-times" groups="RequestForm.group_custom_group,base.group_system" invisible="['to_approve','approved', 'rejected'].includes(state)"/>
+                    <button name="action_validate1" string="Validate" type="object" icon="fa-check" groups="cctz_request_form.group_my_custom_group,base.group_system" attrs="{'invisible': [('state', 'in', ['second_approval','approved', 'rejected'])]}" />
+
+                    <button name="action_refuse1" string="Refuse" type="object" icon="fa-times" groups="cctz_request_form.group_my_custom_group,base.group_system" attrs="{'invisible': [('state', 'in', ['second_approval','approved', 'rejected'])]}"/>
+                    <button name="action_validate2" string="Validate" type="object" icon="fa-check" groups="cctz_request_form.group_custom_group,base.group_system" attrs="{'invisible': [('state', 'in', ['to_approve','approved', 'rejected'])]}"/>
+                    <button name="action_refuse2" string="Refuse" type="object" icon="fa-times" groups="cctz_request_form.group_custom_group,base.group_system" attrs="{'invisible': [('state', 'in', ['to_approve','approved', 'rejected'])]}"/>
                 </tree>
             </field>
         </record>

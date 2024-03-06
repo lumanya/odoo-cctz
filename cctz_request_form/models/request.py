@@ -93,8 +93,9 @@ class RequestForm(models.Model):
             self.state = 'rejected'
             self.action_send_email()
             self.action_send_email_assigned()
-    
-    def create(self,vals):
+
+    @api.model
+    def create(self, vals):
         if vals.get('request_number', _('New'))== _('New'):
             vals['request_number'] = self.env['ir.sequence'].next_by_code('request.number') or _('New')
             vals['state']='to_approve'
@@ -105,17 +106,10 @@ class RequestForm(models.Model):
     # personalizing user data
     def _get_my_records(self):
         return self.search([('create_uid', '=', self.env.uid)])
-    
-    def _search(self, args, offset=0, limit=None, order=None, access_rights_uid=None):
-        if not access_rights_uid:
-            access_rights_uid = self.env.uid
-        if not self.env.is_admin()and not (self.env.user.has_group('RequestForm.group_my_custom_group') or self.env.user.has_group('RequestForm.group_custom_group')):
-            args += [('create_uid', '=', self.env.uid)]
-        return super(RequestForm, self)._search(args, offset=offset, limit=limit, order=order, access_rights_uid=access_rights_uid)
-    
+   
     # sending email
     def action_send_email(self):
-        template = self.env.ref('RequestForm.email_template_approval_status')
+        template = self.env.ref('cctz_request_form.email_template_approval_status')
         for rec in self:
             template.send_mail(rec.id, force_send=True)
         else:
@@ -124,7 +118,7 @@ class RequestForm(models.Model):
 
 
     def action_send_email_assigned(self):
-        template1 = self.env.ref('RequestForm.assigned_change_template')
+        template1 = self.env.ref('cctz_request_form.assigned_change_template')
         for rec in self:
             template1.send_mail(rec.id, force_send=True)
         else:
