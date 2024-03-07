@@ -1,5 +1,8 @@
 from odoo import models, fields, api,exceptions, _
 from odoo.tools.misc import xlwt
+from odoo import http
+import werkzeug.urls
+from odoo.http import request
 from werkzeug.urls import url_encode
 from odoo.http import request
 from odoo.tools import email_split
@@ -80,11 +83,11 @@ class RequestForm(models.Model):
             self.state = 'second_approval'
             self.action_send_email()
             self.send_email_to_second_approvers()
+        return True
 
     def action_validate2(self):
         if self.state == 'second_approval':
             self.state = 'approved'
-            self._get_record_url()
             self.action_send_email()
             self.action_send_email_assigned()
             
@@ -120,9 +123,7 @@ class RequestForm(models.Model):
         template = self.env.ref('cctz_request_form.email_template_approval_status')
         for rec in self:
             template.send_mail(rec.id, force_send=True)
-        else:
-            _logger.warning("Email ID is not set for record ID: %s" % rec.id)
-        return True
+        
 
 
     def action_send_email_assigned(self):
@@ -177,17 +178,31 @@ class RequestForm(models.Model):
             if not template:
                 _logger.warning("Email template 'email_template_first_approver' not found.")
             if not users:
-                _logger.warning("No users found in the 'Second Approvers' group.")
+                _logger.warning("No users found in the 'First Approvers' group.")
+
+
+    menu_id = fields.Integer(string='Menu ID', required=True)
+    action_id = fields.Integer(string='Action ID', required=True)
+
 
     
-    def _get_record_url(self):
-        base_url = request.httprequest.base_url
-        params = {
-            'id': self.id,
-            'menu_id': self.env.context.get('menu_id', ''),  
-            'action': self.env.context.get('action', ''),  
-            'model': self._name,  
-            'view_type': self.env.context.get('view_type', ''),  
-        }
-        url_with_params = base_url + '?' + url_encode(params)
-        return url_with_params
+    @api.model
+    def generate_link(self, menu_id, action_id):
+        
+        base_url = request.httprequest.url_root
+        
+        # Find menu_id based on the menu name
+        menu = self.env['ir.ui.menu'].search([('name', '=', 'My Requests')])
+        menu_id = menu.id if menu else False
+        
+        # Find action_id based on the action name
+        action = self.env['ir.actions.act_window'].search([('name', '=', 'My Change Requests')])
+        action_id = action.id if action else False
+        
+        if menu_id and action_id:
+            params = {'menu_id': menu_id, 'action': action_id}
+            return base_url + '/web#' + url_encode(params)
+        else:
+            # Handle the case where either menu or action is not found
+            return False
+
