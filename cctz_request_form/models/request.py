@@ -102,7 +102,6 @@ class RequestForm(models.Model):
         if self.state in ['to_approve', 'second_approval']:
             self.state = 'rejected'
             self.action_send_email()
-            self.action_send_email_assigned()
 
     @api.model
     def create(self, vals):
@@ -112,6 +111,8 @@ class RequestForm(models.Model):
         res = super(RequestForm, self).create(vals)
         res.send_email_to_first_approvers()
         return res
+    
+
     
     @api.model
     # personalizing user data
@@ -181,8 +182,8 @@ class RequestForm(models.Model):
                 _logger.warning("No users found in the 'First Approvers' group.")
 
 
-    menu_id = fields.Integer(string='Menu ID', required=True)
-    action_id = fields.Integer(string='Action ID', required=True)
+    menu_id = fields.Integer(string='Menu ID')
+    action_id = fields.Integer(string='Action ID')
 
 
     
@@ -196,7 +197,32 @@ class RequestForm(models.Model):
         menu_id = menu.id if menu else False
         
         # Find action_id based on the action name
-        action = self.env['ir.actions.act_window'].search([('name', '=', 'My Change Requests')])
+        action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'My Change Requests')])
+        action_id = action.id if action else False
+        
+        if menu_id and action_id:
+            params = {'menu_id': menu_id, 'action': action_id}
+            return base_url + '/web#' + url_encode(params)
+        else:
+            # Handle the case where either menu or action is not found
+            return False
+        
+
+    menu_id = fields.Integer(string='Menu ID')
+    action_id = fields.Integer(string='Action ID')
+
+
+    @api.model
+    def generate_manage_link(self, menu_id, action_id):
+        
+        base_url = request.httprequest.url_root
+        
+        # Find menu_id based on the menu name
+        menu = self.env['ir.ui.menu'].sudo().search([('name', '=', 'Management')])
+        menu_id = menu.id if menu else False
+        
+        # Find action_id based on the action name
+        action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'All Change Requests')])
         action_id = action.id if action else False
         
         if menu_id and action_id:

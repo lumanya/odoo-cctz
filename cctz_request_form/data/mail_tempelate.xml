@@ -46,7 +46,7 @@
                     </t>
                 </p>
                 <p>Please validate a change request <strong><t t-out="object.request_number"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
-                <p>You can view the details of the request <a t-attf-href="{{ object.generate_link(object.menu_id, object.action_id) }}">here</a>.</p>
+                <p>You can view the details of the request <a t-attf-href="{{ object.generate_manage_link(object.menu_id, object.action_id) }}">here</a>.</p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br/>CCTZ</p>
             </field>
@@ -66,7 +66,7 @@
                     </t>
                 </p>
                 <p>Please validate a change request <strong><t t-out="object.request_number"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
-                <p>You can view the details of the request <a t-attf-href="{{ object.generate_link(object.menu_id, object.action_id) }}">here</a>.</p>
+                <p>You can view the details of the request <a t-attf-href="{{ object.generate_manage_link(object.menu_id, object.action_id) }}">here</a>.</p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br/>CCTZ</p>
             </field>
