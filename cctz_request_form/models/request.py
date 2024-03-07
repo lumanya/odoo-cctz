@@ -214,21 +214,22 @@ class RequestForm(models.Model):
 
     @api.model
     def generate_manage_link(self, menu_id, action_id):
-        
         base_url = request.httprequest.url_root
-        
-        # Find menu_id based on the menu name
-        menu = self.env['ir.ui.menu'].sudo().search([('name', '=', 'Management')])
-        menu_id = menu.id if menu else False
-        
-        # Find action_id based on the action name
-        action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'All Change Requests')])
-        action_id = action.id if action else False
-        
+
+        # Check if the current user is an admin
+        is_admin = self.env.user.has_group('base.group_system')
+
+        # If user is admin, use the specified menu and action IDs
+        if is_admin:
+            menu_id = self.env.ref('cctz_request_form.menu_manage').id
+            action_id = self.env.ref('cctz_request_form.action_manage_view').id
+        else:
+            # If user is not admin, use the specified menu and action IDs for normal users
+            menu_id = self.env.ref('cctz_request_form.menu_manage').id
+            action_id = self.env.ref('cctz_request_form.action_manage_view').id
+
         if menu_id and action_id:
             params = {'menu_id': menu_id, 'action': action_id}
             return base_url + '/web#' + url_encode(params)
         else:
-            # Handle the case where either menu or action is not found
             return False
-

@@ -26,7 +26,12 @@
             <field name="body_html" type="html">
                 <p>Dear <t t-out="object.team_assigned_id.name"/>,</p>
                 <p>You have been assigned to perform a  change request <strong><t t-out="object.request_number"/></strong> by <strong><t t-out="object.create_uid.name"/></strong>.</p>
-                <p>You can view the details of the request <a t-attf-href="{{ object.generate_link(object.menu_id, object.action_id) }}">here</a>.</p>
+                <p>The details of the request are:</p>
+                <p>Description: <t t-out="object.description_request"/>.</p>
+                <p>Change Request Type: <t t-out="object.cr_Type"/>.</p>
+                <p>Reason: <t t-out="object.reason_for_change"/>.</p>
+                <p>Priority: <t t-out="object.priority"/>.</p>
+                <p>Date Required: <t t-out="object.date_required"/>.</p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br/>CCTZ</p>
             </field>
