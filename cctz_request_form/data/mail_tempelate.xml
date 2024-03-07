@@ -10,7 +10,7 @@
             <field name="body_html" type="html">
                 <p>Dear <t t-out="object.create_uid.name"/>,</p>
                 <p>The status of your request <strong><t t-out="object.request_number"/></strong> has been updated to <strong><t t-out="object.state"/></strong>.</p>
-                <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p>
+                <!-- <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p> -->
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br/>CCTZ</p>
             </field>
@@ -26,7 +26,7 @@
             <field name="body_html" type="html">
                 <p>Dear <t t-out="object.team_assigned_id.name"/>,</p>
                 <p>You have been assigned to perform a  change request <strong><t t-out="object.request_number"/></strong> by <strong><t t-out="object.create_uid.name"/></strong>.</p>
-                <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p>
+                <!-- <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p> -->
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br/>CCTZ</p>
             </field>
@@ -66,7 +66,7 @@
                     </t>
                 </p>
                 <p>Please validate a change request <strong><t t-out="object.request_number"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
-                <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p>
+                <!-- <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p> -->
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br/>CCTZ</p>
             </field>
