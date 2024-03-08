@@ -55,7 +55,7 @@
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br/>CCTZ</p>
             </field>
-            <field name="auto_delete">False</field>
+            <field name="auto_delete">True</field>
         </record>
 
         <record id="email_template_first_approver" model="mail.template">
@@ -75,7 +75,7 @@
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br/>CCTZ</p>
             </field>
-            <field name="auto_delete">False</field>
+            <field name="auto_delete">True</field>
         </record>
 
     </data>
