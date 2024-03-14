@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_loan_view" model="ir.actions.act_window">
+            <field name="name">Loan Request</field>
+            <field name="res_model">loan.form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_loan_form_list"/>
+            <field name="target">current</field>
+        </record>
+        
+        <record id="view_loan_form_list" model="ir.ui.view">
+            <field name="name">Loan View</field>
+            <field name="model">loan.form</field>
+            <field name="arch" type="xml">
+                <tree string="My loans">
+                    <field name="loan_form_number"/>
+                    <field name="loan_amount" />
+                    <field name="monthly_interest"/>
+                    <field name="total_loan"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_loan_form" model="ir.ui.view">
+            <field name="name">loan.form.view.form</field>
+            <field name="model">loan.form</field>
+            <field name="arch" type="xml">
+                <form string="Loan Request">
+                    <sheet>
+                        <div class="oe_title">
+                                Request Loan Number
+                            <h1>
+                                <field name="loan_form_number" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="loan_amount"/>
+                                <field name="repayment_months"/>
+                            </group>
+                            <group>
+                                <field name="reason"/>
+
+                                <label for="supported_attachment_ids" string="Supporting Document" />
+                                <field name="supported_attachment_ids" widget="many2many_binary" nolabel="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Total Loan Information">
+                                <group>
+                                    <field name="monthly_interest"/>
+                                    <field name="total_loan"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'always'}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_view"/>
+    </data>
+</odoo>
