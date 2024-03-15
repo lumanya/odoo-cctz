@@ -26,7 +26,7 @@ class loanform(models.Model):
     )
     reason = fields.Text(string='Reason')
     constant = fields.Float(default=0.01)
-    constant1 = fields.Float(default=0.05)
+    constant1 = fields.Float(default=0.005)
 
     attach_files = fields.Binary(string='Attachment')
 
