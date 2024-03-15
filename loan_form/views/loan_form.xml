@@ -45,6 +45,11 @@
                                     <field name="total_loan"/>
                                 </group>
                             </page>
+                            <page string="Monthly Returns">
+                                <group>
+                                    <field name="repayment_schedule" widget="text" readonly="1"/>
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                     <div class="oe_chatter">

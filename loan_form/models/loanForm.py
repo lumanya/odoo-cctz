@@ -45,6 +45,8 @@ class loanform(models.Model):
         inverse='_inverse_supported_attachment_ids')
     supported_attachment_ids_count = fields.Integer(compute='_compute_supported_attachment_ids')
 
+    repayment_schedule = fields.Text(string="Repayment Schedule", compute='_compute_repayment_schedule')
+
     _rec_name = 'loan_form_number'
 
     
@@ -90,3 +92,12 @@ class loanform(models.Model):
         for record in self:
             record.total_loan = record.subtotal + record.monthly_interest
 
+    @api.depends('total_loan', 'repayment_months')
+    def _compute_repayment_schedule(self):
+        for record in self:
+            repayment_schedule = ""
+            if record.repayment_months:
+                avg_monthly_repayment = record.total_loan / int(record.repayment_months)
+                for month in range(1, int(record.repayment_months) + 1):
+                    repayment_schedule += f"Month {month}: {avg_monthly_repayment}\n"
+            record.repayment_schedule = repayment_schedule
