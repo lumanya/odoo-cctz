@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+
         
         <record id="view_loan_form_list" model="ir.ui.view">
             <field name="name">Loan View</field>
@@ -11,6 +12,7 @@
                     <field name="loan_amount" />
                     <field name="monthly_interest"/>
                     <field name="total_loan"/>
+                    <field name="state" widget="badge" decoration-success="state == 'approved'"  decoration-danger="state == 'rejected'"/>
                 </tree>
             </field>
         </record>
@@ -20,6 +22,15 @@
             <field name="model">loan.form</field>
             <field name="arch" type="xml">
                 <form string="Loan Request">
+                <field name="active" invisible="1"/>
+                <field name="b_state" invisible="1"/>
+                    <header>
+                        <button name="action_submit" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': ['|', ('b_state', '=', 'off'), ('state', 'in', ['to_approve','approved', 'rejected'])]}"/>
+
+                        <button name="action_approve" string="Approve" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['draft','approved', 'rejected'])]}"/>
+                        <button name="action_reject" string="Reject" type="object" attrs="{'invisible': [('state', 'in', ['draft','approved', 'rejected'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="to_approve,approved" attrs="{'invisible': [('active', '=', False)] }"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                                 Request Loan Number
@@ -67,6 +78,31 @@
             <field name="view_id" ref="view_loan_form_list"/>
             <field name="target">current</field>
         </record>
+
+       
+
+       <record id="loan_form_inherit_hr_employee" model="ir.ui.view">
+            <field name="name">loan.form.inherit.hr.employee</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='managers']" position="inside">
+                    <field name="loan_officer_id"/>
+                </xpath>
+            </field>
+        </record>
+
+
+
+
+
+
+
+
+
+
+
+
         
         <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_view"/>
         <menuitem id="menu_loan_requests" name="My Loans" parent="menu_root" sequence="1" action="action_loan_view"/>

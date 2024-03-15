@@ -1,9 +1,27 @@
 from odoo import models, fields, api,_
+from odoo.exceptions import UserError
 
 class loanform(models.Model):
     _name = 'loan.form'
     _inherit='mail.thread'
     _description = 'A loan Form'
+
+
+
+    b_state = fields.Selection([
+        ('on', 'on'),
+        ('off', 'off'),
+        ], default='off')
+
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('to_approve', 'To Approve'),
+        ('approved', 'Approved'),
+        ('rejected','Rejected')
+        ], string='Status', default='draft', track_visibility='onchange', tracking=True)
+
+    active = fields.Boolean(default=True, readonly=True)
 
     loan_amount = fields.Integer(string='Loan amount')
     repayment_months = fields.Selection(
@@ -52,6 +70,7 @@ class loanform(models.Model):
     
     @api.model
     def create(self, vals):
+        vals['b_state'] = 'on'
         if vals.get('loan_form_number', _('New'))== _('New'):
             vals['loan_form_number'] = self.env['ir.sequence'].next_by_code('loan.number') or _('New')
         res = super(loanform, self).create(vals)
@@ -96,4 +115,22 @@ class loanform(models.Model):
     def _compute_repayment_schedule(self):
         for record in self:
             record.repayment_schedule = record.total_loan / int(record.repayment_months)
-                
+
+
+    def action_submit(self):
+        if self.env.user.employee_id and self.env.user.employee_id.loan_officer_id:
+            self.state = 'to_approve'
+        else:
+            raise UserError("Please contact your Administrator to set your Loan Officer.")
+
+        
+    def action_approve(self):
+        self.state = 'approved'
+
+    def action_reject(self):
+        self.state = 'rejected'
+
+    def action_discard_changes(self):
+        # Discard any changes made to the record by reloading its original values
+        self.reload()
+        return True
