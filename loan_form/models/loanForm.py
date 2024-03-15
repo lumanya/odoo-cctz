@@ -51,7 +51,7 @@ class loanform(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('loan_form_number', _('New'))== _('New'):
-            vals['loan_form_number'] = self.env['ir.sequence'].next_by_code('loan.form.number') or _('New')
+            vals['loan_form_number'] = self.env['ir.sequence'].next_by_code('loan.number') or _('New')
         res = super(loanform, self).create(vals)
         return res
     
