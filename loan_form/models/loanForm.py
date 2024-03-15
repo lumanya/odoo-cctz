@@ -85,7 +85,7 @@ class loanform(models.Model):
     @api.depends('monthly_rate', 'subtotal')
     def _calculate_monthly_interest(self):
         for record in self:
-            record.monthly_interest = record.monthly_rate + record.subtotal
+            record.monthly_interest = record.monthly_rate * record.subtotal
 
     @api.depends('subtotal', 'monthly_interest')
     def _calculate_Total(self):
