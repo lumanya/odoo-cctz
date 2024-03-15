@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="action_loan_view" model="ir.actions.act_window">
-            <field name="name">Loan Request</field>
-            <field name="res_model">loan.form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="view_loan_form_list"/>
-            <field name="target">current</field>
-        </record>
         
         <record id="view_loan_form_list" model="ir.ui.view">
             <field name="name">Loan View</field>
@@ -61,6 +54,15 @@
                 </form>
             </field>
         </record>
+
+         <record id="action_loan_view" model="ir.actions.act_window">
+            <field name="name">Loan Request</field>
+            <field name="res_model">loan.form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_loan_form_list"/>
+            <field name="target">current</field>
+        </record>
+        
         <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_view"/>
         <menuitem id="menu_loan_requests" name="My Loans" parent="menu_root" sequence="1" action="action_loan_view"/>
     </data>
