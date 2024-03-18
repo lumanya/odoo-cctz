@@ -6,8 +6,6 @@ class loanform(models.Model):
     _inherit='mail.thread'
     _description = 'A loan Form'
 
-
-
     b_state = fields.Selection([
         ('on', 'on'),
         ('off', 'off'),
@@ -130,7 +128,3 @@ class loanform(models.Model):
     def action_reject(self):
         self.state = 'rejected'
 
-    def action_discard_changes(self):
-        # Discard any changes made to the record by reloading its original values
-        self.reload()
-        return True

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-
-        
+  
         <record id="view_loan_form_list" model="ir.ui.view">
             <field name="name">Loan View</field>
             <field name="model">loan.form</field>
@@ -79,8 +78,6 @@
             <field name="target">current</field>
         </record>
 
-       
-
        <record id="loan_form_inherit_hr_employee" model="ir.ui.view">
             <field name="name">loan.form.inherit.hr.employee</field>
             <field name="model">hr.employee</field>
@@ -92,18 +89,6 @@
             </field>
         </record>
 
-
-
-
-
-
-
-
-
-
-
-
-        
         <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_view"/>
         <menuitem id="menu_loan_requests" name="My Loans" parent="menu_root" sequence="1" action="action_loan_view"/>
     </data>
