@@ -24,11 +24,17 @@
                 <field name="active" invisible="1"/>
                 <field name="b_state" invisible="1"/>
                     <header>
-                        <button name="action_submit" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': ['|', ('b_state', '=', 'off'), ('state', 'in', ['to_approve','approved', 'rejected'])]}"/>
+                        <button name="action_submit" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': ['|', ('b_state', '=', 'off'), ('state', 'in', ['to_approve','approved','second_approval','third_approval','approved','rejected'])]}"/>
 
-                        <button name="action_approve" string="Approve" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['draft','approved', 'rejected'])]}"/>
-                        <button name="action_reject" string="Reject" type="object" attrs="{'invisible': [('state', 'in', ['draft','approved', 'rejected'])]}"/>
-                        <field name="state" widget="statusbar" statusbar_visible="to_approve,approved" attrs="{'invisible': [('active', '=', False)] }"/>
+                        <button name="action_approve" string="Approve" type="object" class="btn-primary" groups="base.group_system,loan_form.loan_officer_group" attrs="{'invisible':  [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject" string="Reject" type="object" groups="base.group_system,loan_form.loan_officer_group" attrs="{'invisible': [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
+
+                        <button name="action_approve1" string="Approve" type="object" class="btn-primary" groups="base.group_system,loan_form.accountant_group" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject1" string="Reject" type="object" groups="base.group_system,loan_form.accountant_group" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
+
+                        <button name="action_approve2" string="Approve" type="object" class="btn-primary" groups="base.group_system,loan_form.general_manager_group" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject2" string="Reject" type="object" groups="base.group_system,loan_form.general_manager_group" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="to_approve,second_approval,third_approval,approved" attrs="{'invisible': [('active', '=', False)] }"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -39,13 +45,13 @@
                         </div>
                         <group>
                             <group>
-                                <field name="loan_amount"/>
-                                <field name="repayment_months"/>
+                                <field name="loan_amount"  attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
+                                <field name="repayment_months" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
                             </group>
                             <group>
-                                <field name="reason"/>
+                                <field name="reason" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
                                 <label for="supported_attachment_ids" string="Supporting Document" />
-                                <field name="supported_attachment_ids" widget="many2many_binary" nolabel="1"/>
+                                <field name="supported_attachment_ids" widget="many2many_binary" nolabel="1" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
                             </group>
                         </group>
                         <notebook>
@@ -75,6 +81,7 @@
             <field name="res_model">loan.form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_loan_form_list"/>
+            <field name="domain">[('create_uid', '=', uid)]</field>
             <field name="target">current</field>
         </record>
 

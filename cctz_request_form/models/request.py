@@ -4,7 +4,6 @@ from odoo import http
 import werkzeug.urls
 from odoo.http import request
 from werkzeug.urls import url_encode
-from odoo.http import request
 from odoo.tools import email_split
 from odoo.exceptions import UserError
 from email.mime.text import MIMEText
@@ -96,7 +95,6 @@ class RequestForm(models.Model):
         if self.state in ['to_approve', 'second_approval']:
             self.state = 'rejected'
             self.action_send_email()
-            self.action_send_email_assigned()
 
     def action_refuse2(self):
         if self.state in ['to_approve', 'second_approval']:

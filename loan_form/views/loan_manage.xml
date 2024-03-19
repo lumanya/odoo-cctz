@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- View for management list -->
+        <record id="view_loan_list" model="ir.ui.view">
+            <field name="name">loan.form.list</field>
+            <field name="model">loan.form</field>
+            <field name="arch" type="xml">
+                <tree string="My loans">
+                    <field name="loan_form_number"/>
+                    <field name="loan_amount" />
+                    <field name="monthly_interest"/>
+                    <field name="total_loan"/>
+                    <field name="state" widget="badge" decoration-success="state == 'approved'"  decoration-danger="state == 'rejected'"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--View for management -->
+        <record id="action_loan_manage_view" model="ir.actions.act_window">
+            <field name="name">All Loan Requests</field>
+            <field name="res_model">loan.form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_loan_list"/>
+            <field name="context">{'create': False}</field> 
+        </record>
+
+        <!-- Group for first approvers -->
+        <record id="loan_officer_group" model="res.groups">
+            <field name="name">Officer1</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- Group for second approvers -->
+        <record id="accountant_group" model="res.groups">
+            <field name="name">Officer2</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- General manager -->
+        <record id="general_manager_group" model="res.groups">
+            <field name="name">Officer3</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <menuitem id="loan_manage" name="Management" parent="menu_root" sequence="2" groups="base.group_system,loan_officer_group,accountant_group,general_manager_group" action="action_loan_manage_view"/>
+
+        <menuitem id="menu_conf" name="Configurations" parent="menu_root" sequence="3" groups="base.group_system" action="base.action_res_groups"/>
+    </data>
+</odoo>
