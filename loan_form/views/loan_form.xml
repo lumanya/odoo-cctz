@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>
-  
+    <data>  
         <record id="view_loan_form_list" model="ir.ui.view">
             <field name="name">Loan View</field>
             <field name="model">loan.form</field>
