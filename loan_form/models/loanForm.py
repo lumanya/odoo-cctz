@@ -59,14 +59,14 @@ class loanform(models.Model):
 
     loan_form_number = fields.Char(string='Loan Form Number', copy=False, readonly=True, required=True, default=lambda self: _('New'))
 
-    attachment_ids = fields.One2many('ir.attachment', 'res_id', string="Attachments", required=True)
+    attachment_ids = fields.One2many('ir.attachment', 'res_id', string="Attachments")
    
     supported_attachment_ids = fields.Many2many(
         'ir.attachment', string="Attach File", compute='_compute_supported_attachment_ids',
-        inverse='_inverse_supported_attachment_ids', required=True)
-    supported_attachment_ids_count = fields.Integer(compute='_compute_supported_attachment_ids', required=True)
+        inverse='_inverse_supported_attachment_ids')
+    supported_attachment_ids_count = fields.Integer(compute='_compute_supported_attachment_ids')
 
-    repayment_schedule = fields.Text(string="Avarage Monthly Return", compute='_compute_repayment_schedule')
+    repayment_schedule = fields.Float(string="Avarage Monthly Return", compute='_compute_repayment_schedule')
 
     _rec_name = 'loan_form_number'
 
@@ -77,8 +77,17 @@ class loanform(models.Model):
         if vals.get('loan_form_number', _('New'))== _('New'):
             vals['loan_form_number'] = self.env['ir.sequence'].next_by_code('loan.number') or _('New')
         res = super(loanform, self).create(vals)
+        res. _check_loan_amount()
         return res
     
+
+    @api.constrains('loan_amount')
+    def _check_loan_amount(self):
+        for record in self:
+            if record.loan_amount == 0:
+                raise UserError("Loan amount must not be zero")
+            
+            
     @api.depends('attachment_ids')
     def _compute_supported_attachment_ids(self):
         for record in self:
@@ -124,15 +133,15 @@ class loanform(models.Model):
     def action_submit(self):
         if self.env.user.employee_id and self.env.user.employee_id.loan_officer_id:
             group_officer1 = self.env.ref('loan_form.loan_officer_group')
-            group_officer1.write({'users': [(4, self.env.user.employee_id.loan_officer_id.id)]})
+            group_officer1.sudo().write({'users': [(4, self.env.user.employee_id.loan_officer_id.id)]})
 
             accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)
             group_officer2 = self.env.ref('loan_form.accountant_group') 
-            group_officer2.write({'users': [(4, accountant.user_id.id)]})
+            group_officer2.sudo().write({'users': [(4, accountant.user_id.id)]})
 
             general_manager = self.env['hr.employee'].search([('job_title', '=', 'General Manager')], limit=1)
             group_officer3 = self.env.ref('loan_form.general_manager_group') 
-            group_officer3.write({'users': [(4, general_manager.user_id.id)]})
+            group_officer3.sudo().write({'users': [(4, general_manager.user_id.id)]})
             self.state = 'to_approve'
             self.send_email_to_loan_officer()
         else:
@@ -230,13 +239,11 @@ class loanform(models.Model):
 
     
     def _get_loan_officer_emails(self):
-        group = self.env.ref('loan_form.loan_officer_group')
-        users = group.users
+        users = self.env.user.employee_id.loan_officer_id
         return [user for user in users if user.email]
     
     def send_email_to_loan_officer(self):
-        group = self.env.ref('loan_form.loan_officer_group')
-        users = group.users
+        users = self.env.user.employee_id.loan_officer_id
         template = self.env.ref('loan_form.email_template_loan_officer_approver')
         
         if template and users:
@@ -283,7 +290,7 @@ class loanform(models.Model):
         return [user for user in users if user.email]
     
     def send_email_to_general_manager(self):
-        group = self.env.ref('oan_form.general_manager_group')
+        group = self.env.ref('loan_form.general_manager_group')
         users = group.users
         template = self.env.ref('loan_form.email_template_general_manager_approver')
         

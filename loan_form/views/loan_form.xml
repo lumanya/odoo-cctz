@@ -58,11 +58,12 @@
                                 <group>
                                     <field name="monthly_interest"/>
                                     <field name="total_loan"/>
+                                    <field name="service_charge"/>
                                 </group>
                             </page>
                             <page string="Monthly Returns">
                                 <group>
-                                    <field name="repayment_schedule" widget="text" readonly="1"/>
+                                    <field name="repayment_schedule"/>
                                 </group>
                             </page>
                         </notebook>
