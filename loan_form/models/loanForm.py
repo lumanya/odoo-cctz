@@ -305,9 +305,4 @@ class loanform(models.Model):
             if not template:
                 _logger.warning("Email template 'email_template_general_manager_approver' not found.")
             if not users:
-                _logger.warning("No users found in the 'General Managers' group.")
-
-    
-   
-
-    
+                _logger.warning("No users found in the 'General Managers' group.")    
