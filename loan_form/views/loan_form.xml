@@ -46,6 +46,7 @@
                             <group>
                                 <field name="loan_amount"  attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
                                 <field name="repayment_months" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
+                                <field name="user_id" readonly="1"></field>
                             </group>
                             <group>
                                 <field name="reason" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
@@ -76,12 +77,24 @@
             </field>
         </record>
 
+        <!-- Search View -->
+        <record model="ir.ui.view" id="loan_request_search">
+            <field name="name">loan.form.search</field>
+            <field name="model">loan.form</field>
+            <field name="arch" type="xml">
+                <search>
+                      <filter string="My Loan" name="my_loan" domain="[('user_id', '=', uid)]"/>              
+                </search>
+            </field>
+        </record>
+
          <record id="action_loan_view" model="ir.actions.act_window">
             <field name="name">Loan Request</field>
             <field name="res_model">loan.form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_loan_form_list"/>
-            <field name="domain">[('create_uid', '=', uid)]</field>
+            <field name="context">{'search_default_my_loan': 1}</field>
+            <!-- <field name="domain">[('create_uid', '=', uid)]</field> -->
             <field name="target">current</field>
         </record>
 

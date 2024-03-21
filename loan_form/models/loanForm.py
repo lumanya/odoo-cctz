@@ -70,6 +70,19 @@ class loanform(models.Model):
 
     _rec_name = 'loan_form_number'
 
+    user_id = fields.Many2one(
+        comodel_name='res.users',
+        string="Loanuser",
+        compute='_compute_user_id',
+        store=True, readonly=False, precompute=True, index=True,
+        tracking=2)
+
+   
+    def _compute_user_id(self):
+        for loan in self:
+            if not loan.user_id:
+                loan.user_id =  self.env.user
+
     
     @api.model
     def create(self, vals):
