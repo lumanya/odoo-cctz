@@ -191,54 +191,34 @@ class loanform(models.Model):
     menu_id = fields.Integer(string='Menu ID')
     action_id = fields.Integer(string='Action ID')
 
-
-    
     @api.model
     def generate_link(self, menu_id, action_id):
         
         base_url = request.httprequest.url_root
         
         # Find menu_id based on the menu name
-        menu = self.env['ir.ui.menu'].search([('name', '=', 'My Loans')])
+        menu = self.env['ir.ui.menu'].search([('name', '=', 'Loan Request')])
         menu_id = menu.id if menu else False
         
         # Find action_id based on the action name
-        action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'Loan Request')])
+        action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'Loan View')])
         action_id = action.id if action else False
         
         if menu_id and action_id:
             params = {'menu_id': menu_id, 'action': action_id}
+            if hasattr(self, '_origin') and self._origin:  # Check if called within a record context
+                params['id'] = self._origin.id  # Automatically include current record ID
+                
+                # Find the view ID associated with the current record
+                view_id = self._origin.get_formview_id()
+                if view_id:
+                    params['view_type'] = 'form'
+                    params['view_id'] = view_id
+                
             return base_url + '/web#' + url_encode(params)
         else:
             # Handle the case where either menu or action is not found
             return False
-        
-    menu_id = fields.Integer(string='Menu ID')
-    action_id = fields.Integer(string='Action ID')
-
-
-    @api.model
-    def generate_manage_link(self, menu_id, action_id):
-        base_url = request.httprequest.url_root
-
-        # Check if the current user is an admin
-        is_admin = self.env.user.has_group('base.group_system')
-
-        # If user is admin, use the specified menu and action IDs
-        if is_admin:
-            menu_id = self.env.ref('loan_form.menu_loan_requests').id
-            action_id = self.env.ref('loan_form.action_loan_view').id
-        else:
-            # If user is not admin, use the specified menu and action IDs for normal users
-            menu_id = self.env.ref('loan_form.menu_loan_requests').id
-            action_id = self.env.ref('loan_form.action_loan_view').id
-
-        if menu_id and action_id:
-            params = {'menu_id': menu_id, 'action': action_id}
-            return base_url + '/web#' + url_encode(params)
-        else:
-            return False
-
         
 
     def _get_my_records(self):

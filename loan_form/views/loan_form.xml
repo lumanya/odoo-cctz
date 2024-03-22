@@ -88,13 +88,21 @@
             </field>
         </record>
 
-         <record id="action_loan_view" model="ir.actions.act_window">
-            <field name="name">Loan Request</field>
+         <record id="action_loan_list" model="ir.actions.act_window">
+            <field name="name">Loan Requests</field>
             <field name="res_model">loan.form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_loan_form_list"/>
             <field name="context">{'search_default_my_loan': 1}</field>
             <!-- <field name="domain">[('create_uid', '=', uid)]</field> -->
+            <field name="target">current</field>
+        </record>
+
+        <record id="action_loan_view" model="ir.actions.act_window">
+            <field name="name">Loan View</field>
+            <field name="res_model">loan.form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_loan_form"/>
             <field name="target">current</field>
         </record>
 
@@ -110,6 +118,6 @@
         </record>
 
         <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_view"/>
-        <menuitem id="menu_loan_requests" name="My Loans" parent="menu_root" sequence="1" action="action_loan_view"/>
+        <menuitem id="menu_loan_requests" name="My Loans" parent="menu_root" sequence="1" action="action_loan_list"/>
     </data>
 </odoo>
