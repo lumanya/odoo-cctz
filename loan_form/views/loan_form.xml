@@ -111,8 +111,10 @@
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group[@name='managers']" position="inside">
-                    <field name="loan_officer_id"/>
+                <xpath expr="//group[@name='managers']" position="after">
+                    <group name="Loan" string="Loan">
+                        <field name="loan_officer_id"/>
+                    </group>
                 </xpath>
             </field>
         </record>

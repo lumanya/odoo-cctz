@@ -27,19 +27,19 @@
 
         <!-- Group for first approvers -->
         <record id="loan_officer_group" model="res.groups">
-            <field name="name">Officer1</field>
+            <field name="name">Loan Officers</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
         <!-- Group for second approvers -->
         <record id="accountant_group" model="res.groups">
-            <field name="name">Officer2</field>
+            <field name="name">Head Accountant</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
         <!-- General manager -->
         <record id="general_manager_group" model="res.groups">
-            <field name="name">Officer3</field>
+            <field name="name">General Manager</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
