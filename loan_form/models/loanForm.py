@@ -220,7 +220,6 @@ class loanform(models.Model):
             # Handle the case where either menu or action is not found
             return False
         
-
     def _get_my_records(self):
         return self.search([('create_uid', '=', self.env.uid)])
    
