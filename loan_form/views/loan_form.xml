@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data>  
+    <data>
         <record id="view_loan_form_list" model="ir.ui.view">
             <field name="name">Loan View</field>
             <field name="model">loan.form</field>
@@ -10,7 +10,7 @@
                     <field name="loan_amount" />
                     <field name="monthly_interest"/>
                     <field name="total_loan"/>
-                    <field name="state" widget="badge" decoration-success="state == 'approved'"  decoration-danger="state == 'rejected'"/>
+                    <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"/>
                 </tree>
             </field>
         </record>
@@ -20,19 +20,19 @@
             <field name="model">loan.form</field>
             <field name="arch" type="xml">
                 <form string="Loan Request">
-                <field name="active" invisible="1"/>
-                <field name="b_state" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                    <field name="b_state" invisible="1"/>
                     <header>
                         <button name="action_submit" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': ['|', ('b_state', '=', 'off'), ('state', 'in', ['to_approve','approved','second_approval','third_approval','approved','rejected'])]}"/>
 
-                        <button name="action_approve" string="Approve" type="object" class="btn-primary" groups="base.group_system,loan_form.loan_officer_group" attrs="{'invisible':  [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
-                        <button name="action_reject" string="Reject" type="object" groups="base.group_system,loan_form.loan_officer_group" attrs="{'invisible': [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_approve" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_manager" attrs="{'invisible':  [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject" string="Reject" type="object" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
 
-                        <button name="action_approve1" string="Approve" type="object" class="btn-primary" groups="base.group_system,loan_form.accountant_group" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
-                        <button name="action_reject1" string="Reject" type="object" groups="base.group_system,loan_form.accountant_group" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_approve1" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject1" string="Reject" type="object" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
 
-                        <button name="action_approve2" string="Approve" type="object" class="btn-primary" groups="base.group_system,loan_form.general_manager_group" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
-                        <button name="action_reject2" string="Reject" type="object" groups="base.group_system,loan_form.general_manager_group" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_approve2" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject2" string="Reject" type="object" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="to_approve,second_approval,third_approval,approved" attrs="{'invisible': [('active', '=', False)] }"/>
                     </header>
                     <sheet>
@@ -44,9 +44,9 @@
                         </div>
                         <group>
                             <group>
-                                <field name="loan_amount"  attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
+                                <field name="loan_amount" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
                                 <field name="repayment_months" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
-                                <field name="user_id" readonly="1"></field>
+                                <field name="user_id"></field>
                             </group>
                             <group>
                                 <field name="reason" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
@@ -83,22 +83,45 @@
             <field name="model">loan.form</field>
             <field name="arch" type="xml">
                 <search>
-                      <filter string="My Loan" name="my_loan" domain="[('user_id', '=', uid)]"/>              
+                    <filter string="My Loan" name="my_loan" domain="[('user_id', '=', uid)]"/>
                 </search>
             </field>
         </record>
 
-         <record id="action_loan_view" model="ir.actions.act_window">
+        <record id="action_loan_view" model="ir.actions.act_window">
             <field name="name">Loan Request</field>
             <field name="res_model">loan.form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_loan_form_list"/>
             <field name="context">{'search_default_my_loan': 1}</field>
-            <!-- <field name="domain">[('create_uid', '=', uid)]</field> -->
-            <field name="target">current</field>
+
+
         </record>
 
-       <record id="loan_form_inherit_hr_employee" model="ir.ui.view">
+        <record id="config_admin_action" model="ir.actions.act_window">
+            <field name="name">loan.approval</field>
+            <field name="res_model">loan.approval</field>
+            <field name="view_mode">tree,form</field>
+          
+
+
+
+        </record>
+
+
+        <record id="loan_approval_view_form" model="ir.ui.view">
+            <field name="name">loan.approval.view.tree</field>
+            <field name="model">loan.approval</field>
+            <field name="arch" type="xml">
+                <tree string='Loan Approvals' editable="bottom">
+                    <field name="head_of_accountant"></field>
+                    <field name="general_manager"></field>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="loan_form_inherit_hr_employee" model="ir.ui.view">
             <field name="name">loan.form.inherit.hr.employee</field>
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form"/>
@@ -111,5 +134,6 @@
 
         <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_view"/>
         <menuitem id="menu_loan_requests" name="My Loans" parent="menu_root" sequence="1" action="action_loan_view"/>
+        <menuitem id="loan_form_config" name="Configuration" action="config_admin_action" groups="loan_form.group_loan_admin" parent="menu_root" sequence="10"/>
     </data>
 </odoo>

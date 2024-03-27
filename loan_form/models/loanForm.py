@@ -70,18 +70,16 @@ class loanform(models.Model):
 
     _rec_name = 'loan_form_number'
 
-    user_id = fields.Many2one(
-        comodel_name='res.users',
-        string="Loanuser",
-        compute='_compute_user_id',
-        store=True, readonly=False, precompute=True, index=True,
-        tracking=2)
+    user_id = fields.Many2one('res.users', string='Warranty', compute='_compute_user', store=True)
+
+    
 
    
-    def _compute_user_id(self):
-        for loan in self:
-            if not loan.user_id:
-                loan.user_id =  self.env.user
+    @api.depends('create_uid')
+    def _compute_user(self):
+        for record in self:
+            print(record.create_uid.id)
+            record.user_id = record.create_uid
 
     
     @api.model
@@ -145,15 +143,15 @@ class loanform(models.Model):
 
     def action_submit(self):
         if self.env.user.employee_id and self.env.user.employee_id.loan_officer_id:
-            group_officer1 = self.env.ref('loan_form.loan_officer_group')
+            group_officer1 = self.env.ref('loan_form.group_loan_manager')
             group_officer1.sudo().write({'users': [(4, self.env.user.employee_id.loan_officer_id.id)]})
 
             accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)
-            group_officer2 = self.env.ref('loan_form.accountant_group') 
+            group_officer2 = self.env.ref('loan_form.group_loan_manager') 
             group_officer2.sudo().write({'users': [(4, accountant.user_id.id)]})
 
             general_manager = self.env['hr.employee'].search([('job_title', '=', 'General Manager')], limit=1)
-            group_officer3 = self.env.ref('loan_form.general_manager_group') 
+            group_officer3 = self.env.ref('loan_form.group_loan_manager') 
             group_officer3.sudo().write({'users': [(4, general_manager.user_id.id)]})
             self.state = 'to_approve'
             self.send_email_to_loan_officer()
@@ -241,8 +239,7 @@ class loanform(models.Model):
 
         
 
-    def _get_my_records(self):
-        return self.search([('create_uid', '=', self.env.uid)])
+  
    
     # sending email
     def action_send_email(self):
@@ -274,12 +271,12 @@ class loanform(models.Model):
 
     
     def _get_accountant_emails(self):
-        group = self.env.ref('loan_form.accountant_group')
+        group = self.env.ref('loan_form.group_loan_manager')
         users = group.users
         return [user for user in users if user.email]
     
     def send_email_to_accountant(self):
-        group = self.env.ref('loan_form.accountant_group')
+        group = self.env.ref('loan_form.group_loan_manager')
         users = group.users
         template = self.env.ref('loan_form.email_template_accountant_approver')
         
@@ -298,12 +295,12 @@ class loanform(models.Model):
 
 
     def _get_general_manager_emails(self):
-        group = self.env.ref('loan_form.general_manager_group')
+        group = self.env.ref('loan_form.group_loan_manager')
         users = group.users
         return [user for user in users if user.email]
     
     def send_email_to_general_manager(self):
-        group = self.env.ref('loan_form.general_manager_group')
+        group = self.env.ref('loan_form.group_loan_manager')
         users = group.users
         template = self.env.ref('loan_form.email_template_general_manager_approver')
         
