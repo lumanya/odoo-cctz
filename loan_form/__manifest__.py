@@ -2,6 +2,7 @@
     "name": "Loan request",
     "author": "Ebenezer $ Rahim",
     "summary":"Loan request",
+    'sequence': 15,
     "depends": [
        'base','mail'
     ],
@@ -14,6 +15,7 @@
      
      
     ],
+    'images': ['static/description/banner.png'],
     "application": True,
     'installable': True,
     'license': 'AGPL-3',

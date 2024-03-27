@@ -70,7 +70,7 @@ class loanform(models.Model):
 
     _rec_name = 'loan_form_number'
 
-    user_id = fields.Many2one('res.users', string='Warranty', compute='_compute_user', store=True)
+    user_id = fields.Many2one('res.users', string='Loan Requester', compute='_compute_user', store=True)
 
     
 
@@ -143,16 +143,10 @@ class loanform(models.Model):
 
     def action_submit(self):
         if self.env.user.employee_id and self.env.user.employee_id.loan_officer_id:
-            group_officer1 = self.env.ref('loan_form.group_loan_manager')
-            group_officer1.sudo().write({'users': [(4, self.env.user.employee_id.loan_officer_id.id)]})
+            # group_officer1 = self.env.ref('loan_form.group_loan_manager')
+            # group_officer1.sudo().write({'users': [(4, self.env.user.employee_id.loan_officer_id.id)]})
 
-            accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)
-            group_officer2 = self.env.ref('loan_form.group_loan_manager') 
-            group_officer2.sudo().write({'users': [(4, accountant.user_id.id)]})
-
-            general_manager = self.env['hr.employee'].search([('job_title', '=', 'General Manager')], limit=1)
-            group_officer3 = self.env.ref('loan_form.group_loan_manager') 
-            group_officer3.sudo().write({'users': [(4, general_manager.user_id.id)]})
+          
             self.state = 'to_approve'
             self.send_email_to_loan_officer()
         else:
@@ -188,58 +182,40 @@ class loanform(models.Model):
 
     menu_id = fields.Integer(string='Menu ID')
     action_id = fields.Integer(string='Action ID')
-
-
     
+
     @api.model
     def generate_link(self, menu_id, action_id):
         
         base_url = request.httprequest.url_root
         
         # Find menu_id based on the menu name
-        menu = self.env['ir.ui.menu'].search([('name', '=', 'My Loans')])
+        menu = self.env['ir.ui.menu'].search([('name', '=', 'Loan Request')])       
         menu_id = menu.id if menu else False
         
         # Find action_id based on the action name
-        action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'Loan Request')])
+        action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'Loan View')])       
         action_id = action.id if action else False
         
         if menu_id and action_id:
             params = {'menu_id': menu_id, 'action': action_id}
-            return base_url + '/web#' + url_encode(params)
+            if hasattr(self, '_origin') and self._origin:  # Check if called within a record context
+                params['id'] = self._origin.id  # Automatically include current record ID
+                
+                # Find the view ID associated with the current record
+                view_id = self._origin.get_formview_id()
+                if view_id:
+                    params['view_type'] = 'form'
+                    params['view_id'] = view_id
+                print(f"***** Base Url {base_url}")
+                
+            return base_url + 'web#' + url_encode(params)
         else:
             # Handle the case where either menu or action is not found
             return False
         
-    menu_id = fields.Integer(string='Menu ID')
-    action_id = fields.Integer(string='Action ID')
-
-
-    @api.model
-    def generate_manage_link(self, menu_id, action_id):
-        base_url = request.httprequest.url_root
-
-        # Check if the current user is an admin
-        is_admin = self.env.user.has_group('base.group_system')
-
-        # If user is admin, use the specified menu and action IDs
-        if is_admin:
-            menu_id = self.env.ref('loan_form.menu_loan_requests').id
-            action_id = self.env.ref('loan_form.action_loan_view').id
-        else:
-            # If user is not admin, use the specified menu and action IDs for normal users
-            menu_id = self.env.ref('loan_form.menu_loan_requests').id
-            action_id = self.env.ref('loan_form.action_loan_view').id
-
-        if menu_id and action_id:
-            params = {'menu_id': menu_id, 'action': action_id}
-            return base_url + '/web#' + url_encode(params)
-        else:
-            return False
-
-        
-
-  
+    def _get_my_records(self):
+        return self.search([('create_uid', '=', self.env.uid)])
    
     # sending email
     def action_send_email(self):
@@ -270,49 +246,47 @@ class loanform(models.Model):
                 _logger.warning("No users found in the 'Loan Officers' group.")
 
     
+  
+
     def _get_accountant_emails(self):
-        group = self.env.ref('loan_form.group_loan_manager')
-        users = group.users
-        return [user for user in users if user.email]
+        accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)
+        return accountant
     
     def send_email_to_accountant(self):
-        group = self.env.ref('loan_form.group_loan_manager')
-        users = group.users
-        template = self.env.ref('loan_form.email_template_accountant_approver')
+
         
-        if template and users:
-            for user in users:
-                if user.email:
-                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.email})
-                    _logger.info("Email sent to %s (%s)" % (user.name, user.email))
-                else:
-                    _logger.warning("User %s does not have an email address." % user.name)
+        accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)           
+        template = self.env.ref('loan_form.email_template_accountant_approver')    
+        
+        if template and accountant:
+            if accountant.work_email:
+                template.send_mail(self.id, force_send=True, email_values={'email_to': accountant.work_email})
+                _logger.info("Email sent to %s (%s)" % (accountant.name, accountant.work_email))
+            else:
+                _logger.warning("User %s does not have an email address." % accountant.name)
         else:
             if not template:
                 _logger.warning("Email template 'email_template_accountant_approver' not found.")
-            if not users:
-                _logger.warning("No users found in the 'Accountant' group.")
+            if not accountant:
+                _logger.warning("No users found in the 'Accountant'")
 
 
     def _get_general_manager_emails(self):
-        group = self.env.ref('loan_form.group_loan_manager')
-        users = group.users
-        return [user for user in users if user.email]
+        manager = self.env['hr.employee'].search([('job_title', '=', 'General Manager')], limit=1) 
+        return manager
     
     def send_email_to_general_manager(self):
-        group = self.env.ref('loan_form.group_loan_manager')
-        users = group.users
-        template = self.env.ref('loan_form.email_template_general_manager_approver')
+        manager = self.env['hr.employee'].search([('job_title', '=', 'General Manager')], limit=1)           
+        template = self.env.ref('loan_form.email_template_general_manager_approver')    
         
-        if template and users:
-            for user in users:
-                if user.email:
-                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.email})
-                    _logger.info("Email sent to %s (%s)" % (user.name, user.email))
-                else:
-                    _logger.warning("User %s does not have an email address." % user.name)
+        if template and manager:
+            if manager.work_email:
+                template.send_mail(self.id, force_send=True, email_values={'email_to': manager.work_email})
+                _logger.info("Email sent to %s (%s)" % (manager.name, manager.work_email))
+            else:
+                _logger.warning("User %s does not have an email address." % manager.name)
         else:
             if not template:
                 _logger.warning("Email template 'email_template_general_manager_approver' not found.")
-            if not users:
-                _logger.warning("No users found in the 'General Managers' group.")    
+            if not manager:
+                _logger.warning("No users found in the 'manager'")   

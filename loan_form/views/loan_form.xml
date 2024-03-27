@@ -10,6 +10,7 @@
                     <field name="loan_amount" />
                     <field name="monthly_interest"/>
                     <field name="total_loan"/>
+                    <field name="user_id" widget="many2one_avatar_user" optional="show"></field>
                     <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"/>
                 </tree>
             </field>
@@ -88,8 +89,8 @@
             </field>
         </record>
 
-        <record id="action_loan_view" model="ir.actions.act_window">
-            <field name="name">Loan Request</field>
+         <record id="action_loan_list" model="ir.actions.act_window">
+            <field name="name">Loan Requests</field>
             <field name="res_model">loan.form</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_loan_form_list"/>
@@ -121,19 +122,30 @@
         </record>
 
 
-        <record id="loan_form_inherit_hr_employee" model="ir.ui.view">
+        <record id="action_loan_view" model="ir.actions.act_window">
+            <field name="name">Loan View</field>
+            <field name="res_model">loan.form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_loan_form"/>
+            <field name="target">current</field>
+        </record>
+
+       <record id="loan_form_inherit_hr_employee" model="ir.ui.view">
             <field name="name">loan.form.inherit.hr.employee</field>
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group[@name='managers']" position="inside">
-                    <field name="loan_officer_id"/>
+                <xpath expr="//group[@name='managers']" position="after">
+                    <group name="Loan" string="Loan">
+                        <field name="loan_officer_id"/>
+                    </group>
                 </xpath>
             </field>
         </record>
 
-        <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_view"/>
-        <menuitem id="menu_loan_requests" name="My Loans" parent="menu_root" sequence="1" action="action_loan_view"/>
+        <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_list"/>    
+          <menuitem id="menu_loan_requests" name="My Loans" parent="menu_root" sequence="1" action="action_loan_list"/>   
         <menuitem id="loan_form_config" name="Configuration" action="config_admin_action" groups="loan_form.group_loan_admin" parent="menu_root" sequence="10"/>
+      
     </data>
 </odoo>
