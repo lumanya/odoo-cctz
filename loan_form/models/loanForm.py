@@ -151,10 +151,8 @@ class loanform(models.Model):
 
     def action_submit(self):
         if self.env.user.employee_id and self.env.user.employee_id.loan_officer_id:
-            # group_officer1 = self.env.ref('loan_form.group_loan_manager')
-            # group_officer1.sudo().write({'users': [(4, self.env.user.employee_id.loan_officer_id.id)]})
-
-          
+            group_officer1 = self.env.ref('loan_form.group_loan_officer')
+            group_officer1.sudo().write({'users': [(4, self.env.user.employee_id.loan_officer_id.id)]})
             self.state = 'to_approve'
             self.send_email_to_loan_officer()
         else:

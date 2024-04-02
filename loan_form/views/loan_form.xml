@@ -26,14 +26,14 @@
                     <header>
                         <button name="action_submit" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': ['|', ('b_state', '=', 'off'), ('state', 'in', ['to_approve','approved','second_approval','third_approval','approved','rejected'])]}"/>
 
-                        <button name="action_approve" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_manager" attrs="{'invisible':  [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
-                        <button name="action_reject" string="Reject" type="object" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_approve" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_officer" attrs="{'invisible':  [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject" string="Reject" type="object" groups="loan_form.group_loan_officer" attrs="{'invisible': [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
 
                         <button name="action_approve1" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
                         <button name="action_reject1" string="Reject" type="object" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
 
-                        <button name="action_approve2" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
-                        <button name="action_reject2" string="Reject" type="object" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_approve2" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_admin" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject2" string="Reject" type="object" groups="loan_form.group_loan_admin" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="to_approve,second_approval,third_approval,approved" attrs="{'invisible': [('active', '=', False)] }"/>
                     </header>
                     <sheet>

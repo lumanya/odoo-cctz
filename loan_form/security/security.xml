@@ -13,14 +13,19 @@
         <field name="category_id" ref="module_category_loan"></field>      
     </record>
 
+    <record id="group_loan_officer" model="res.groups">
+        <field name="name">Loan Officer</field>
+        <field name="category_id" ref="module_category_loan"></field>      
+    </record>
+
     <record id="group_loan_manager" model="res.groups">
-        <field name="name">Manager</field>
+        <field name="name">Accountant</field>
         <field name="category_id" ref="module_category_loan"></field>
         <field name="implied_ids" eval="[(4, ref('group_loan_user'))]"></field>
     </record>
 
      <record id="group_loan_admin" model="res.groups">
-        <field name="name">Administrator</field>
+        <field name="name">Manager</field>
         <field name="category_id" ref="module_category_loan"></field>
         <field name="implied_ids" eval="[(4, ref('group_loan_manager'))]"></field>
     </record>
