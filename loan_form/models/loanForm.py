@@ -153,12 +153,20 @@ class loanform(models.Model):
         if self.env.user.employee_id and self.env.user.employee_id.loan_officer_id:
             group_officer1 = self.env.ref('loan_form.group_loan_officer')
             group_officer1.sudo().write({'users': [(4, self.env.user.employee_id.loan_officer_id.id)]})
+
+            accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)
+            accountant_group = self.env.ref('loan_form.group_loan_manager')
+            accountant_group.sudo().write({'users': [(4, accountant.user_id.id)]})
+
+            manager = self.env['hr.employee'].search([('job_title', '=', 'General Manager')], limit=1) 
+            manager_group = self.env.ref('loan_form.group_loan_admin')
+            manager_group.sudo().write({'users': [(4, manager.user_id.id)]})
             self.state = 'to_approve'
             self.send_email_to_loan_officer()
         else:
             raise UserError("Please contact your Administrator to set your Loan Officer.")
 
-        
+
     def action_approve(self):
         self.state = 'second_approval'
         self.action_send_email()
@@ -257,10 +265,10 @@ class loanform(models.Model):
     def _get_accountant_emails(self):
         accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)
         return accountant
+
     
     def send_email_to_accountant(self):
 
-        
         accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)           
         template = self.env.ref('loan_form.email_template_accountant_approver')    
         
