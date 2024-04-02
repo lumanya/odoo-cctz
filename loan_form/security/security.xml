@@ -28,7 +28,7 @@
     <record id="user_record_rule" model="ir.rule">
         <field name="name">See Own Loan</field>
         <field name="model_id" ref="model_loan_form"></field>
-        <field name="domain_force">[('user_id','=', user.id)]</field>
+        <field name="domain_force">['|', ('user_id','=', user.id), ('loan_officer_id','=',user.id)]</field>
         <field name="groups" eval="[(4, ref('group_loan_user'))]"></field>
     </record>
 

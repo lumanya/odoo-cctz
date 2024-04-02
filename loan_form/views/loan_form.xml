@@ -48,6 +48,7 @@
                                 <field name="loan_amount" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
                                 <field name="repayment_months" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
                                 <field name="user_id"></field>
+                            
                             </group>
                             <group>
                                 <field name="reason" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
@@ -78,12 +79,15 @@
             </field>
         </record>
 
+
         <!-- Search View -->
         <record model="ir.ui.view" id="loan_request_search">
             <field name="name">loan.form.search</field>
             <field name="model">loan.form</field>
             <field name="arch" type="xml">
                 <search>
+                    <field name="loan_form_number"></field>
+                    <field name="user_id"></field>
                     <filter string="My Loan" name="my_loan" domain="[('user_id', '=', uid)]"/>
                 </search>
             </field>

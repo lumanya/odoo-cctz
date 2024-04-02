@@ -10,6 +10,7 @@ class loanform(models.Model):
     _name = 'loan.form'
     _inherit='mail.thread'
     _description = 'A loan Form'
+    _order = 'loan_form_number desc, id desc'
 
     b_state = fields.Selection([
         ('on', 'on'),
@@ -70,16 +71,23 @@ class loanform(models.Model):
 
     _rec_name = 'loan_form_number'
 
-    user_id = fields.Many2one('res.users', string='Loan Requester', compute='_compute_user', store=True)
+    user_id = fields.Many2one('res.users', string='Loan Requester', compute='_compute_user', store=True, readonly=True)
 
-    
+    loan_officer_id = fields.Many2one('res.users', string="Loan officer", compute="_compute_loan_officer", store=True)
+
+
+
+    @api.depends('user_id')
+    def _compute_loan_officer(self):
+        self.loan_officer_id = self.env.user.employee_id.loan_officer_id
+     
 
    
     @api.depends('create_uid')
     def _compute_user(self):
-        for record in self:
-            print(record.create_uid.id)
+        for record in self:          
             record.user_id = record.create_uid
+         
 
     
     @api.model
@@ -88,7 +96,7 @@ class loanform(models.Model):
         if vals.get('loan_form_number', _('New'))== _('New'):
             vals['loan_form_number'] = self.env['ir.sequence'].next_by_code('loan.number') or _('New')
         res = super(loanform, self).create(vals)
-        res. _check_loan_amount()
+        res._check_loan_amount()       
         return res
     
 
