@@ -13,7 +13,7 @@ class HrEmployeeBirthday(models.Model):
         for employee in upcoming_birthdays:
             birthday = fields.Date.from_string(employee.birthday)
             if start_date <= birthday <= end_date:
-                hr_department = self.env['hr.employee'].search([('job_title', '=', 'Human Resource Manager')], limit=1)
+                hr_department = self.env['hr.employee'].search([('job_title', '=', 'HR Manager')], limit=1)
                 if hr_department:
                     template = self.env.ref('birthday_reminder.birthday_reminder_email_template')
                     template.send_mail(employee.id, force_send=True, email_values={'email_to': hr_department.work_email})
