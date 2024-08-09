@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <template id="report_loan_form">
+      <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+          <t t-call="web.external_layout">
+            <div class="page">
+              <div class="text-center oe_title">
+                <h3 class="mt-4 fw-bold">
+                  LOAN APPLICATION FORM
+                </h3>
+                <p>(TWO FORMS REQUIRED)</p>
+              </div>
+
+
+              <!-- Employer's and Lender's Details Section -->
+              <div class="mt-4">
+                <h5>1. Employer's and Lender's Details:</h5>
+                <p class="mt-2 mr-2"> a) Name of the Company: <span
+                    class="fw-bold fst-italic mr16 ms-auto" t-esc="doc.employee_id.company_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>b) Incorporation Number:</strong>
+                  <span class="fw-bold" t-esc="doc.employee_id.identification_id"/>
+                </p>
+                <p class="mt-2">
+                  <strong>c) Postal Address:</strong>
+                  <span class="fst-italic mr16 ms-auto" t-esc="doc.employee_id.address_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>d) Country and City:</strong>
+                  <span class="fst-italic mr16 ms-auto"
+                    t-esc="doc.employee_id.work_location_id.name" />
+                </p>
+              </div>
+
+              <!-- Borrower's Details Section -->
+              <div class="mt-4">
+                <h5>
+                  <b>2. Borrower's Details:</b>
+                </h5>
+                <p class="mt-2">
+                  <strong>
+                    <b>a) Employee's Full Names:</b>
+                  </strong>
+                  <span class="fst-italic mr16 ms-auto" t-esc="doc.employee_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>b) Employee's Company Identification Number:</strong>
+                  <!-- <span class="fst-italic mr16 ms-auto"
+                  t-esc="doc.employee_id.company_id.vat"/> -->
+                </p>
+                <p class="mt-2">
+                  <strong>c) Employee's Position:</strong>
+                  <span class="fst-italic mr16 ms-auto" t-esc="doc.employee_id.job_title" />
+                </p>
+                <p class="mt-2">
+                  <strong>d) Postal/Physical Address:</strong>
+                  <span class="fst-italic mr16 ms-auto" t-esc="doc.employee_id.private_street" />
+                </p>
+                <p class="mt-2">
+                  <strong>e) Mobile Number:</strong>
+                  <span class="fst-italic mr16 ms-auto" t-esc="doc.employee_id.mobile_phone" />
+                </p>
+                <p class="mt-2">
+                  <strong>f) Signature: ................................................................</strong>
+                  <!-- <span class="fst-italic ml-2">____________________________________</span> -->
+                  <strong>Date: ................................................................</strong>
+                  <!-- <span class="fst-italic ml-2">_______________________</span> -->
+                </p>
+              </div>
+
+              <!-- Loan Purpose Section -->
+              <div class="mt-4">
+                <h5 class="fw-bold">3. The Purposes of the Loan:</h5>
+                <p class="mt-2">
+                  <strong>a) Loan Amount requested (TZs):</strong>
+                  <span class="fst-italic mr16 ms-auto" t-esc="doc.loan_amount" />
+                </p>
+                <p class="mt-2">
+                  <strong>b) Loan Purposes:</strong>
+                  <span class="fst-italic mr16 ms-auto" t-esc="doc.reason" />
+                </p>
+                <p class="mt-2">
+                  <strong>c) Documentary Proof:</strong>
+                  <span class="fst-italic mr16 ms-auto" t-esc="doc.supported_attachment_ids.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>
+                    <i>NB: Attach necessary documentary proof to back up the purposes for loan
+                      application.</i>
+                  </strong>
+                </p>
+              </div>
+              <!-- Loan Repayment Schedule Section -->
+              <div class="mt-4">
+                <h5 class="font-weight-bold">4. Loan Repayment Schedule:</h5>
+                <p class="mt-2">
+                  The Company's employee will be required to refund the loan amount taken in the
+                  following model. A loan processing fee will be charged by the Company.
+                </p>
+                <p class="mt-2">
+                  <strong>a) The loan amount will be refunded within a period of:</strong>
+                    <span
+                    class="fst-italic ml-2" t-esc="doc.repayment_months" /> Months </p>
+                <p class="mt-2">
+                  <strong>b) Payable in equal monthly installment of Tsh:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.repayment_schedule" />
+                </p>
+                <p class="mt-2">
+                  <strong>c) With/Without a processing loan fee amount of Tsh:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.service_charge" />
+                </p>
+              </div>
+              <!-- Confirmation by Head of Department Section -->
+              <div class="mt-4">
+                <h5 class="font-weight-bold">5. Confirmation by the Employee's Head of Department:</h5>
+                <p class="mt-2">
+                  The Head of Department to confirm that an employee is eligible for the loan
+                  requested.
+                </p>
+                <p class="mt-2">
+                  <strong>a) Head of Department Name:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.employee_id.parent_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>b) Name of Department:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.employee_id.parent_id.department_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>c) Identification Number:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.employee_id.parent_id.address_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>d) Physical/Postal Address:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.employee_id.parent_id.address_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>e) Mobile Number:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.employee_id.parent_id.mobile_phone" />
+                </p>
+                <p class="mt-2">
+                  <strong>f) Signature: ................................................................</strong>
+                  <!-- <span class="fst-italic ml-2">____________________________________</span> -->
+                  <strong>Date: ................................................................</strong>
+                  <!-- <span class="fst-italic ml-2">_______________________</span> -->
+                </p>
+              </div>
+              <!-- For Office Use Only Section -->
+              <div class="mt-4">
+                <h5 class="font-weight-bold">6. FOR OFFICE USE ONLY (Account and Finance
+                  Department):</h5>
+                <p class="mt-2">
+                  The Company has received and processed the loan application and has
+                  approved/disapproved the said loan application.
+                </p>
+                <p class="mt-2">
+                  <strong>a) Name:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.employee_id.loan_officer_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>b) Signature: ................................................................</strong>
+                  <!-- <span class="fst-italic ml-2">__________________________</span> -->
+                  <strong>Date: ................................................................</strong>
+                  <!-- <span class="fst-italic ml-2">__________________________</span> -->
+                </p>
+                <p class="mt-2">
+                  <strong>c) Qualification:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.employee_id.loan_officer_id.department_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>d) Postal Address:</strong>
+                  <span class="fst-italic ml-2" t-esc="doc.employee_id.loan_officer_id.address_id.name" />
+                </p>
+                <p class="mt-2">
+                  <strong>e) Company's Seal/Stamp: ................................................................</strong>
+                  <!-- <span class="fst-italic ml-2">____________________________________</span> -->
+                </p>
+              </div>
+            </div>
+          </t>
+        </t>
+      </t>
+    </template>
+  </data>
+</odoo>

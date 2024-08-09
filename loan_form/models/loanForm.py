@@ -1,7 +1,7 @@
 from odoo import models, fields, api,_
 from odoo.exceptions import UserError
 from odoo.http import request
-from werkzeug.urls import url_encode
+from werkzeug.urls import url_encode # type: ignore
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -75,6 +75,8 @@ class loanform(models.Model):
 
     loan_officer_id = fields.Many2one('res.users', string="Loan officer", compute="_compute_loan_officer", store=True)
 
+    employee_id = fields.Many2one('hr.employee', string='Employee', compute='_compute_employee', required=True)
+
 
 
     @api.depends('user_id')
@@ -87,9 +89,13 @@ class loanform(models.Model):
     def _compute_user(self):
         for record in self:          
             record.user_id = record.create_uid
-         
-
     
+    @api.depends('user_id')
+    def _compute_employee(self):
+        for record in self:
+            employee = self.env['hr.employee'].search([('user_id', '=', record.user_id.id)], limit=1)
+            record.employee_id = employee.id
+
     @api.model
     def create(self, vals):
         vals['b_state'] = 'on'
