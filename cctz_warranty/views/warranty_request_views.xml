@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+
+    <record id="warranty_request_action" model="ir.actions.act_window">
+        <field name="name">Warrant Request</field>
+        <field name="res_model">warranty.request</field>
+        <field name="view_mode">tree,form,kanban</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new warrant request!
+            </p>
+        </field>
+    </record>
+
+    <record id="warranty_request_view_kanban" model="ir.ui.view">
+        <field name="name">warranty.request.view.kanban</field>
+        <field name="model">warranty.request</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="order_status" archivable="false" sample="1">
+                <field name="order_status" options="{&quot;group_by_tooltip&quot;: {&quot;requirements&quot;: &quot;Description&quot;}}"/>
+                <field name="customer_id"></field>
+                <field name="color"/>
+                <field name="fault_reported"/>
+                <field name="date_received"/>
+                <field name="job_status"/>
+                <field name="technician_assigned"/>
+                <field name="type_of_job"/>
+                <field name="equipment_type"></field>
+                <progressbar field="activity_state" colors="{&quot;planned&quot;: &quot;success&quot;, &quot;today&quot;: &quot;warning&quot;, &quot;overdue&quot;: &quot;danger&quot;}" help="This bar allows to filter the warranty based on scheduled activities."/>
+
+                <templates>
+                    <t t-name="kanban-box">
+
+                        <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''} #{lost_ribbon ? 'oe_kanban_card_ribbon' : ''} oe_kanban_global_click oe_kanban_card d-flex flex-column">
+
+                            <div class="o_dropdown_kanban dropdown">
+                                <a class="dropdown-toggle o-no-caret btn" role="button" data-bs-toggle="dropdown" data-bs-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <t t-if="widget.editable">
+                                        <a role="menuitem" type="edit" class="dropdown-item">Edit</a>
+                                    </t>
+                                    <t t-if="widget.deletable">
+                                        <a role="menuitem" type="delete" class="dropdown-item">Delete</a>
+                                    </t>
+                                    <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_content flex-grow-1">
+                                <div class="o_kanban_record_title oe_kanban_details">
+                                    <strong>
+                                        <field name="customer_id"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_subtitle">
+
+                                  Technician: <field name="technician_assigned"></field>
+                                </div>
+
+
+                            </div>
+                            <div class="oe_kanban_footer">
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="job_status"/>
+                                        <field name="activity_ids" widget="kanban_activity"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="user_id" widget="many2one_avatar_user"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="warranty_request_view_tree" model="ir.ui.view">
+        <field name="name">warranty.request.view.tree</field>
+        <field name="model">warranty.request</field>        
+        <field name="arch" type="xml">
+           
+            <tree string="Warranty Requests">
+                <field name="name"></field>
+                <field name="customer_id"></field>
+                <field name="fault_reported"></field>
+                <field name="technician_assigned"></field>
+                <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'second_approval'" decoration-info="state == 'to_approve'"></field>
+                <field name="date_received"></field>
+                <field name="labor_payment"></field>
+                <field name="order_status" widget="badge" decoration-success="order_status == 'warranty completed'"></field>
+                <field name="warranty_status"></field>
+            </tree>
+        </field>
+    </record>
+
+
+   
+
+        <record id="action_repayment" model="ir.actions.act_window">
+            <field name="name">Loan Repayments</field>
+            <field name="res_model">warranty.request</field>
+            <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="warranty_request_view_tree"/>
+            <field name="context">{'search_default_my_warranty': 1}</field>          
+        </record>
+
+    <record id="warranty_request_view_form" model="ir.ui.view">
+        <field name="name">warranty.request.view.form</field>
+        <field name="model">warranty.request</field>
+        <field name="arch" type="xml">
+            <form string="Warranty">
+                   <header>
+                        <button name="action_submit" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['to_approve','second_approval', 'approved','rejected'])]}"/>                     
+
+                        <button name="action_approve" string="Approve" type="object" class="btn-primary" attrs="{'invisible':  [('state', 'in', ['draft','second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject" string="Reject" type="object" attrs="{'invisible': [('state', 'in', ['draft','second_approval', 'approved', 'rejected'])]}"/>
+
+                        <button name="action_approve1" string="Approve" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['draft','to_approve', 'approved', 'rejected'])]}"/>
+                        <button name="action_reject1" string="Reject" type="object" attrs="{'invisible': [('state', 'in', ['draft','to_approve', 'approved', 'rejected'])]}"/>
+
+                    <!-- Original state status bar -->
+                    <field name="state" widget="statusbar" statusbar_visible="to_approve,second_approval,approved" attrs="{'invisible': [('state', '=', 'approved')]}"/>
+
+                    <!-- New state_status status bar -->
+                    <field name="order_status" widget="statusbar" statusbar_visible="open,pending part credit,pending labor,pending labor and landed,pending landed cost,warranty completed" options="{'clickable': '1', 'fold_field': 'fold'}" attrs="{'invisible': [('state', '!=', 'approved')]}"/>
+                    </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="customer_id"></field>
+                            <field name="fault_reported"/>
+                            <field name="date_received"/>
+                            <field name="job_status"/>
+                            <field name="technician_assigned"/>
+                            <field name="type_of_job"/>
+                            <field name="equipment_type"></field>
+                            <field name="equipment_serial_number"></field>
+                            <field name="warranty_status"></field>                          
+                            <field name="awb_number"></field>
+                            <field name="landed_cost"></field>             
+                                                   
+                            <field name="claim"></field>
+                            <field name="event_number"></field>
+                          
+                        </group>
+                        <group >
+                           
+                            <field name="order_quantity"></field>                            
+                            <field name="hpe_sales_reference_number"></field>
+                            <field name="hpe_invoice_number"></field>
+                            <field name="hpe_invoice_date"></field>
+                            <field name="hpe_invoice_price"></field>                           
+                            <field name="product_number"></field>
+                            <field name="clearing_agent"></field>
+                            <field name="clearing_agent_invoice_number"></field>
+                            <field name="clearing_agent_fees"></field>
+                            <field name="proposed_labour"></field>                          
+                            <field name="tag_no_rma"></field>
+                            <field name="exceptional_landed_cost"></field>
+                            <field name="location"></field>
+                            <field name="warranty_end_date"></field>
+                          
+                        </group>
+                        <notebook>
+                            <page string="Part Info">
+                                <group >
+                                    <field name="part_number"></field>
+                                    <field name="part_description" />                                 
+                                    <field name="part_arrive_date"/>
+                                    <field name="part_return_date"/>
+                                    <field name="part_return_awb"/>
+                                    <field name="part_credit_received_date"/>
+                                    <field name="part_credit_amount"></field>
+                                 
+
+                                </group>
+                            </page>
+
+                        </notebook>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Search View -->
+    <!-- Search View -->
+<record model="ir.ui.view" id="warranty_request_search">
+    <field name="name">warranty.request.search</field>
+    <field name="model">warranty.request</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name"/>
+            <field name="customer_id"/>
+            <field name="technician_assigned"/>
+            <filter string="My Warranty" name="my_warranty" domain="[('user_id', '=', uid)]"/>
+        </search>
+    </field>
+</record>
+
+
+</odoo>
+

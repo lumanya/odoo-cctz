@@ -6,7 +6,7 @@
       <field name="model_id" ref="hr.model_hr_employee" />
       <field name="subject">Birthday Reminder for employee</field>
       <field name="body_html" type="html">
-        <p>Hello <t t-esc="object.env['hr.employee'].search([('job_title', '=', 'Human Resource Manager')], limit=1).name"/>,</p>
+        <p>Hello <t t-esc="object.env['hr.employee'].search([('job_title', '=', 'HR Manager')], limit=1).name"/>,</p>
         <p>This is a reminder that <t t-esc="object.name" />'s birthday is on <t t-esc="object.birthday" t-options="{'widget': 'date', 'format': 'MM/dd'}" />.</p>
         <p>Best regards,</p>
         <p>Your Company</p>

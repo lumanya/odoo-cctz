@@ -21,7 +21,7 @@ class HrEmployeeBirthday(models.Model):
             birthday_this_year = birthday.replace(year=today.year)
             if start_date <= birthday_this_year <= end_date:
                 _logger.info(f"Employee {employee.name} has a birthday on {birthday}")
-                hr_department = self.env['hr.employee'].search([('job_title', '=', 'Human Resource Manager')], limit=1)
+                hr_department = self.env['hr.employee'].search([('job_title', '=', 'HR Manager')], limit=1)
                 if hr_department:
                     _logger.info(f"Sending email to HR manager: {hr_department.work_email}")
                     template = self.env.ref('birthday_reminder.birthday_reminder_email_template')
