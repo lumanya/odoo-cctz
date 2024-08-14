@@ -127,11 +127,11 @@ class loanform(models.Model):
         store=True,
     )
 
-    private_street = fields.Char(
-        string='Private Address',
-        related='employee_id.private_street',
-        store=True,
-    )
+    # private_street = fields.Char(
+    #     string='Private Address',
+    #     related='employee_id.private_street',
+    #     store=True,
+    # )
 
     loan_officer_name = fields.Char(
         string=' Loan Officer',

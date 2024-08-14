@@ -17,19 +17,19 @@
               <!-- Employer's and Lender's Details Section -->
               <div class="mt-4">
                 <h5 class="fw-bold">1. Employer's and Lender's Details:</h5>
-                <p class="mt-2 mr-2"> a) Name of the Company: <span
+                <p class="mt-2 "> a) Name of the Company: <span
                     class=" fst-italic" t-esc="doc.employee_id.company_id.name" />
                 </p>
                 <p class="mt-2">
-                  <strong>b) Incorporation Number:</strong>
+                  b) Incorporation Number:
                   <span class=" fst-italic" >27706</span>
                 </p>
                 <p class="mt-2">
-                  <strong>c) Postal Address:</strong>
-                  <span class="fst-italic " t-esc="doc.employee_id.address_id.name" />
+                  c) Postal Address:
+                  <span class="fst-italic " t-esc="doc.employee_id.address_id" />
                 </p>
                 <p class="mt-2">
-                  <strong>d) Country and City:</strong>
+                  d) Country and City:
                   <span class="fst-italic "
                     t-esc="doc.employee_id.work_location_id.name" />
                 </p>
@@ -41,31 +41,31 @@
                   2. Borrower's Details:
                 </h5>
                 <p class="mt-2">
-                  <strong>
-                    <b>a) Employee's Full Names:</b>
-                  </strong>
+                  
+                    a) Employee's Full Names:
+                  
                   <span class="fst-italic " t-esc="doc.employee_id.name" />
                 </p>
                 <p class="mt-2">
-                  <strong>b) Employee's Company Identification Number:</strong>
+                  b) Employee's NIDA Number:
                   <span class="fst-italic " t-esc="doc.sudo().employee_nida_number" />
                 </p>
                 <p class="mt-2">
-                  <strong>c) Employee's Position:</strong>
+                  c) Employee's Position:
                   <span class="fst-italic " t-esc="doc.employee_id.job_title" />
                 </p>
                 <p class="mt-2">
-                  <strong>d) Postal/Physical Address:</strong>
-                  <span class="fst-italic " t-esc="doc.sudo().private_street" />
+                  d) Postal/Physical Address:
+                  <span class="fst-italic " t-esc="doc.sudo().employee_id.address_home_id" />
                 </p>
                 <p class="mt-2">
-                  <strong>e) Mobile Number:</strong>
+                  e) Mobile Number:
                   <span class="fst-italic " t-esc="doc.employee_id.mobile_phone" />
                 </p>
                 <p class="mt-2">
-                  <strong>f) Signature: ................................................................</strong>
+                  f) Signature: ................................................................
                   <!-- <span class="fst-italic ">____________________________________</span> -->
-                  <strong>Date: ................................................................</strong>
+                  Date: ................................................................
                   <!-- <span class="fst-italic ">_______________________</span> -->
                 </p>
               </div>
@@ -74,41 +74,43 @@
               <div class="mt-4">
                 <h5 class="fw-bold">3. The Purposes of the Loan:</h5>
                 <p class="mt-2">
-                  <strong>a) Loan Amount requested (TZs):</strong>
+                  a) Loan Amount requested (TZs):
                   <span class="fst-italic " t-esc="doc.loan_amount" />
                 </p>
                 <p class="mt-2">
-                  <strong>b) Loan Purposes:</strong>
+                  b) Loan Purposes:
                   <span class="fst-italic " t-esc="doc.reason" />
                 </p>
                 <p class="mt-2">
-                  <strong>c) Documentary Proof:</strong>
+                  c) Documentary Proof:
                   <span class="fst-italic " t-esc="doc.supported_attachment_ids.name" />
                 </p>
                 <p class="mt-2">
-                  <strong>
-                    <i>NB: Attach necessary documentary proof to back up the purposes for loan
-                      application.</i>
-                  </strong>
+                  
+                    <strong><i>NB: Attach necessary documentary proof to back up the purposes for loan
+                      application.</i></strong>
+                  
                 </p>
               </div>
               <!-- Loan Repayment Schedule Section -->
               <div class="mt-4">
                 <h5 class="fw-bold">4. Loan Repayment Schedule:</h5>
                 <p class="mt-2">
+                  <strong>
                   The Company's employee will be required to refund the loan amount taken in the
                   following model. A loan processing fee will be charged by the Company.
+                  </strong>
                 </p>
                 <p class="mt-2">
-                  <strong>a) The loan amount will be refunded within a period of:</strong>
+                  a) The loan amount will be refunded within a period of:
                     <span
                     class="fst-italic " t-esc="doc.repayment_months" /> Months </p>
                 <p class="mt-2">
-                  <strong>b) Payable in equal monthly installment of Tsh:</strong>
+                  b) Payable in equal monthly installment of Tsh:
                   <span class="fst-italic " t-esc="doc.repayment_schedule" />
                 </p>
                 <p class="mt-2">
-                  <strong>c) With/Without a processing loan fee amount of Tsh:</strong>
+                  c) With/Without a processing loan fee amount of Tsh:
                   <span class="fst-italic " t-esc="doc.service_charge" />
                 </p>
               </div>
@@ -120,29 +122,29 @@
                   requested.
                 </p>
                 <p class="mt-2">
-                  <strong>a) Head of Department Name:</strong>
+                  a) Head of Department Name:
                   <span class="fst-italic " t-esc="doc.employee_id.parent_id.name" />
                 </p>
                 <p class="mt-2">
-                  <strong>b) Name of Department:</strong>
+                  b) Name of Department:
                   <span class="fst-italic " t-esc="doc.employee_id.parent_id.department_id.name" />
                 </p>
                 <p class="mt-2">
-                  <strong>c) Identification Number:</strong>
+                  c) NIDA Number:
                   <span class="fst-italic " t-esc="doc.sudo().parent_identification_number" />
                 </p>
                 <p class="mt-2">
-                  <strong>d) Physical/Postal Address:</strong>
-                  <span class="fst-italic " t-esc="doc.employee_id.parent_id.address_id.name" />
+                  d) Physical/Postal Address:
+                  <span class="fst-italic " t-esc="doc.sudo().employee_id.parent_id.address_id.name" />
                 </p>
                 <p class="mt-2">
-                  <strong>e) Mobile Number:</strong>
+                  e) Mobile Number:
                   <span class="fst-italic " t-esc="doc.employee_id.parent_id.mobile_phone" />
                 </p>
                 <p class="mt-2">
-                  <strong>f) Signature: ................................................................</strong>
+                  f) Signature: ................................................................
                   <!-- <span class="fst-italic ">____________________________________</span> -->
-                  <strong>Date: ................................................................</strong>
+                  Date: ................................................................
                   <!-- <span class="fst-italic ">_______________________</span> -->
                 </p>
               </div>
@@ -151,29 +153,31 @@
                 <h5 class="fw-bold">6. FOR OFFICE USE ONLY (Account and Finance
                   Department):</h5>
                 <p class="mt-2">
-                  The Company has received and processed the loan application and has
-                  approved/disapproved the said loan application.
+                  <strong>
+                    The Company has received and processed the loan application and has
+                    approved/disapproved the said loan application.
+                  </strong>
                 </p>
                 <p class="mt-2">
-                  <strong>a) Name:</strong>
-                  <span class="fst-italic" t-esc="doc.sudo().loan_officer_name" />
+                  a) Name:
+                  <span class="fst-italic" t-esc="doc.loan_officer_name" />
                 </p>
                 <p class="mt-2">
-                  <strong>b) Signature: ................................................................</strong>
+                  b) Signature: ................................................................
                   <!-- <span class="fst-italic ">__________________________</span> -->
-                  <strong>Date: ................................................................</strong>
+                  Date: ................................................................
                   <!-- <span class="fst-italic ">__________________________</span> -->
                 </p>
                 <p class="mt-2">
-                  <strong>c) Qualification:</strong>
-                  <span class="fst-italic" t-esc="doc.sudo().loan_officer_department" />
+                  c) Qualification:
+                  <span class="fst-italic" t-esc="doc.loan_officer_department" />
                 </p>
                 <p class="mt-2">
-                  <strong>d) Postal Address:</strong>
-                  <span class="fst-italic" t-esc="doc.sudo().loan_officer_" />
+                  d) Postal Address:
+                  <span class="fst-italic" t-esc="doc.loan_officer_id" />
                 </p>
                 <p class="mt-2">
-                  <strong>e) Company's Seal/Stamp: ................................................................</strong>
+                  e) Company's Seal/Stamp: ................................................................
                   <!-- <span class="fst-italic ">____________________________________</span> -->
                 </p>
               </div>
