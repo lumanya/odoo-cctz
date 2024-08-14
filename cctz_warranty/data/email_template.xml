@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="email_warranty_approval_status" model="mail.template">
+            <field name="model_id" ref="model_warranty_request"/>
+            <field name="name">Warranty Approval Status</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Warranty Approval Status Update</field>
+            <field name="email_to">{{ object.create_uid.email }}</field> 
+            <field name="body_html" type="html">
+                <p>Dear <t t-out="object.create_uid.name"/>,</p>
+                <p>The status of your warranty request <strong><t t-out="object.name"/></strong> has been updated to <strong><t t-out="object.state"/></strong>.</p>
+                <p>You can view the details of the Warranty request .</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+        <record id="email_template_managed_service_approver" model="mail.template">
+            <field name="model_id" ref="model_warranty_request"/>
+            <field name="name">Warranty Request Approver Email Template</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Warranty Approval Request</field>
+            <field name="body_html" type="html">
+                <p>
+                    <t t-foreach="object._get_managed_service_emails()" t-as="user">
+                        <t>Dear <t t-out="user.name"/>,</t>
+                        <br/>
+                    </t>
+                </p>
+                <p>Please validate a Warranty request <strong><t t-out="object.name"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
+                <p>You can view the details of the request </p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+    <record id="email_template_head_of_enterprise_approver" model="mail.template">
+            <field name="model_id" ref="model_warranty_request"/>
+            <field name="name">Warranty Request Approver Email Template</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Warranty Approval Request</field>
+            <field name="body_html" type="html">
+                <p>
+                    <t t-foreach="object._get_head_of_enterprise_emails()" t-as="user">
+                        <t>Dear <t t-out="user.name"/>,</t>
+                        <br/>
+                    </t>
+                </p>
+                <p>Please validate a Warranty request <strong><t t-out="object.name"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
+                <p>You can view the details of the request </p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+
+
+    
+
+    </data>
+</odoo>

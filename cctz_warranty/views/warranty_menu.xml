@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="warranty_plus_menu_root" name="Warrant Plus" sequence="10">
+
+        <menuitem id="warranty_plus_menu" name="Warranty" sequence="10">
+            <menuitem id="warranty_plus_action" action="warranty_request_action" name="Warranty Request" sequence="10"/>
+
+
+            <menuitem id="hpe_support_menu" name="HPE Support" action="hpe_support_action" sequence="11"/>
+
+        </menuitem>
+
+    </menuitem>
+
+</odoo>

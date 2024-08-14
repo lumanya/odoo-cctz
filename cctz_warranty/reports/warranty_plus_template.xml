@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+   <template id="report_warranty_plus_template">
+    <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="warranty">
+            <t t-call="web.external_layout">
+                <div class="page">                    
+
+                    <h2 class="mt-4">
+                        <span>Warranty Update</span>
+                    </h2>                  
+
+                    <table class="table">
+                            <thead>
+                                <tr style="background-color: lightgreen">
+                                    <th name="th_description" class="text-start">DESCRIPTION</th>
+                                    <th name="th_details" class="text-start">DETAILS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Company</td>
+                                    <td><span t-field="warranty.customer_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td>Location (work to be done)</td>
+                                    <td><span t-field="warranty.location"/></td>
+                                </tr>
+                                 <tr>
+                                    <td>Serial Number, Product Number</td>
+                                    <td><span t-field="warranty.equipment_serial_number"/>, <span t-field='warranty.product_number'></span></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Equipment Type</td>
+                                    <td><span t-field="warranty.equipment_type"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Part Number</td>
+                                    <td><span t-field="warranty.part_number"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Part Description</td>
+                                    <td><span t-field="warranty.part_description"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>IR Reference</td>
+                                    <td><span t-field="warranty.name"/></td>
+                                </tr>
+                               
+                                <tr>
+                                    <td>Tracking Number</td>
+                                    <td><span t-field="warranty.awb_number"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Quantity</td>
+                                    <td><span t-field="warranty.order_quantity"/></td>
+                                </tr>
+
+                                <tr>
+                                    <td>Warranty End Date</td>                                               
+                                    <td><span t-field="warranty.warranty_end_date"/></td>                
+                                       
+                                </tr>
+                               
+
+                               
+                            </tbody>
+                        </table>
+                </div>
+            </t>
+        </t>
+    </t>
+</template>
+
+</odoo>
