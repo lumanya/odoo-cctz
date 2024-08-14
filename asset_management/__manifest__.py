@@ -5,7 +5,7 @@
     'author': "Computer Center",
     'category': 'Uncategorized',
     'version': '0.1',
-    'depends': ['base', 'mail'],
+    'depends': ['base', 'mail', 'sale'],
     'data': [
         'security/ir.model.access.csv',
         'data/asset_sequence.xml',

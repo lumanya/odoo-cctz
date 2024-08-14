@@ -17,10 +17,7 @@
               <group>
                 <field name= "asset_name"/>
                 <field name="date" />
-                <field name="supplier_id" />
-                <field name="order_number" />
-              </group>
-              <group>
+                <field name="supplier_id"/>
                 <field name="device_part_number" />
                 <field name="quantity" />
                 <field name="description" />
@@ -44,7 +41,6 @@
           <field name="asset_name" />
           <field name="date" />
           <field name="supplier_id" />
-          <field name="order_number" />
           <field name="device_part_number" />
           <field name="quantity" />
           <field name="description" />
