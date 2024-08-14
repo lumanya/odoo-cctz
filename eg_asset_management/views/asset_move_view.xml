@@ -1,0 +1,45 @@
+<odoo>
+    <record id="asset_move_tree_view" model="ir.ui.view">
+        <field name="name">asset.move.tree.view</field>
+        <field name="model">asset.move</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="asset_id"/>
+                <field name="location_id"/>
+                <field name="location_dest_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+    <record id="asset_move_form_view" model="ir.ui.view">
+        <field name="name">asset.move.form.view</field>
+        <field name="model">asset.move</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="move_asset" string="Move" class="btn-primary" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                    <button name="cancel_move" string="Cancel" type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" placeholder="Name" readonly="1"/>
+                            <field name="asset_id" domain="([('state', '=', 'active')])" options="{'no_create_edit': True, 'no_create': True}"/>
+                            <field name="location_id" domain="([('is_scrap', '=', False)])" options="{'no_create_edit': True, 'no_create': True}"/>
+                            <field name="location_dest_id" domain="([('is_scrap', '=', False)])" options="{'no_create_edit': True, 'no_create': True}"/>
+                        </group>
+                        <group/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_asset_move" model="ir.actions.act_window">
+        <field name="name">Asset Move</field>
+        <field name="res_model">asset.move</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_asset_move" action="action_asset_move" parent="main_menu_asset"/>
+</odoo>

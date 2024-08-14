@@ -1,0 +1,53 @@
+<odoo>
+    <record id="asset_location_tree_view" model="ir.ui.view">
+        <field name="name">Asset Location</field>
+        <field name="model">asset.location</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="is_default"/>
+                <field name="is_scrap"/>
+            </tree>
+        </field>
+    </record>
+    <record id="asset_location_form_view" model="ir.ui.view">
+        <field name="name">asset.location.form.view</field>
+        <field name="model">asset.location</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label class="oe_edit_only" for="name" string="Location"/>
+                        <h1>
+                            <field name="name" placeholder="Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="is_default"/>
+                            <field name="is_scrap"/>
+                        </group>
+                        <group/>
+                    </group>
+                    <notebook>
+                        <page string="Assets">
+                            <field name="asset_line" >
+                                <tree string="Assets" editable="bottom" delete="0">
+                                    <field name="location_id" invisible="1"/>
+                                    <field name="name"/>
+                                    <field name="asset_code"/>
+                               </tree>
+                           </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_asset_location" model="ir.actions.act_window">
+        <field name="name">Asset Location</field>
+        <field name="res_model">asset.location</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="menu_asset_location" action="action_asset_location" parent="menu_asset_configuration"/>
+</odoo>

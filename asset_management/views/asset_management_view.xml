@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="asset_registration_form">
+      <field name="name">asset_registration.form</field>
+      <field name="model">asset.registration</field>
+      <field name="arch" type="xml">
+        <form string="Asset Registration">
+          <sheet>
+            <div class="oe_title">
+              Asset Number
+              <h1>
+                <field name="asset_number" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name= "asset_name"/>
+                <field name="date" />
+                <field name="supplier_id" />
+                <field name="order_number" />
+              </group>
+              <group>
+                <field name="device_part_number" />
+                <field name="quantity" />
+                <field name="description" />
+              </group>
+            </group>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="message_ids" options="{'post_refresh': 'always'}" />
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="asset_registration_tree_view">
+      <field name="name">asset.registration.tree</field>
+      <field name="model">asset.registration</field>
+      <field name="arch" type="xml">
+        <tree string="Asset Registrations">
+          <field name="asset_number"/>
+          <field name="asset_name" />
+          <field name="date" />
+          <field name="supplier_id" />
+          <field name="order_number" />
+          <field name="device_part_number" />
+          <field name="quantity" />
+          <field name="description" />
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="asset_registration_action">
+      <field name="name">Asset Registration</field>
+      <field name="res_model">asset.registration</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="asset_registration_tree_view" />
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Click to create a new asset registration.
+        </p>
+      </field>
+    </record>
+
+    <menuitem name="Asset Management" id="asset_management_menu_root" sequence="10" />
+
+    <menuitem name="Asset Registration" id="asset_registration_menu_root" sequence="11"
+      parent="asset_management_menu_root" action="asset_registration_action" />
+
+  </data>
+</odoo>
