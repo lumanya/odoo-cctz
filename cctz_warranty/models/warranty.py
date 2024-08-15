@@ -1,4 +1,5 @@
 from odoo import fields, api, models, _
+from datetime import datetime, timedelta
 from odoo.exceptions import ValidationError, UserError
 from odoo.http import request
 from werkzeug.urls import url_encode
@@ -13,6 +14,8 @@ class Warranty(models.Model):
     _description = 'Warrant Request'
     _order = 'name desc, id desc'
 
+    approval_time = fields.Datetime(string="Approval Time", readonly=True)
+    second_approval_time = fields.Datetime(string="Second Approval Time", readonly=True)
 
     name = fields.Char(
         string="IR Number",
@@ -137,13 +140,59 @@ class Warranty(models.Model):
 
     def action_submit(self):
         self.state = 'to_approve'
+        self.approval_time = datetime.now()
         self.send_email_to_managed_service()       
 
 
     def action_approve(self):
-        self.state = 'second_approval'      
+        self.state = 'second_approval'
+        self.second_approval_time = datetime.now()      
         self.send_email_to_head_of_enterprise()
-        
+
+
+    def check_approval_reminders(self):
+        reminder_time = datetime.now() - timedelta(minutes=2)
+
+        to_approve_records = self.search([('state', '=', 'to_approve'), ('approval_time', '<', reminder_time)])
+        for record in to_approve_records:
+            record.send_reminder_to_managed_service()
+
+        second_approval_records = self.search([('state', '=', 'second_approval'), ('second_approval_time', '<', reminder_time)])
+        for record in second_approval_records:
+            record.send_reminder_to_head_of_enterprise()
+
+
+    def send_reminder_to_managed_service(self):
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Managed Service - Account Manager')], limit=1) 
+        template = self.env.ref('cctz_warranty.email_template_managed_service_reminder')
+        if template and manager:
+            if manager.work_email:
+                template.send_mail(self.id, force_send=True, email_values={'email_to': manager.work_email})
+                _logger.info("Email sent to %s (%s)" % (manager.name, manager.work_email))
+            else:
+                _logger.warning("User %s does not have an email address." % manager.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_managed_service_reminder' not found.")
+            if not manager:
+                _logger.warning("No users found in the 'manager'")  
+
+
+    def send_reminder_to_head_of_enterprise(self):
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Head of Enterprise')], limit=1)   
+        template = self.env.ref('cctz_warranty.email_template_head_of_enterprise_reminder')
+        if template and manager:
+            if manager.work_email:
+                template.send_mail(self.id, force_send=True, email_values={'email_to': manager.work_email})
+                _logger.info("Email sent to %s (%s)" % (manager.name, manager.work_email))
+            else:
+                _logger.warning("User %s does not have an email address." % manager.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_head_of_enterprise_reminder' not found.")
+            if not manager:
+                _logger.warning("No users found in the 'manager'")  
+   
 
     def action_reject(self):
         self.state = 'rejected'
