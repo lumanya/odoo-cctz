@@ -10,6 +10,7 @@
         'security/ir.model.access.csv',
         'data/asset_sequence.xml',
         'views/asset_management_view.xml',
+        'views/asset_move_view.xml',
         'views/templates.xml',
     ],
     "application": True,

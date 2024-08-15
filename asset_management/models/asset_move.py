@@ -5,10 +5,9 @@ class asset_move(models.Model):
     _inherit = 'mail.thread'
     _description = 'Asset Move'
 
-
     asset_id = fields.Many2one(
         'asset.registration', 
-        name='Asset', 
+        string='Asset', 
         required=True
     )
 
@@ -17,7 +16,7 @@ class asset_move(models.Model):
     assigned_to = fields.Selection([('customer','Customer'), ('technician', 'Technician')], string='Assign To', required=True)
 
     order_id = fields.Many2one(
-        'res.partner',
+        'sale.order',
         string='Order Number',
         domain= "[('partner_id', '=', customer_id)]",
         required=False

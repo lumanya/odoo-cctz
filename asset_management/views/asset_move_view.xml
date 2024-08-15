@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="asset_move_form">
+      <field name="name">asset_move.form</field>
+      <field name="model">asset.move</field>
+      <field name="arch" type="xml">
+        <form string="Asset Move">
+          <sheet>
+            <div class="oe_title">
+              Asset Number
+              <h1>
+                <field name="asset_id" />
+              </h1>
+            </div>
+            <group>
+              <group>
+                <field name= "move_date"/>
+                <field name="assigned_to" />
+                <field name="order_id"/>
+                <field name="customer_id" />
+                <field name="technician_id" />
+                <field name="state" />
+              </group>
+            </group>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="message_ids" options="{'post_refresh': 'always'}" />
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="asset_move_tree_view">
+      <field name="name">asset.move.tree</field>
+      <field name="model">asset.move</field>
+      <field name="arch" type="xml">
+        <tree string="Asset move">
+          <field name="asset_id"/>
+          <field name="move_date" />
+          <field name="assigned_to" />
+          <field name="order_id" />
+          <field name="customer_id" />
+          <field name="technician_id" />
+          <field name="state" />
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="asset_move_action">
+      <field name="name">Asset Move</field>
+      <field name="res_model">asset.move</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="asset_move_tree_view" />
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Click to create a new asset registration.
+        </p>
+      </field>
+    </record>
+
+    <menuitem name="Asset Move" id="asset_move_menu_root" sequence="11"
+      parent="asset_management_menu_root" action="asset_move_action" />
+
+  </data>
+</odoo>

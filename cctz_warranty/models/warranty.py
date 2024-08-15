@@ -151,7 +151,7 @@ class Warranty(models.Model):
 
 
     def check_approval_reminders(self):
-        reminder_time = datetime.now() - timedelta(hours=2)
+        reminder_time = datetime.now() - timedelta(minutes=2)
 
         to_approve_records = self.search([('state', '=', 'to_approve'), ('approval_time', '<', reminder_time)])
         for record in to_approve_records:
@@ -163,14 +163,35 @@ class Warranty(models.Model):
 
 
     def send_reminder_to_managed_service(self):
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Managed Service - Account Manager')], limit=1) 
         template = self.env.ref('cctz_warranty.email_template_managed_service_reminder')
-        if template:
-            template.send_mail(self.id, force_send=True)
+        if template and manager:
+            if manager.work_email:
+                template.send_mail(self.id, force_send=True, email_values={'email_to': manager.work_email})
+                _logger.info("Email sent to %s (%s)" % (manager.name, manager.work_email))
+            else:
+                _logger.warning("User %s does not have an email address." % manager.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_managed_service_reminder' not found.")
+            if not manager:
+                _logger.warning("No users found in the 'manager'")  
+
 
     def send_reminder_to_head_of_enterprise(self):
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Head of Enterprise')], limit=1)   
         template = self.env.ref('cctz_warranty.email_template_head_of_enterprise_reminder')
-        if template:
-            template.send_mail(self.id, force_send=True)
+        if template and manager:
+            if manager.work_email:
+                template.send_mail(self.id, force_send=True, email_values={'email_to': manager.work_email})
+                _logger.info("Email sent to %s (%s)" % (manager.name, manager.work_email))
+            else:
+                _logger.warning("User %s does not have an email address." % manager.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_head_of_enterprise_reminder' not found.")
+            if not manager:
+                _logger.warning("No users found in the 'manager'")  
    
 
     def action_reject(self):
