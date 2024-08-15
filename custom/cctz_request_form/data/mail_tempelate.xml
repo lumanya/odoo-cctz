@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="email_template_approval_status" model="mail.template">
+            <field name="model_id" ref="model_request_form"/>
+            <field name="name">Approval Status Email Template</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Approval Status Update</field>
+            <field name="email_to">{{ object.create_uid.email }}</field> 
+            <field name="body_html" type="html">
+                <p>Dear <t t-out="object.create_uid.name"/>,</p>
+                <p>The status of your request <strong><t t-out="object.request_number"/></strong> has been updated to <strong><t t-out="object.state"/></strong>.</p>
+                <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+        <record id="assigned_change_template" model="mail.template">
+            <field name="model_id" ref="model_request_form"/>
+            <field name="name">Assigned change  Email Template</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Assigned To Perform change Request</field>
+            <field name="email_to">{{ object.team_assigned_id.email }}</field> 
+            <field name="body_html" type="html">
+                <p>Dear <t t-out="object.team_assigned_id.name"/>,</p>
+                <p>You have been assigned to perform a  change request <strong><t t-out="object.request_number"/></strong> by <strong><t t-out="object.create_uid.name"/></strong>.</p>
+                <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+        <record id="email_template_second_approver" model="mail.template">
+            <field name="model_id" ref="model_request_form"/>
+            <field name="name">Second Approver Email Template</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Second Approver Change Request</field>
+            <field name="body_html" type="html">
+                <p>
+                    <t t-foreach="object._get_second_approvers_emails()" t-as="user">
+                        <t>Dear <t t-out="user.name"/>,</t>
+                        <br/>
+                    </t>
+                </p>
+                <p>Please validate a change request <strong><t t-out="object.request_number"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
+                <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+        <record id="email_template_first_approver" model="mail.template">
+            <field name="model_id" ref="model_request_form"/>
+            <field name="name">First Approver Email Template</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">First Approver Change Request</field>
+            <field name="body_html" type="html">
+                <p>
+                    <t t-foreach="object._get_first_approvers_emails()" t-as="user">
+                        <t>Dear <t t-out="user.name"/>,</t>
+                        <br/>
+                    </t>
+                </p>
+                <p>Please validate a change request <strong><t t-out="object.request_number"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
+                <p>You can view the details of the request <a t-att-href="object._get_record_url()">here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+    </data>
+</odoo>

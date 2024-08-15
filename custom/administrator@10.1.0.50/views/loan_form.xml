@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_loan_form_list" model="ir.ui.view">
+            <field name="name">Loan View</field>
+            <field name="model">loan.form</field>
+            <field name="arch" type="xml">
+                <tree string="My loans">
+                    <field name="loan_form_number"/>
+                    <field name="loan_amount" />
+                    <field name="monthly_interest"/>
+                    <field name="total_loan"/>
+                    <field name="user_id" widget="many2one_avatar_user" optional="show"></field>
+                    <field name="payment_status" widget="badge" decoration-success="payment_status == 'completed'"></field>
+                    <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-danger="state == 'rejected'"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_loan_form" model="ir.ui.view">
+            <field name="name">loan.form.view.form</field>
+            <field name="model">loan.form</field>
+            <field name="arch" type="xml">
+                <form string="Loan Request">
+                    <field name="active" invisible="1"/>
+                    <field name="b_state" invisible="1"/>
+                    <header>
+                        <button name="action_submit" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': ['|', ('b_state', '=', 'off'), ('state', 'in', ['to_approve','approved','second_approval','third_approval','approved','rejected'])]}"/>
+                        <button name="action_completed" string="Completed" type="object" class="btn-primary" attrs="{'invisible': ['|', ('state', 'in', ['draft', 'to_approve','second_approval','third_approval','rejected']), ('payment_status', '=', 'completed')]}"/>
+
+                        <button name="action_approve" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_manager" attrs="{'invisible':  [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject" string="Reject" type="object" groups="loan_form.group_loan_manager" attrs="{'invisible': [('state', 'in', ['draft','second_approval','third_approval','approved', 'rejected'])]}"/>
+
+                        <button name="action_approve1" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_officer" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject1" string="Reject" type="object" groups="loan_form.group_loan_officer" attrs="{'invisible': [('state', 'in', ['draft','to_approve','third_approval','approved', 'rejected'])]}"/>
+
+                        <button name="action_approve2" string="Approve" type="object" class="btn-primary" groups="loan_form.group_loan_admin" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_reject2" string="Reject" type="object" groups="loan_form.group_loan_admin" attrs="{'invisible': [('state', 'in', ['draft','to_approve','second_approval','approved', 'rejected'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="to_approve,second_approval,third_approval,approved" attrs="{'invisible': [('active', '=', False)] }"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                                Request Loan Number
+                            <h1>
+                                <field name="loan_form_number" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="loan_amount" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
+                                <field name="repayment_months" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
+                                <field name="user_id"></field>
+                                <field name="payment_status" invisible="1"></field>
+                                <field name="completed_date" attrs="{'invisible': [('state', 'in', ['draft', 'to_approve','second_approval','third_approval','rejected'])], 'readonly': [('payment_status', '=', 'completed')]}"></field>
+                            
+                            </group>
+                            <group>
+                                <field name="reason" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
+                                <field name="salary_amount" attrs="{'invisible': [('state', 'in', ['draft'])]}"></field>
+                                <label for="supported_attachment_ids" string="Supporting Document" />
+                                <field name="supported_attachment_ids" widget="many2many_binary" nolabel="1" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval', 'third_approval', 'approved', 'rejected'])]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Total Loan Information">
+                                <group>
+                                    <field name="monthly_interest"/>
+                                    <field name="total_loan"/>
+                                    <field name="service_charge"/>
+                                </group>
+                            </page>
+                            <page string="Monthly Returns">
+                                <group>
+                                    <field name="repayment_schedule"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'always'}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- Search View -->
+        <record model="ir.ui.view" id="loan_request_search">
+            <field name="name">loan.form.search</field>
+            <field name="model">loan.form</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="loan_form_number"></field>
+                    <field name="user_id"></field>
+                    <filter string="My Loan" name="my_loan" domain="[('user_id', '=', uid)]"/>
+                </search>
+            </field>
+        </record>
+
+         <record id="action_loan_list" model="ir.actions.act_window">
+            <field name="name">Loan Requests</field>
+            <field name="res_model">loan.form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_loan_form_list"/>
+            <field name="context">{'search_default_my_loan': 1}</field>
+        </record>
+
+        <record id="config_admin_action" model="ir.actions.act_window">
+            <field name="name">loan.approval</field>
+            <field name="res_model">loan.approval</field>
+            <field name="view_mode">tree,form</field>        
+        </record>
+
+
+        <record id="loan_approval_view_form" model="ir.ui.view">
+            <field name="name">loan.approval.view.tree</field>
+            <field name="model">loan.approval</field>
+            <field name="arch" type="xml">
+                <tree string='Loan Approvals' editable="bottom">
+                    <field name="head_of_accountant"></field>
+                    <field name="general_manager"></field>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="action_loan_view" model="ir.actions.act_window">
+            <field name="name">Loan View</field>
+            <field name="res_model">loan.form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_loan_form"/>
+            <field name="target">current</field>
+        </record>
+
+       <record id="loan_form_inherit_hr_employee" model="ir.ui.view">
+            <field name="name">loan.form.inherit.hr.employee</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='managers']" position="after">
+                    <group name="Loan" string="Loan">
+                        <field name="loan_officer_id"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <menuitem id="menu_root" name="Loan Request" sequence="11" action="action_loan_list"/>   
+        <menuitem id="menu_loans" name="Loans" parent="menu_root" sequence="1" action="action_loan_list"/>   
+        <menuitem id="menu_loan_requests" name="My Loans" parent="menu_loans" sequence="1" action="action_loan_list"/>   
+       
+        <menuitem id="loan_form_config" name="Configuration" action="config_admin_action" groups="loan_form.group_loan_admin" parent="menu_root" sequence="10"/>
+      
+    </data>
+</odoo>

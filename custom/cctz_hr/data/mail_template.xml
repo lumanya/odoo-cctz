@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <!--     Contract alert   email template-->
+        <record id="mail_template_contract_expiery_alert" model="mail.template">
+            <field name="name">Contract Expiry Alert Notification</field>
+            <field name="model_id" ref="model_hr_contract"/>
+            <field name="subject">Contract Expiry Notification: {{ object.name }}</field>
+            <field name="email_to">{{ object.hr_responsible_id.email_formatted }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                   <p style="margin: 0px;">
+                        <span>Dear <t t-out="object.hr_responsible_id.name"/>,</span>
+                        <br/>
+                        <br/>
+                        <span>The Employee Contract
+                            <i><t t-out="object.employee_id.name"/></i>
+                            <i>of <t t-out="object.name"/></i>
+                            is about to expire soon on
+                            <i><t t-out="object.date_end"/></i>                          
+                        </span>
+                        <br/>
+                        <br/>
+                        Thank you.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+
+        <record id="leave_notification_servicedesk" model="mail.template">
+            <field name="model_id" ref="model_hr_leave"/>
+            <field name="name">Leave Email Notification</field>
+            <field name="email_from">{{ object.create_uid.email }}</field> 
+            <field name="email_cc">{{ object.backup_id.email }}</field>
+            <field name="subject">Leave Email Notification</field>
+            <field name="body_html" type="html">
+                <p>Dear Service Desk Team,</p>
+                <p><strong><span t-field="object.holiday_status_id"/> </strong>request of <strong><span t-field="object.user_id"/></strong> from <strong><span t-field="object.date_from"/></strong> to <strong><span t-field="object.date_to"/></strong> has been accepted.</p>
+                <p>The backup person selected is <span t-field="object.backup_id.name"/></p>                
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">True</field>
+        </record>
+
+         <record id="leave_notification" model="mail.template">
+            <field name="model_id" ref="model_hr_leave"/>
+            <field name="name">Leave Email Notification</field>
+            <field name="email_from">{{ object.create_uid.email }}</field> 
+            <field name="subject">Leave Email Notification</field>
+            <field name="body_html" type="html">
+                <p>Dear <span t-field="object.general_manager_id.name"/> ,</p>
+                <p><strong><span t-field="object.holiday_status_id"/> </strong>request of <strong><span t-field="object.user_id"/></strong> from <strong><span t-field="object.date_from"/></strong> to <strong><span t-field="object.date_to"/></strong> has been accepted.</p>
+                <p>The backup person selected is <span t-field="object.backup_id.name"/></p>
+                 <p>You can view the details of the request <a t-attf-href="{{object.generate_link()}}">here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">True</field>
+        </record>
+
+    </data>
+
+</odoo>

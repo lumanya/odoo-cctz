@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="hr_contract_form">
+            <field name="name">hr.contract.form</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date_end']" position="after">
+                    <field name="probation_end_date"/>                 
+                </xpath>
+
+                <xpath expr="//field[@name='hr_responsible_id']" position="after">                
+                     <label for="supported_attachment_ids" string="Contract Document"/>
+                    <field name="supported_attachment_ids" widget="many2many_binary" nolabel="1" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

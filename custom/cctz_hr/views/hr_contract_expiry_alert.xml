@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+         <!-- Expired Soon -->
+        <record id="ir_cron_data_contract_expiry_alert" model="ir.cron">
+            <field name="name">HR Contract Expiry Alert</field>
+            <field name="model_id" ref="model_hr_contract"/>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="code">model.contract_expiry_alert()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+        </record>
+
+</odoo>

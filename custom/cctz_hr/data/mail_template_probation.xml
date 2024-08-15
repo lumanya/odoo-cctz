@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <!--     Contract alert   email template-->
+        <record id="mail_template_contract_probation_expiery_alert" model="mail.template">
+            <field name="name">Contract Probation Expiry Alert Notification</field>
+            <field name="model_id" ref="model_hr_contract"/>
+            <field name="subject">Contract Probation Expiry Notification: {{ object.name }}</field>
+            <field name="email_to">{{ object.hr_responsible_id.email_formatted }}</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                   <p style="margin: 0px;">
+                        <span>Dear <t t-out="object.hr_responsible_id.name"/>,</span>
+                        <br/>
+                        <br/>
+                        <span>The Employee Contract Probation
+                            <i><t t-out="object.name"/></i>
+                            <i>of <t t-out="object.employee_id.name"/></i>
+                            is about to expire soon on
+                            <i><t t-out="object.probation_end_date"/></i>                          
+                        </span>
+                        <br/>
+                        <br/>
+                        Thank you.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+    </data>
+
+</odoo>

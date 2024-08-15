@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+
+###################################################################################
+
+{
+    'name': 'Subscription Management For Community Odoo 16',
+    'version': '16.0.1.1.1',
+    'summary': 'Subscription Package Management Module For Odoo16 Community',
+    'description': 'Subscription Package Management Module For Odoo16 Community',
+    'category': 'Sales',
+    'author': 'Nathaniel Anania',
+    'company': 'Nathaniel Anania',
+    'maintainer': 'Nathaniel Anania',
+    'website': "https://www.churchycodes.co.tz",
+    'depends': ['base', 'sale_management'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'data/uom_demo.xml',
+        'data/subscription_stage_data.xml',
+        'data/mail_template.xml',
+        'data/cron.xml',
+        'wizard/subscription_close_wizard.xml',
+        'views/subscription_package.xml',
+        'views/subscription_products.xml',
+        'views/subscription_plan.xml',
+        'views/subscription_stage.xml',
+        'views/subscription_close.xml',
+        'views/subscription_renew.xml',
+        'views/mail_activity_views.xml',
+        'views/res_partner.xml',
+        'views/recurrence_views.xml',
+        'views/sale_order_inherit.xml',
+        'report/subscription_report_view.xml',
+    ],
+    'images': ['static/description/banner.png'],
+    'license': 'AGPL-3',
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+}
