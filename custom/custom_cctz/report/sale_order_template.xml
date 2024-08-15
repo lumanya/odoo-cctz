@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="sale_order_inherit" name="SaleOderInherit" inherit_id="sale.report_saleorder_document">
+
+        <xpath expr="//div[@id='informations']" position="inside">
+
+            <t t-if="doc.state != 'draft' and doc.state != 'sent'">
+
+                <div t-if="doc.account_manager_id.name" class="col-auto col-3 mw-100 mb-2">
+                    <strong>Account Manager:</strong>
+                    <p class="m-0" t-field="doc.account_manager_id"/>
+                </div>
+                 <div t-if="not doc.account_manager_id.name" class="col-auto col-3 mw-100 mb-2">
+                    <strong>Account Manager:</strong>
+                    <p class="m-0" t-esc="'N/A'"/>
+                </div>
+                 
+                <div t-if="doc.opportunity_source_id.name" class="col-auto col-3 mw-100 mb-2">
+                    <strong>Source:</strong>
+                    <p class="m-0" t-field="doc.opportunity_source_id"/>
+                </div>
+                 <div t-if="not doc.opportunity_source_id.name" class="col-auto col-3 mw-100 mb-2">
+                    <strong>Source:</strong>
+                    <p class="m-0" t-esc="'N/A'"/>
+                </div>
+
+                <div t-if="doc.pre_sale_id.name" class="col-auto col-3 mw-100 mb-2">
+                    <strong>Presales:</strong>
+                    <p class="m-0" t-field="doc.pre_sale_id"/>
+                </div>
+                 <div t-if="not doc.pre_sale_id.name" class="col-auto col-3 mw-100 mb-2">
+                    <strong>Presales:</strong>
+                    <p class="m-0" t-esc="'N/A'"/>
+                </div>
+            </t>
+
+        </xpath>
+
+        <xpath expr="//th[@name='th_description']" position="before">
+             <th name="th_part_number" class="text-start">Part Number</th>           
+             
+        </xpath>
+
+        <xpath expr="//th[@name='th_description']" position="after">            
+             <t t-if="doc.state != 'draft' and doc.state != 'sent'">
+                <th name="th_supplier" class="text-start">Supplier</th>
+                <th name="th_manufacturer_id" class="text-start">Manufacturer</th>
+                <th name="th_business_unit_id" class="text-start">Business Unit</th>             
+                
+             </t>
+             
+        </xpath>
+        <xpath expr="//th[@name='th_quantity']" position="after">            
+             <t t-if="doc.state != 'draft' and doc.state != 'sent'">               
+                <th name="th_purchase_price" class="text-start">Cost</th>                
+             </t>             
+        </xpath>
+        <xpath expr="//th[@name='th_priceunit']" position="after">            
+             <t t-if="doc.state != 'draft' and doc.state != 'sent'">               
+                <th name="th_margin" class="text-start">Margin</th>                
+             </t>             
+        </xpath>
+
+        <xpath expr="//td[@name='td_name']" position="before">
+            <td name="td_part_number_id"><span t-field="line.part_number_id"/></td>                    
+        </xpath>
+
+        <xpath expr="//td[@name='td_name']" position="after">           
+            <t t-if="doc.state != 'draft' and doc.state != 'sent'">
+                <td name="td_supplier_id"><span t-field="line.supplier_id"/></td>
+                <td name="td_manufacturer_id"><span t-field="line.manufacturer_id"/></td>
+                <td name="td_business_unit_id"><span t-field="line.business_unit_id"/></td>                
+            </t>           
+        </xpath>
+        <xpath expr="//td[@name='td_quantity']" position="after">           
+            <t t-if="doc.state != 'draft' and doc.state != 'sent'">
+                <td name="td_purchase_price"><span t-field="line.purchase_price"/></td>
+            </t>           
+        </xpath>
+        <xpath expr="//td[@name='td_priceunit']" position="after">           
+            <t t-if="doc.state != 'draft' and doc.state != 'sent'">
+                <td name="td_margin"><span t-field="line.margin"/></td>
+            </t>           
+        </xpath>
+
+    </template>
+
+</odoo>

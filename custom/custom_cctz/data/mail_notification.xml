@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+    
+        <record id="email_template_procurment_manager_approver" model="mail.template">
+            <field name="model_id" ref="model_sale_order"/>
+            <field name="name">Purchase Order Created</field>
+            <field name="email_from">{{ object.create_uid.email }}</field>           
+            <field name="subject">Purchase Order Created</field>
+            <field name="body_html" type="html">
+                 <p>Dear <span t-field="object.procurment_manager_id.name"/> ,</p>
+                <p>Purchase Order(s) have been generated from sales order  <a t-attf-href="{{object.generate_link()}}"><span t-field="object.name"/></a> </p>
+                <p>Here are the IDs of the associated Purchase Orders:</p>
+                <ul>
+                    <t t-foreach="object._get_purchase_orders()" t-as="purchase_order">
+                        <li><a t-attf-href="/web#id={{purchase_order.id}}&amp;model=purchase.order"><t t-esc="purchase_order.name"/></a></li>
+                    </t>
+                </ul>                      
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">True</field>
+        </record>
+        
+        <record id="email_template_purchase_order_confirmation" model="mail.template">
+            <field name="model_id" ref="model_purchase_order"/>
+            <field name="name">Purchase Order Confirmed</field>
+            <field name="email_from">{{ object.create_uid.email }}</field>           
+            <field name="subject">Purchase Order Confirmed</field>
+            <field name="body_html" type="html">
+                <p>Dear <span t-field="object.salesperson.name"/> ,</p>               
+                <p>Purchase Order  <a t-attf-href="{{object.generate_link()}}"><span t-field="object.name"/></a> has been Confirmed.</p>
+                                 
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">True</field>
+        </record>
+
+        <record id="email_template_receipt_notification" model="mail.template">
+            <field name="model_id" ref="model_purchase_order"/>
+            <field name="name">Inventory Receipts Created</field>
+            <field name="email_from">{{ object.create_uid.email }}</field>           
+            <field name="subject">Inventory Receipts Created</field>
+            <field name="body_html" type="html">
+                <p>Dear <span t-field="object.salesperson.name"/> ,</p>               
+                <p>Purchase Order  <a t-attf-href="{{object.generate_link()}}"><span t-field="object.name"/></a> has been Confirmed.</p>
+                <p>The following receipts have been generated:</p>
+                 <ul>
+                    <t t-foreach="object.picking_ids" t-as="picking">
+                        <li><a t-attf-href="/web#id={{picking.id}}&amp;model=stock.picking"><t t-esc="picking.name"/></a></li>
+                    </t>
+                </ul>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">True</field>
+        </record>
+
+        <record id="email_template_delayed_confirmation" model="mail.template">
+            <field name="model_id" ref="model_purchase_order"/>
+            <field name="name">Delayed Purchase Order Confirmation</field>
+            <field name="email_from">{{ object.create_uid.email }}</field>           
+            <field name="subject">Delayed Purchase Order Confirmation</field>
+            <field name="body_html" type="html">
+                <p>Dear <span t-field="object.salesperson.name"/> ,</p>               
+                <p>The confirmation of Purchase Order <a t-attf-href="{{object.generate_link()}}"><span t-field="object.name"/></a> has been delayed.</p>
+                                 
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br/>CCTZ</p>
+            </field>
+            <field name="auto_delete">True</field>
+        </record>
+        
+    
+    </data>
+    
+
+</odoo>

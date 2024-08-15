@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Change Requests List -->
+        <record id="view_request_form_list" model="ir.ui.view">
+            <field name="name">Requests View</field>
+            <field name="model">request.form</field>
+            <field name="arch" type="xml">
+                <tree string="Requests">
+                    <field name="request_number"/>
+                    <field name="team_assigned_id" />
+                    <field name="cr_Type"/>
+                    <field name="description_request"/>
+                    <field name="date_submitted"/>
+                    <field name="date_required"/>
+                    
+                    <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'second_approval'" decoration-danger="state == 'rejected'"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- group creation -->
+        <record id="group_my_custom_group" model="res.groups">
+            <field name="name">Group</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!--Request form view-->
+        <record id="view_request_custom_form" model="ir.ui.view">
+            <field name="name">request.form.view.form</field>
+            <field name="model">request.form</field>
+            <field name="arch" type="xml">
+                <form string="Change Request">
+                    <field name="active" invisible="1"/>
+                    <header>
+                        <button name="action_validate1" string="Validate" type="object" class="btn-primary" groups="base.group_system,cctz_request_form.group_my_custom_group" attrs="{'invisible': [('state', 'in', ['draft', 'second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_refuse1" string="Refuse" type="object" groups="base.group_system,cctz_request_form.group_my_custom_group" attrs="{'invisible': [('state', 'in', ['draft', 'second_approval','approved', 'rejected'])]}"/>
+                        <button name="action_validate2" string="Validate" type="object" class="btn-primary" groups="base.group_system,cctz_request_form.group_custom_group" attrs="{'invisible': [('state', 'in', ['draft', 'to_approve','approved', 'rejected'])]}"/>
+                        <button name="action_refuse2" string="Refuse" type="object" groups="base.group_system,cctz_request_form.group_custom_group" attrs="{'invisible': [('state', 'in', ['draft', 'to_approve','approved', 'rejected'])]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="to_approve,approved" attrs="{'invisible': [('active', '=', False)] }"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                                Change Request Number
+                            <h1>
+                                <field name="request_number" />
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="submitter_name_id" attrs="{'readonly': [('state', 'in', ['draft', 'second_approval','approved', 'to_approve' 'rejected'])]}"/>
+                                <field name="cr_Type" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                            </group>
+                            <group>
+                                <field name="team_assigned_id" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                <field name="priority" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="General Information">
+                                <group>
+                                    <field name="description_request" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                    <field name="date_submitted" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                    <field name="date_required" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                    <field name="reason_for_change" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                </group>
+                            </page>
+                            <page string="Risk Analysis">
+                                <group>
+                                    <field name="risk" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                    <field name="department_impacted_id" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                    <field name="impacts_effects" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                    <field name="fall_back" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                    <field name="additional_instructions" attrs="{'readonly': [('state', 'in', ['to_approve', 'second_approval','approved', 'rejected'])]}"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'always'}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!--Personal request List-->
+        <record id="actions_request_form_view" model="ir.actions.act_window">
+            <field name="name">My Change Requests</field>
+            <field name="res_model">request.form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_request_form_list" />
+            <field name="domain">[('create_uid', '=', uid)]</field>
+            <field name="target">current</field>
+        </record>
+
+        <menuitem id="menu_root" name="Change Request Form" sequence="11" web_icon="RequestFrom,static/description/icon.png" action="actions_request_form_view"/>
+        <menuitem id="menu_change_requests" name="My Requests" parent="menu_root" sequence="1" action="actions_request_form_view"/>
+    </data>
+
+    <!-- search -->
+    <record id="request_view_search" model="ir.ui.view">
+        <field name="name">request.view.search</field>
+        <field name="model">request.form</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="request_number" />
+                <field name="team_assigned_id"/>
+                <field name="submitter_name_id"/>
+                <field name="cr_Type"/>
+                <field name="date_submitted"/>
+                <searchpanel>
+                    <field name="state" string="Status"/>
+                    <field name="department_impacted_id" string="Department" icon="fa-users"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+</odoo>

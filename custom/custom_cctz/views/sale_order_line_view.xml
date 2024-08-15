@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   
+
+    <record model="ir.ui.view" id="sale_margin_sale_order_line">
+        <field name="name">sale.order.line.view.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/tree//field[@name='name']" position="after">
+                
+                <field name="part_number_id" groups="base.group_user"/>
+                <field name="supplier_id"/>
+                <field name="manufacturer_id"></field>
+                <field name="business_unit_id"></field>
+                <field name="is_renewal" required="1"/>
+                <field name="renewal_duration" attrs="{'invisible': [('renewal_visible', '=', False)], 'required': [('is_renewal', '=', True)]}"/>
+                <field name="renewal_visible" invisible="1"/>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

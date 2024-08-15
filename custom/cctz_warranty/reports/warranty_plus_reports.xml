@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record id="report_warranty_plus" model="ir.actions.report">
+        <field name="name">Warranty Plus PDF</field>
+        <field name="model">warranty.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">cctz_warranty.report_warranty_plus_template</field>
+        <field name="report_file">cctz_warranty.report_warranty_plus_template</field>       
+        <field name="binding_model_id" ref="model_warranty_request"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

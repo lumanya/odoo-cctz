@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <!-- Inherit Form view -->
+    <record id="inherit_sale_order_form_view" model="ir.ui.view">
+        <field name="name">inherit.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="name">action_confirm_email</attribute>
+            </xpath>
+
+             <xpath expr="//button[@name='action_confirm']" position="attributes">
+                    <attribute name="name">action_confirm_email</attribute>
+            </xpath>
+
+        
+            
+
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="lpo_number"/>                
+                    
+            </xpath>
+
+            <xpath expr="//group[@name='sales_person']//field[@name='user_id']"
+             position="after">
+                    <field name="account_manager_id"/>
+                    <field name="pre_sale_id"></field>
+                    <field name="opportunity_source_id"></field>                    
+            </xpath>
+            
+        </field>
+    </record>
+   
+    
+</odoo>

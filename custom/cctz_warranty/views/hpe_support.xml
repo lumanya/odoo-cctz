@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hpe_support_action" model="ir.actions.act_window">
+        <field name="name">HPE Support</field>
+        <field name="res_model">hpe.support</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a HPE Support Technician!
+            </p>
+        </field>
+    </record>
+
+     <record id="hpe_support_view_tree" model="ir.ui.view">
+        <field name="name">hpe.support.view.tree</field>
+        <field name="model">hpe.support</field>
+        <field name="arch" type="xml">
+            <tree string="Warranty Requests">
+                <field name="name_id"></field>
+                <field name="passport_code"></field>            
+            </tree>
+        </field>
+    </record>
+
+     <record id="hpe_support_view_form" model="ir.ui.view">
+        <field name="name">hpe.support.view.form</field>
+        <field name="model">hpe.support</field>
+        <field name="arch" type="xml">
+            <form string="Warranty">
+             
+                <sheet>
+
+                    <group>
+                        <group>
+                            <field name="name_id"></field>                          
+                          
+                        </group>
+                        <group >
+                            <field name="passport_code"></field>
+                       
+                        </group>
+                      
+                    </group>
+
+                </sheet>
+                 <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+     <!-- Search View -->
+    <record model="ir.ui.view" id="hpe_support_search">
+        <field name="name">hpe.support.search</field>
+        <field name="model">hpe.support</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name_id"/>
+                <field name="passport_code"></field>
+
+                <!-- <filter name="fl_draft" string="Draft" domain="[('state','=', 'draft')]"/>
+                <group>
+                    <filter name="gr_pay" string="Bayar Via" context="{'group_by':'payment_method'}"/>
+                </group> -->
+            </search>
+        </field>
+    </record>
+  
+
+</odoo>
