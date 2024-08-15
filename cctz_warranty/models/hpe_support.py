@@ -6,13 +6,14 @@ class HPESupport(models.Model):
     _description = 'HPE Technician Support'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name_id = fields.Many2one('res.users', string='HPE Technician', tracking=True)
+    name_id = fields.Many2one('res.users', string='HPE Technician', tracking=True, required=True)
     passport_code = fields.Char(string="HPE Passport Code")
 
-    @api.model
     def name_get(self):
         result = []
         for record in self:
-            result.append((record.id, f"{record.name_id.name}"))
+            if record.name_id:
+                name = f"{record.name_id.name}"
+                result.append((record.id, name))
         return result
 
