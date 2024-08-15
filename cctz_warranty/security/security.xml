@@ -29,7 +29,6 @@
     </record>
 
   
-
     <record id="manager_record_rule" model="ir.rule">
         <field name="name">See All Warranty</field>
         <field name="model_id" ref="model_warranty_request"></field>
