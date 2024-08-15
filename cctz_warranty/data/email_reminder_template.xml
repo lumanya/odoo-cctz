@@ -7,7 +7,7 @@
             <field name="name">Reminder: Approval Required for Managed Service</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Reminder: Action Required - Approval Pending</field>
-            <field name="email_cc">cebendemalek@gmail.com</field>
+            <field name="email_cc">servicedesk@cctz.co.tz</field>
             <field name="body_html" type="html">
                 <p>
                     <t t-foreach="object._get_managed_service_emails()" t-as="user">
@@ -33,7 +33,7 @@
             <field name="name">Remainder: Approval Required for Head of Enterprise</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Reminder: Action Required - Approval Pending</field>
-            <field name="email_cc">cebendemalek@gmail.com</field>
+            <field name="email_cc">servicedesk@cctz.co.tz</field>
             <field name="body_html" type="html">
                 <p>
                     <t t-foreach="object._get_head_of_enterprise_emails()" t-as="user">
