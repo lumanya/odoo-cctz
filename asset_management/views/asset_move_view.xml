@@ -7,20 +7,23 @@
       <field name="arch" type="xml">
         <form string="Asset Move">
           <sheet>
-            <div class="oe_title">
-              Asset Number
-              <h1>
+            <div class="oe_title"> Asset Number <h1>
                 <field name="asset_id" />
               </h1>
             </div>
             <group>
               <group>
-                <field name= "move_date"/>
                 <field name="assigned_to" />
-                <field name="order_id"/>
-                <field name="customer_id" />
-                <field name="technician_id" />
-                <field name="state" />
+                <field name="customer_id"
+                  attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+                <field name="technician_id"
+                  attrs="{'invisible': [('assigned_to', '!=', 'technician')]}" />
+                <field name="employee_id" attrs="{'invisible': [('assigned_to', '!=', 'employee')]}" />
+                <field name="order_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+                <field name="move_date" />
+                <field name="status" />
+                <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
+                <field name="return_condition" attrs="{'invisible': [('status', '=', 'assigned')]}" />
               </group>
             </group>
           </sheet>
@@ -37,13 +40,16 @@
       <field name="model">asset.move</field>
       <field name="arch" type="xml">
         <tree string="Asset move">
-          <field name="asset_id"/>
-          <field name="move_date" />
+          <field name="asset_id" />
           <field name="assigned_to" />
-          <field name="order_id" />
-          <field name="customer_id" />
-          <field name="technician_id" />
-          <field name="state" />
+          <field name="customer_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+          <field name="technician_id" attrs="{'invisible': [('assigned_to', '!=', 'technician')]}" />
+          <field name="employee_id" attrs="{'invisible': [('assigned_to', '!=', 'employee')]}" />
+          <field name="order_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+          <field name="move_date" />
+          <field name="status" />
+          <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
+          <field name="return_condition" attrs="{'invisible': [('status', '=', 'assigned')]}" />
         </tree>
       </field>
     </record>

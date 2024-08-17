@@ -8,17 +8,21 @@ class asset_move(models.Model):
     asset_id = fields.Many2one(
         'asset.registration', 
         string='Asset', 
-        required=True
+        required=True,
     )
 
-    move_date = fields.Date(string='Movement Date', required=True, default=fields.Date.today)
+    move_date = fields.Date(string='Movement Date', required=True, default=fields.Date.context_today)
 
-    assigned_to = fields.Selection([('customer','Customer'), ('technician', 'Technician')], string='Assign To', required=True)
+    assigned_to = fields.Selection([
+        ('customer','Customer'), 
+        ('technician', 'Technician'), 
+        ('employee', 'Employee')
+        
+    ], string='Assign To', required=True)
 
     order_id = fields.Many2one(
         'sale.order',
         string='Order Number',
-        domain= "[('partner_id', '=', customer_id)]",
         required=False
     )
 
@@ -29,21 +33,48 @@ class asset_move(models.Model):
     )
 
     technician_id = fields.Many2one(
-        'res.partner',
+        'res.users',
         string='Technician',
     )
 
-    state = fields.Selection([
-        ('draft', 'Draft'),
-        ('done', 'Done'),
-    ], string='State', default='draft')
+    employee_id = fields.Many2one(
+        'hr.employee',
+        string='Employee',
+    )
+
+    status = fields.Selection([
+        ('assigned', 'assigned'),
+        ('returned', 'returned'),
+    ], string='Status', default='assigned')
+
+    return_date = fields.Date(string='Return Date')
+    return_condition = fields.Selection(
+        [
+            ('good', 'Good'),
+            ('repairable', 'Repairable'),
+            ('damaged', 'Damaged'),
+        ], string='Return Condition'
+    )
+
+    @api.onchange('status')
+    def _onchange_status(self):
+        if self.status == 'returned':
+            self.return_date = fields.Date.today()
 
     @api.onchange('assigned_to')
-    def onchange_assigned_to(self):
-        if self.assigned_to == 'customer':
-            self.technician_id = False
-        elif self.assigned_to == 'technician':
-            self.customer_id = False
+    def _onchange_assigned_to(self):
+        self.customer_id = False
+        self.technician_id = False
+        self.employee_id = False
+        if self.assigned_to != 'customer':
+            self.order_id = False
+
+    # @api.onchange('assigned_to')
+    # def onchange_assigned_to(self):
+    #     if self.assigned_to == 'customer':
+    #         self.technician_id = False
+    #     elif self.assigned_to == 'technician':
+    #         self.customer_id = False
 
     @api.onchange('order_id')
     def onchange_order_id(self):

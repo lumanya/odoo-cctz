@@ -5,7 +5,7 @@ class asset_registration(models.Model):
     _inherit = 'mail.thread'
     _description = 'Asset'
     
-    asset_number = fields.Char(string='Asset Number', copy=False, readonly=True, required=True, default=lambda self: _('New'))
+    asset_number = fields.Char(string='Asset Number', copy=False, readonly=True, required=True, store=True, default=lambda self: _('New'))
 
     asset_name = fields.Char(string= 'Asset Name',required=True)
     date = fields.Date(string = 'Receiving Date', required=True)
