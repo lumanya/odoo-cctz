@@ -39,6 +39,13 @@ class asset_registration(models.Model):
           
     #         pass
 
+    def name_get(self):
+        result = []
+        for record in self:
+            name = f'{record.asset_number}'
+            result.append((record.id, name))
+        return result
+
     @api.model
     def create(self, vals):
         if vals.get('asset_number', _('New'))== _('New'):

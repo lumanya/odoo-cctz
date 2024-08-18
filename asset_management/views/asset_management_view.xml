@@ -20,9 +20,13 @@
                 <field name="supplier_id"/>
                 <field name="device_part_number" />
                 <field name="quantity" />
-                <field name="description" />
               </group>
             </group>
+            <notebook>
+              <page string="Description">
+                <field name="description" />
+              </page>
+            </notebook>
           </sheet>
           <div class="oe_chatter">
             <field name="message_follower_ids" />

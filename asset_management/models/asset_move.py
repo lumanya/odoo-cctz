@@ -69,12 +69,6 @@ class asset_move(models.Model):
         if self.assigned_to != 'customer':
             self.order_id = False
 
-    # @api.onchange('assigned_to')
-    # def onchange_assigned_to(self):
-    #     if self.assigned_to == 'customer':
-    #         self.technician_id = False
-    #     elif self.assigned_to == 'technician':
-    #         self.customer_id = False
 
     @api.onchange('order_id')
     def onchange_order_id(self):
