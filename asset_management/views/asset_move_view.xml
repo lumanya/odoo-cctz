@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
+
+    <!-- Asset Move Form View -->
     <record model="ir.ui.view" id="asset_move_form">
       <field name="name">asset_move.form</field>
       <field name="model">asset.move</field>
@@ -40,6 +42,7 @@
       </field>
     </record>
 
+    <!-- Asset Move Tree View -->
     <record model="ir.ui.view" id="asset_move_tree_view">
       <field name="name">asset.move.tree</field>
       <field name="model">asset.move</field>
@@ -59,20 +62,45 @@
       </field>
     </record>
 
-    <record model="ir.actions.act_window" id="asset_move_action">
-      <field name="name">Asset Move</field>
+    <!-- Actions for Filtered Views -->
+    <record model="ir.actions.act_window" id="asset_move_customer_action">
+      <field name="name">Asset Moves - Customer</field>
       <field name="res_model">asset.move</field>
       <field name="view_mode">tree,form</field>
       <field name="view_id" ref="asset_move_tree_view" />
-      <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
-          Click to create a new asset registration.
-        </p>
-      </field>
+      <field name="domain">[('assigned_to', '=', 'customer')]</field>
     </record>
 
+    <record model="ir.actions.act_window" id="asset_move_technician_action">
+      <field name="name">Asset Moves - Technician</field>
+      <field name="res_model">asset.move</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="asset_move_tree_view" />
+      <field name="domain">[('assigned_to', '=', 'technician')]</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="asset_move_employee_action">
+      <field name="name">Asset Moves - Employee</field>
+      <field name="res_model">asset.move</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="asset_move_tree_view" />
+      <field name="domain">[('assigned_to', '=', 'employee')]</field>
+    </record>
+
+    <!-- Menu Items -->
+
     <menuitem name="Asset Move" id="asset_move_menu_root" sequence="11"
-      parent="asset_management_menu_root" action="asset_move_action" />
+      parent="asset_management_menu_root" />
+
+    <!-- Sub-menus under Asset Move -->
+    <menuitem name="Customer Moves" id="asset_move_customer_menu"
+      parent="asset_move_menu_root" action="asset_move_customer_action" sequence="1" />
+    <menuitem name="Technician Moves" id="asset_move_technician_menu"
+      parent="asset_move_menu_root" action="asset_move_technician_action" sequence="2" />
+
+    <!-- Separate Menu for Employee -->
+    <menuitem name="Employee Moves" id="asset_move_employee_menu"
+      parent="asset_management_menu_root" action="asset_move_employee_action" sequence="12" />
 
   </data>
 </odoo>

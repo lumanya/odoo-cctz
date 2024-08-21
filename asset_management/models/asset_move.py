@@ -16,8 +16,7 @@ class asset_move(models.Model):
     assigned_to = fields.Selection([
         ('customer','Customer'), 
         ('technician', 'Technician'), 
-        ('employee', 'Employee')
-        
+        ('employee', 'Employee'),
     ], string='Assign To', required=True)
 
     order_id = fields.Many2one(
