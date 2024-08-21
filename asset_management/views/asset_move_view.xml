@@ -14,18 +14,23 @@
             <group>
               <group>
                 <field name="assigned_to" />
-                <field name="customer_id"
-                  attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+                <field name="order_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+                <field name="customer_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+                <field name="sales_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
                 <field name="technician_id"
                   attrs="{'invisible': [('assigned_to', '!=', 'technician')]}" />
                 <field name="employee_id" attrs="{'invisible': [('assigned_to', '!=', 'employee')]}" />
-                <field name="order_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
                 <field name="move_date" />
                 <field name="status" />
                 <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
                 <field name="return_condition" attrs="{'invisible': [('status', '=', 'assigned')]}" />
               </group>
             </group>
+            <notebook>
+              <page string="Description">
+                <field name="description" widget='html' />
+              </page>
+            </notebook>
           </sheet>
           <div class="oe_chatter">
             <field name="message_follower_ids" />

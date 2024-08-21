@@ -32,6 +32,11 @@ class asset_move(models.Model):
         domain= "[('customer_rank', '>', 0)]",
     )
 
+    sales_id = fields.Many2one(
+        'res.users',
+        string='Sales Person'
+    )
+
     technician_id = fields.Many2one(
         'res.users',
         string='Technician',
@@ -56,6 +61,8 @@ class asset_move(models.Model):
         ], string='Return Condition'
     )
 
+    description = fields.Char(string='More information' )
+
     @api.onchange('status')
     def _onchange_status(self):
         if self.status == 'returned':
@@ -74,6 +81,8 @@ class asset_move(models.Model):
     def onchange_order_id(self):
         if self.order_id:
             self.customer_id = self.order_id.partner_id
+            self.sales_id = self.order_id.user_id
+
 
     def action_confirm(self):
         self.write({'state': 'done'})

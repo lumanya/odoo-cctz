@@ -9,7 +9,7 @@ class asset_registration(models.Model):
 
     asset_name = fields.Char(string= 'Asset Name',required=True)
     
-    date = fields.Date(string = 'Receiving Date', required=True)
+    date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
 
     device_purpose = fields.Selection([
         ('Company use', 'company use'), 
