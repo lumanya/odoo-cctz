@@ -198,9 +198,7 @@
                                     <field name="part_return_date" />
                                     <field name="part_return_awb" />
                                     <field name="part_credit_received_date" />
-                                    <field name="part_credit_amount"></field>
-
-
+                                    <!-- <field name="part_credit_amount"></field> -->
                                 </group>
                             </page>
 

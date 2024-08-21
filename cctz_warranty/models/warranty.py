@@ -87,7 +87,7 @@ class Warranty(models.Model):
     part_return_awb = fields.Char(string='Part Return AWB')
     part_credit_reference = fields.Char(string='Part Credit Reference Number')
     part_credit_received_date = fields.Datetime(string='Part Credit Received Date')
-    part_credit_amount = fields.Float('Part Credit Amount', tracking=True)
+    # part_credit_amount = fields.Float('Part Credit Amount', tracking=True)
     part_warranty_status = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No')
@@ -151,7 +151,7 @@ class Warranty(models.Model):
 
 
     def check_approval_reminders(self):
-        reminder_time = datetime.now() - timedelta(minutes=2)
+        reminder_time = datetime.now() - timedelta(hours=2)
 
         to_approve_records = self.search([('state', '=', 'to_approve'), ('approval_time', '<', reminder_time)])
         for record in to_approve_records:

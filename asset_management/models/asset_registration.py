@@ -5,12 +5,17 @@ class asset_registration(models.Model):
     _inherit = 'mail.thread'
     _description = 'Asset'
     
-    asset_number = fields.Char(string='Asset Number', copy=False, readonly=True, required=True, default=lambda self: _('New'))
+    asset_number = fields.Char(string='Asset Number', copy=False, readonly=True, required=True, store=True, default=lambda self: _('New'))
 
     asset_name = fields.Char(string= 'Asset Name',required=True)
-    date = fields.Date(string = 'Receiving Date', required=True)
+    
+    date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
 
-    # for_company_use = fields.Boolean(string='For company Use', default= False)
+    device_purpose = fields.Selection([
+        ('Company use', 'company use'), 
+        ('For Employee', 'for employee'), 
+        ('For customer', 'for customer')
+        ], string='Device Purpose')
 
     supplier_id = fields.Many2one(
         'res.partner', 
@@ -18,26 +23,19 @@ class asset_registration(models.Model):
         required=False
         )
     
-    
+    invoice_number = fields.Char(string='Invoice number', required=True) 
     device_part_number = fields.Char(string='Device Part Number', required=True)
 
     quantity = fields.Integer(string= 'Quantity', required=True)
 
     description = fields.Text(string= 'Description')
 
-    # @api.onchange('purchase_id')
-    # def _onchange_purchase_id(self):
-    #     if self.purchase_id:
-    #         self.supplier_id = self.purchase_id.partner_id.id
-
-    # @api.onchange('for_company_use')
-    # def _onchange_for_company_use(self):
-    #     if self.for_company_use:
-    #         self.purchase_id = False  # Clear the order field
-    #         self.supplier_id = False  # Clear the supplier field
-    #     else:
-          
-    #         pass
+    def name_get(self):
+        result = []
+        for record in self:
+            name = f'{record.asset_number}'
+            result.append((record.id, name))
+        return result
 
     @api.model
     def create(self, vals):

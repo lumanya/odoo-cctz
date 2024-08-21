@@ -7,22 +7,28 @@
       <field name="arch" type="xml">
         <form string="Asset Registration">
           <sheet>
-            <div class="oe_title">
-              Asset Number
-              <h1>
+            <div class="oe_title"> Asset Number <h1>
                 <field name="asset_number" />
               </h1>
             </div>
             <group>
               <group>
-                <field name= "asset_name"/>
+                <field name="asset_name" />
                 <field name="date" />
-                <field name="supplier_id"/>
+                <field name="supplier_id" />
                 <field name="device_part_number" />
                 <field name="quantity" />
-                <field name="description" />
+              </group>
+              <group>
+                <field name="invoice_number"/>
+                <field name="device_purpose"/>
               </group>
             </group>
+            <notebook>
+              <page string="Description">
+                <field name="description" widget = "html"/>
+              </page>
+            </notebook>
           </sheet>
           <div class="oe_chatter">
             <field name="message_follower_ids" />
@@ -37,13 +43,14 @@
       <field name="model">asset.registration</field>
       <field name="arch" type="xml">
         <tree string="Asset Registrations">
-          <field name="asset_number"/>
+          <field name="asset_number" />
           <field name="asset_name" />
           <field name="date" />
           <field name="supplier_id" />
           <field name="device_part_number" />
           <field name="quantity" />
-          <field name="description" />
+          <field name="invoice_number" />
+          <field name="device_purpose"/>
         </tree>
       </field>
     </record>
