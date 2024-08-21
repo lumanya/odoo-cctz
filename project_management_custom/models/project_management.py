@@ -20,14 +20,14 @@ class ProjectProject(models.Model):
         'off_track': 23,
         'on_hold': 4,
         'to_define': 0,
-        'completed': 10,
+        'completed': 0,
     }
 
     last_update_color = fields.Integer(compute='_compute_last_update_color', string='Last Update Color')
 
     def _compute_last_update_color(self):
         for project in self:
-            project.last_update_color = self.STATUS_COLOR.get(project.last_update_status, 10)
+            project.last_update_color = self.STATUS_COLOR.get(project.last_update_status, 0)
 
     @api.model
     def create(self, vals):
@@ -37,13 +37,13 @@ class ProjectProject(models.Model):
             {'name': 'Initiation'},
             {'name': 'Planning'},
             {'name': 'Procurement'},
-            {'name': 'Insertion & Delivery'},
+            {'name': 'Inspection & Delivery'},
             {'name': 'Design'},
             {'name': 'Kick-off meeting'},
             {'name': 'Deployment'},
             {'name': 'Risk'},
             {'name': 'Sign-off'},
-            {'name': 'Training'}
+            {'name': 'Training'},
         ]
         for stage in default_stages:
             project.type_ids += self.env['project.task.type'].sudo().create(stage)
