@@ -173,8 +173,8 @@
                   <span class="fst-italic" t-esc="doc.loan_officer_department" />
                 </p>
                 <p class="mt-2">
-                  d) Postal Address:
-                  <span class="fst-italic" t-esc="doc.loan_officer_id.name" />
+                  d) Postal Address: ................................................................
+                  <!-- <span class="fst-italic" t-esc="doc.loan_officer_id.address_id.name" /> -->
                 </p>
                 <p class="mt-2">
                   e) Company's Seal/Stamp: ................................................................
