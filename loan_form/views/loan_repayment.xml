@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="loan_installment_view_form" model="ir.ui.view">
+        <field name="name">loan_installment.view.form</field>
+        <field name="model">loan.installment</field>
+        <field name="arch" type="xml">
+             <form string="Repayment">                   
+                   
+                    <sheet>
+                        <div class="oe_title">
+                                Repayment Loan Number
+                            <h1>
+                                <field name="name"/>
+                               
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="loan_id"/>
+                                <field name="amount" context="{'name': 'name'}" ></field>
+                                <field name="loan_requester_id"></field>
+                            </group>
+                             <group>
+                                <field name="payment_date"></field>                              
+                                <field name="status"></field>
+                                <field name="user_id"></field>
+                            </group>
+                        </group>
+                     
+                    </sheet>
+                
+                </form>
+        </field>
+    </record>
+
+    <record id="view_loan_installment_list" model="ir.ui.view">
+            <field name="name">Loan Repayment</field>
+            <field name="model">loan.installment</field>
+            <field name="arch" type="xml">
+                <tree string="Loans repayments">
+                     <field name="name"></field>
+                     <field name="loan_id"/>
+                     <field name="amount"></field>
+                     <field name="payment_date"></field>                  
+                     <field name="status"></field>                                   
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_repayment" model="ir.actions.act_window">
+            <field name="name">Loan Repayments</field>
+            <field name="res_model">loan.installment</field>
+            <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="view_loan_installment_list"/>
+            <field name="context">{'search_default_my_loan': 1}</field>
+          
+        </record>
+
+        <record id="action_repayment_view" model="ir.actions.act_window">
+            <field name="name">Loan Repayments</field>
+            <field name="res_model">loan.installment</field>
+            <field name="view_mode">tree,form</field>
+             <field name="view_id" ref="loan_installment_view_form"/>
+             <field name="context">{ 'default_loan_id': active_id, }</field>    
+        </record>
+ 
+
+</odoo>

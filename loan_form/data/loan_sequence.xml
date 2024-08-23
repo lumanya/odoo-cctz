@@ -9,4 +9,16 @@
               <field name="company_id" eval="False"/>
         </record>
     </data>
+
+    <data>
+        <record id="seq_loan_installement" model="ir.sequence">
+            <field name="name">Loan installment</field>
+            <field name="code">loan.installment</field>
+            <field name="prefix">IN</field>
+            <field name="padding">6</field>
+              <field name="company_id" eval="False"/>
+        </record>
+    </data>
+
+    
 </odoo>
