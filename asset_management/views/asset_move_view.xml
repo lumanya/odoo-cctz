@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
   <data>
-
     <!-- Asset Move Form View -->
     <record model="ir.ui.view" id="asset_move_form">
       <field name="name">asset_move.form</field>
@@ -15,13 +14,22 @@
             </div>
             <group>
               <group>
-                <field name="assigned_to" />
-                <field name="order_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
-                <field name="customer_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
-                <field name="sales_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+                               
+                <field name="asset_name" />
+                <field name="date" />
+                <field name="device_purpose" />
+                <field name="supplier_id" />
+                <field name="device_part_number" />
+                <field name="quantity" />
+                <field name="order_id"
+                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" />
+                <field name="customer_id"
+                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" />
+                <field name="sales_id"
+                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" />
                 <field name="technician_id"
-                  attrs="{'invisible': [('assigned_to', '!=', 'technician')]}" />
-                <field name="employee_id" attrs="{'invisible': [('assigned_to', '!=', 'employee')]}" />
+                  attrs="{'invisible': [('device_purpose', '!=', 'technician')]}" />
+                <field name="employee_id" attrs="{'invisible': [('device_purpose', '!=', 'employee')]}" />
                 <field name="move_date" />
                 <field name="status" />
                 <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
@@ -42,39 +50,20 @@
       </field>
     </record>
 
-    <!-- Asset Move Tree View -->
-    <!-- <record model="ir.ui.view" id="asset_move_tree_view">
-      <field name="name">asset.move.tree</field>
-      <field name="model">asset.move</field>
-      <field name="arch" type="xml">
-        <tree string="Asset move">
-          <field name="asset_id" />
-          <field name="assigned_to" />
-          <field name="customer_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
-          <field name="technician_id" attrs="{'invisible': [('assigned_to', '!=', 'technician')]}" />
-          <field name="employee_id" attrs="{'invisible': [('assigned_to', '!=', 'employee')]}" />
-          <field name="order_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
-          <field name="move_date" />
-          <field name="status" />
-          <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
-          <field name="return_condition" attrs="{'invisible': [('status', '=', 'assigned')]}" />
-        </tree>
-      </field>
-    </record> -->
-
     <record model="ir.ui.view" id="asset_move_custom_tree_view">
       <field name="name">asset.move.custom.tree</field>
       <field name="model">asset.move</field>
       <field name="arch" type="xml">
         <tree string="Asset move - Customer">
           <field name="asset_id" />
-          <field name="assigned_to" />
-          <field name="customer_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
-          <field name="order_id" attrs="{'invisible': [('assigned_to', '!=', 'customer')]}" />
+          <field name="asset_name" />
+          <field name="customer_id" />
+          <field name="order_id" />
+          <field name="quantity" />
           <field name="move_date" />
           <field name="status" />
-          <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
-          <field name="return_condition" attrs="{'invisible': [('status', '=', 'assigned')]}" />
+          <field name="return_date" />
+          <field name="return_condition" />
         </tree>
       </field>
     </record>
@@ -85,12 +74,13 @@
       <field name="arch" type="xml">
         <tree string="Asset move - Employee">
           <field name="asset_id" />
-          <field name="assigned_to" />
-          <field name="employee_id" attrs="{'invisible': [('assigned_to', '!=', 'employee')]}" />
+          <field name="asset_name" />
+          <field name="employee_id" />
           <field name="move_date" />
+          <field name="device_part_number" />
           <field name="status" />
-          <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
-          <field name="return_condition" attrs="{'invisible': [('status', '=', 'assigned')]}" />
+          <field name="return_date" />
+          <field name="return_condition" />
         </tree>
       </field>
     </record>
@@ -101,22 +91,24 @@
       <field name="arch" type="xml">
         <tree string="Asset move - Technicians">
           <field name="asset_id" />
-          <field name="assigned_to" />
-          <field name="technician_id" attrs="{'invisible': [('assigned_to', '!=', 'technician')]}" />
+          <field name="asset_name" />
+          <field name="technician_id" />
+          <field name="device_part_number" />
           <field name="move_date" />
           <field name="status" />
-          <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
-          <field name="return_condition" attrs="{'invisible': [('status', '=', 'assigned')]}" />
+          <field name="return_date" />
+          <field name="return_condition" />
         </tree>
       </field>
     </record>
+
     <!-- Actions for Filtered Views -->
     <record model="ir.actions.act_window" id="asset_move_customer_action">
       <field name="name">Asset Moves - Customer</field>
       <field name="res_model">asset.move</field>
       <field name="view_mode">tree,form</field>
       <field name="view_id" ref="asset_move_custom_tree_view" />
-      <field name="domain">[('assigned_to', '=', 'customer')]</field>
+      <field name="domain">[('device_purpose', '=', 'customer')]</field>
     </record>
 
     <record model="ir.actions.act_window" id="asset_move_technician_action">
@@ -124,7 +116,7 @@
       <field name="res_model">asset.move</field>
       <field name="view_mode">tree,form</field>
       <field name="view_id" ref="asset_move_technician_tree_view" />
-      <field name="domain">[('assigned_to', '=', 'technician')]</field>
+       <field name="domain">[('device_purpose', '=', 'technician')]</field>
     </record>
 
     <record model="ir.actions.act_window" id="asset_move_employee_action">
@@ -132,7 +124,7 @@
       <field name="res_model">asset.move</field>
       <field name="view_mode">tree,form</field>
       <field name="view_id" ref="asset_move_employee_tree_view" />
-      <field name="domain">[('assigned_to', '=', 'employee')]</field>
+       <field name="domain">[('device_purpose', '=', 'employee')]</field>
     </record>
 
     <!-- Menu Items -->

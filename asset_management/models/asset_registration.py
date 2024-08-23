@@ -12,10 +12,10 @@ class asset_registration(models.Model):
     date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
 
     device_purpose = fields.Selection([
-        ('Company use', 'company use'), 
-        ('For Employee', 'for employee'), 
-        ('For customer', 'for customer')
-        ], string='Device Purpose')
+        ('customer', 'Customer'), 
+        ('employee', 'Employee'), 
+        ('technician', 'Technician')
+        ], string='Device Purpose', required=True)
 
     supplier_id = fields.Many2one(
         'res.partner', 
@@ -41,7 +41,16 @@ class asset_registration(models.Model):
     def create(self, vals):
         if vals.get('asset_number', _('New'))== _('New'):
             vals['asset_number'] = self.env['ir.sequence'].next_by_code('asset.number') or _('New')
-        res = super(asset_registration, self).create(vals)    
+        res = super(asset_registration, self).create(vals)
+
+        move_vals = {
+            'asset_id': res.id,
+            'move_date':fields.Date.today(),
+            'device_purpose': res.device_purpose
+        } 
+
+        self.env['asset.move'].create(move_vals)
+           
         return res
     
 
