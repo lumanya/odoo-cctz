@@ -7,7 +7,11 @@ class asset_registration(models.Model):
     
     asset_number = fields.Char(string='Asset Number', copy=False, readonly=True, required=True, store=True, default=lambda self: _('New'))
 
-    asset_name = fields.Char(string= 'Asset Name',required=True)
+    asset_name_id = fields.Many2one(
+        'product.product', 
+        string= 'Asset Name',
+        required=True,
+        )
     
     date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
 
@@ -28,7 +32,9 @@ class asset_registration(models.Model):
 
     quantity = fields.Integer(string= 'Quantity', required=True)
 
-    description = fields.Text(string= 'Description')
+    description = fields.Char(related='asset_name_id.name', string= 'Description') 
+
+    
 
     def name_get(self):
         result = []

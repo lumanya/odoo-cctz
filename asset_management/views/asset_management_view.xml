@@ -13,7 +13,7 @@
             </div>
             <group>
               <group>
-                <field name="asset_name" />
+                <field name="asset_name_id" />
                 <field name="date" />
                 <field name="supplier_id" />
                 <field name="device_part_number" />
@@ -44,7 +44,7 @@
       <field name="arch" type="xml">
         <tree string="Asset Registrations">
           <field name="asset_number" />
-          <field name="asset_name" />
+          <field name="asset_name_id" />
           <field name="date" />
           <field name="supplier_id" />
           <field name="device_part_number" />

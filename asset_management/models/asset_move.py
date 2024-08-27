@@ -18,7 +18,7 @@ class AssetMove(models.Model):
     ], string= 'Device Purpose',required=True)
 
 
-    asset_name = fields.Char(related='asset_id.asset_name', string='Asset Name', readonly=True, store=True)
+    asset_name = fields.Many2one(related='asset_id.asset_name_id', string='Asset Name', readonly=True)
 
     date = fields.Date(related='asset_id.date', string='Receiving Date', readonly=True)
 
@@ -26,13 +26,13 @@ class AssetMove(models.Model):
 
     supplier_id = fields.Many2one(related='asset_id.supplier_id', string='Supplier Name', readonly=True)
 
-    invoice_number = fields.Char(related='asset_id.invoice_number', string='Invoice Number', readonly=True, store=True)
+    # invoice_number = fields.Char(related='asset_id.invoice_number', string='Invoice Number', readonly=True, store=True)
 
     device_part_number = fields.Char(related='asset_id.device_part_number', string='Device Part Number', readonly=True, store=True)
 
     quantity = fields.Integer(related='asset_id.quantity', string='Quantity', readonly=True, store=True)
 
-    description = fields.Text(related='asset_id.description', string='Description', readonly=True, store=True)
+    description = fields.Char(related='asset_id.description', string='Description', readonly=True, store=True)
 
     move_date = fields.Date(string='Movement Date', required=True)
 
@@ -42,15 +42,29 @@ class AssetMove(models.Model):
 
     sales_id = fields.Many2one('res.users', string='Sales Person')
 
-    technician_id = fields.Many2one('res.users', string='Technician')
+    # technician_id = fields.Many2one('res.users', string='Technician')
 
     employee_id = fields.Many2one('hr.employee', string='Employee')
     
-    status = fields.Selection([('assigned', 'Assigned'), ('returned', 'Returned')], string='Status', default='assigned')
+    status_tech = fields.Selection([('in_use', 'In Use'), ('available', 'Available')], string='Availability')
+    
+    status = fields.Selection([('assigned', 'Assigned'), ('returned','Returned')], string='Status')
+    
     return_date = fields.Date(string='Return Date')
+
     return_condition = fields.Selection([('good', 'Good'), ('repairable', 'Repairable'), ('damaged', 'Damaged')], string='Return Condition')
 
+    invoice_status = fields.Selection([
+        ('to_be_invoiced', 'To be Invoiced'),
+        ('invoiced', 'Invoiced'),
+        ('pending', 'Pending'),
+    ], string='Remarks', default='pending', track_visibility='onchange', tracking= True,required=True)
+    
+    invoice_number_move = fields.Char(string='Invoice Number')
+    
+    asset_move_history_ids = fields.One2many('asset.move.history', 'asset_move_id', string='History')
 
+    # invoice_status = fields.Selection(related='order_id.invoice_status', string='Invoice Status')
     @api.onchange('status')
     def _onchange_status(self):
         if self.status == 'returned':
