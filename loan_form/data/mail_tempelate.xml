@@ -21,7 +21,7 @@
             <field name="model_id" ref="model_loan_form"/>
             <field name="name">Loan Officer Approver Email Template</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
-            <field name="subject">Loan Officer Approval Request</field>
+            <field name="subject">Loan Approval Request</field>
             <field name="body_html" type="html">
                 <p>
                     <t t-foreach="object._get_loan_officer_emails()" t-as="user">

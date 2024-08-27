@@ -26,10 +26,10 @@
                 </p>
                 <p class="mt-2">
                   c) Postal Address:
-                  <span class="fst-italic " t-esc="doc.employee_id.address_id.name" />
+                  <span class=" fst-italic" >1961</span>
                 </p>
                 <p class="mt-2">
-                  d) Country and City:
+                  d) City and Country:
                   <span class="fst-italic "
                     t-esc="doc.employee_id.work_location_id.name" />
                 </p>
@@ -130,19 +130,15 @@
                   <span class="fst-italic " t-esc="doc.employee_id.parent_id.department_id.name" />
                 </p>
                 <p class="mt-2">
-                  c) NIDA Number:
-                  <span class="fst-italic " t-esc="doc.sudo().parent_identification_number" />
-                </p>
-                <p class="mt-2">
-                  d) Physical/Postal Address:
+                  c) Physical/Postal Address:
                   <span class="fst-italic " t-esc="doc.sudo().employee_id.parent_id.address_id.name" />
                 </p>
                 <p class="mt-2">
-                  e) Mobile Number:
+                  d) Mobile Number:
                   <span class="fst-italic " t-esc="doc.employee_id.parent_id.mobile_phone" />
                 </p>
                 <p class="mt-2">
-                  f) Signature: ................................................................
+                  e) Signature: ................................................................
                   <!-- <span class="fst-italic ">____________________________________</span> -->
                   Date: ................................................................
                   <!-- <span class="fst-italic ">_______________________</span> -->
@@ -173,8 +169,8 @@
                   <span class="fst-italic" t-esc="doc.loan_officer_department" />
                 </p>
                 <p class="mt-2">
-                  d) Postal Address: ................................................................
-                  <!-- <span class="fst-italic" t-esc="doc.loan_officer_id.address_id.name" /> -->
+                  d) Postal Address:
+                  <span class="fst-italic" t-esc="doc.loan_officer_id" />
                 </p>
                 <p class="mt-2">
                   e) Company's Seal/Stamp: ................................................................
