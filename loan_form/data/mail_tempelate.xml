@@ -2,77 +2,125 @@
 <odoo>
     <data>
         <record id="email_loan_approval_status" model="mail.template">
-            <field name="model_id" ref="model_loan_form"/>
+            <field name="model_id" ref="model_loan_form" />
             <field name="name">Loan Approval Status Email </field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Loan Approval Status Update</field>
-            <field name="email_to">{{ object.create_uid.email }}</field> 
+            <field name="email_to">{{ object.create_uid.email }}</field>
             <field name="body_html" type="html">
-                <p>Dear <t t-out="object.create_uid.name"/>,</p>
-                <p>The status of your Loan request <strong><t t-out="object.loan_form_number"/></strong> has been updated to <strong><t t-out="object.state"/></strong>.</p>
-                <p>You can view the details of the Loan request <a t-att-href="object.generate_link(object.menu_id, object.action_id)">here</a>.</p>
+                <p>Dear <t t-out="object.create_uid.name" />,</p>
+                <p>The status of your Loan request <strong>
+                        <t t-out="object.loan_form_number" />
+                    </strong> has been
+                    updated to <strong>
+                        <t t-out="object.state" />
+                    </strong>.</p>
+                <p>You can view the details of the Loan request <a
+                        t-att-href="object.generate_link(object.menu_id, object.action_id)">here</a>
+                    .</p>
                 <p>Thank you for your attention to this matter.</p>
-                <p>Best regards,<br/>CCTZ</p>
+                <p>Best regards,<br />CCTZ</p>
             </field>
             <field name="auto_delete">False</field>
         </record>
 
+        <record id="email_loan_approval_status_notify" model="mail.template">
+            <field name="model_id" ref="model_loan_form" />
+            <field name="name">Loan Approval and Collection Instructions Email</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Congratulations! Your Loan Has Been Approved</field>
+            <field name="email_to">{{ object.create_uid.email }}</field>
+            <field name="body_html" type="html">
+                <p>Dear <t t-out="object.create_uid.name" />,</p>
+                <p>Congratulations! Your loan request <strong>
+                        <t t-out="object.loan_form_number" />
+                    </strong> has been
+                    approved.</p>
+                <p>Please note that it will take two business days to process your disbursement.
+                    After this period, you may visit an accountant to collect your cash.</p>
+                <p>You can view the details of the loan request <a
+                        t-att-href="object.generate_link(object.menu_id, object.action_id)">here</a>
+                    .</p>
+                <p>Thank you for choosing our services.</p>
+                <p>Best regards,<br />CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+
         <record id="email_template_loan_officer_approver" model="mail.template">
-            <field name="model_id" ref="model_loan_form"/>
+            <field name="model_id" ref="model_loan_form" />
             <field name="name">Loan Officer Approver Email Template</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Loan Approval Request</field>
             <field name="body_html" type="html">
                 <p>
                     <t t-foreach="object._get_loan_officer_emails()" t-as="user">
-                        <t>Dear <t t-out="user.name"/>,</t>
-                        <br/>
+                        <t>Dear <t t-out="user.name" />,</t>
+                        <br />
                     </t>
                 </p>
-                <p>Please validate a Loan request <strong><t t-out="object.loan_form_number"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
-                <p>You can view the details of the request <a t-attf-href="{{object.generate_link(object.menu_id, object.action_id)}}">here</a>.</p>
+                <p>Please validate a Loan request <strong>
+                        <t t-out="object.loan_form_number" />
+                    </strong> for <strong>
+                        <t t-out="object.create_uid.name" />
+                    </strong>.</p>
+                <p>You can view the details of the request <a
+                        t-attf-href="{{object.generate_link(object.menu_id, object.action_id)}}">
+                    here</a>.</p>
                 <p>Thank you for your attention to this matter.</p>
-                <p>Best regards,<br/>CCTZ</p>
+                <p>Best regards,<br />CCTZ</p>
             </field>
             <field name="auto_delete">False</field>
         </record>
 
-<record id="email_template_accountant_approver" model="mail.template">
-    <field name="model_id" ref="model_loan_form"/>
-    <field name="name">Accountant Approver Email Template</field>
-    <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field> 
-    <field name="subject">Loan Approval Request</field>
-    <field name="body_html" type="html">
-       <t t-foreach="object._get_accountant_emails()" t-as="user">
-                        <t>Dear <t t-out="user.name"/>,</t>
-                        <br/>
-                    </t>
-        <p>Please validate a Loan request <strong><span t-field="object.loan_form_number"/></strong> for <strong><span t-field="object.create_uid.name"/></strong>.</p>
-        <p>You can view the details of the request <a t-attf-href="{{object.generate_link(object.menu_id, object.action_id)}}">here</a>.</p>
-        <p>Thank you for your attention to this matter.</p>
-        <p>Best regards,<br/>CCTZ</p>
-    </field>
-    <field name="auto_delete">False</field>
-</record>
-
+        <record id="email_template_accountant_approver" model="mail.template">
+            <field name="model_id" ref="model_loan_form" />
+            <field name="name">Accountant Approver Email Template</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Loan Approval Request</field>
+            <field name="body_html" type="html">
+                <t t-foreach="object._get_accountant_emails()" t-as="user">
+                    <t>Dear <t t-out="user.name" />,</t>
+                    <br />
+                </t>
+                <p>Please validate a Loan request <strong>
+                        <span t-field="object.loan_form_number" />
+                    </strong> for <strong>
+                        <span t-field="object.create_uid.name" />
+                    </strong>.</p>
+                <p>You can view the details of the request <a
+                        t-attf-href="{{object.generate_link(object.menu_id, object.action_id)}}">
+                    here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br />CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
 
 
         <record id="email_template_general_manager_approver" model="mail.template">
-            <field name="model_id" ref="model_loan_form"/>
+            <field name="model_id" ref="model_loan_form" />
             <field name="name">General Manager Approver Email Template</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Loan Approval Request</field>
             <field name="body_html" type="html">
                 <p>
                     <t t-foreach="object._get_general_manager_emails()" t-as="user">
-                        <t>Dear <t t-out="user.name"/>,</t>
-                        <br/>
+                        <t>Dear <t t-out="user.name" />,</t>
+                        <br />
                     </t>
                 </p>
-                <p>Please validate a Loan request <strong><t t-out="object.loan_form_number"/></strong> for <strong><t t-out="object.create_uid.name"/></strong>.</p>
-                <p>You can view the details of the request <a t-attf-href="{{ object.generate_link(object.menu_id, object.action_id) }}">here</a>.</p>
+                <p>Please validate a Loan request <strong>
+                        <t t-out="object.loan_form_number" />
+                    </strong> for <strong>
+                        <t t-out="object.create_uid.name" />
+                    </strong>.</p>
+                <p>You can view the details of the request <a
+                        t-attf-href="{{ object.generate_link(object.menu_id, object.action_id) }}">
+                    here</a>.</p>
                 <p>Thank you for your attention to this matter.</p>
-                <p>Best regards,<br/>CCTZ</p>
+                <p>Best regards,<br />CCTZ</p>
             </field>
             <field name="auto_delete">False</field>
         </record>

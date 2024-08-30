@@ -236,6 +236,7 @@ class loanform(models.Model):
     def action_approve2(self):
         self.state = 'approved'
         self.action_send_email()
+        self.action_send_instruction_notification()
 
     def action_reject2(self):
         self.state = 'rejected'
@@ -280,6 +281,11 @@ class loanform(models.Model):
     # sending email
     def action_send_email(self):
         template = self.env.ref('loan_form.email_loan_approval_status')
+        for rec in self:
+            template.send_mail(rec.id, force_send=True)
+            
+    def action_send_instruction_notification(self):
+        template = self.env.ref('loan_form.email_loan_approval_status_notify')
         for rec in self:
             template.send_mail(rec.id, force_send=True)
 
