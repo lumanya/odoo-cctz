@@ -15,47 +15,63 @@
             <group>
               <group>
                 <field name="asset_name" />
-                <field name="date" />
                 <field name="device_purpose" />
+                <field name="quantity" />
+                <field name="date" />
                 <field name="supplier_id" />
                 <field name="device_part_number" />
-                <field name="quantity" />
               </group>
 
               <group>
-                <field name="order_id"
-                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" />
-                <field name="customer_id"
-                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" />
-                <field name="sales_id"
-                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" />
+                <!-- <field name="order_id"
+                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" /> -->
+                <!-- <field name="customer_id"
+                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" /> -->
+                <!-- <field name="sales_id"
+                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" /> -->
                 <!-- <field name="technician_id"
                   attrs="{'invisible': [('device_purpose', '!=', 'technician')]}" /> -->
-                <field name="employee_id"
-                  attrs="{'invisible': [('device_purpose', '!=', 'employee')]}" />
-                <field name="move_date" />
-                <field name="status" />
-                <field name="status_tech" attrs="{'invisible':[('device_purpose', '!=', 'technician')]}"/>
-                <field name="invoice_status"
-                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" />
-                <field name="invoice_number_move"
-                  attrs="{'invisible': [('invoice_status', '!=', 'invoiced')]}" />
-                <field name="return_date" attrs="{'invisible': [('status', '=', 'assigned')]}" />
-                <field name="return_condition" attrs="{'invisible': [('status', '=', 'assigned')]}" />
+                <!-- <field name="employee_id_move"
+                  attrs="{'invisible': [('device_purpose', '!=', 'employee')]}" /> -->
+                <field name="move_date"
+                  attrs="{'invisible' : ['|', ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
+                <field name="status"
+                  attrs="{'invisible' : ['|', ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
+                <field name="status_tech"
+                  attrs="{'invisible': [('device_purpose', 'not in', ['service_delivery', 'employee_assigned'])]}" />
+                <field name="return_date"
+                  attrs="{'invisible': ['|', ('status', '=', 'assigned'), ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
+                <field name="return_condition"
+                  attrs="{'invisible': ['|', ('status', '=', 'assigned'), ('device_purpose',  '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
               </group>
             </group>
-            <notebook>
-              <page string="Description">
-                <field name="description" widget='html' />
+            <notebook>\ <page string="Description">
+                <field name="display_description" widget='html' />
               </page>
-              <page string="History" attrs="{'invisible': [('device_purpose', '!=', 'technician')]}">
+              <page
+                string="Technician Bin"
+                attrs="{'invisible': [('device_purpose', '!=', 'service_delivery')]}">
                 <field name="asset_move_history_ids">
                   <tree editable="bottom">
                     <field name="technician_id" />
                     <field name="start_date" />
                     <field name="end_date" />
+                    <field name="return_condition_tech" />
                   </tree>
                 </field>
+              </page>
+              <page
+                string="Employee Bin"
+                attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}">
+                <field name="asset_move_employee_ids">
+                  <tree editable="bottom">
+                    <field name="employee_id" />
+                    <field name="start_date" />
+                    <field name="end_date" />
+                    <field name="return_condition_tech" />
+                  </tree>
+                </field>
+
               </page>
             </notebook>
           </sheet>
@@ -67,7 +83,7 @@
       </field>
     </record>
 
-    <record model="ir.ui.view" id="asset_move_custom_tree_view">
+    <!-- <record model="ir.ui.view" id="asset_move_custom_tree_view">
       <field name="name">asset.move.custom.tree</field>
       <field name="model">asset.move</field>
       <field name="arch" type="xml">
@@ -86,7 +102,7 @@
           <field name="invoice_number_move" />
         </tree>
       </field>
-    </record>
+    </record> -->
 
     <record model="ir.ui.view" id="asset_move_employee_tree_view">
       <field name="name">asset.move.employee.tree</field>
@@ -95,12 +111,9 @@
         <tree string="Asset move - Employee">
           <field name="asset_id" />
           <field name="asset_name" />
-          <field name="employee_id" />
           <field name="move_date" />
           <field name="device_part_number" />
-          <field name="status" />
-          <field name="return_date" />
-          <field name="return_condition" />
+          <field name="status_tech"/>
         </tree>
       </field>
     </record>
@@ -112,31 +125,28 @@
         <tree string="Asset move - Technicians">
           <field name="asset_id" />
           <field name="asset_name" />
-          <!-- <field name="technician_id" /> -->
           <field name="device_part_number" />
-          <field name="move_date" />
           <field name="status_tech" />
-          <field name="return_date" />
           <field name="return_condition" />
         </tree>
       </field>
     </record>
 
     <!-- Actions for Filtered Views -->
-    <record model="ir.actions.act_window" id="asset_move_customer_action">
+    <!-- <record model="ir.actions.act_window" id="asset_move_customer_action">
       <field name="name">Asset Moves - Customer</field>
       <field name="res_model">asset.move</field>
       <field name="view_mode">tree,form</field>
       <field name="view_id" ref="asset_move_custom_tree_view" />
       <field name="domain">[('device_purpose', '=', 'customer')]</field>
-    </record>
+    </record> -->
 
     <record model="ir.actions.act_window" id="asset_move_technician_action">
       <field name="name">Asset Moves - Technician</field>
       <field name="res_model">asset.move</field>
       <field name="view_mode">tree,form</field>
       <field name="view_id" ref="asset_move_technician_tree_view" />
-      <field name="domain">[('device_purpose', '=', 'technician')]</field>
+      <field name="domain">[('device_purpose', '=', 'service_delivery')]</field>
     </record>
 
     <record model="ir.actions.act_window" id="asset_move_employee_action">
@@ -144,7 +154,7 @@
       <field name="res_model">asset.move</field>
       <field name="view_mode">tree,form</field>
       <field name="view_id" ref="asset_move_employee_tree_view" />
-      <field name="domain">[('device_purpose', '=', 'employee')]</field>
+      <field name="domain">[('device_purpose', '=', 'employee_assigned')]</field>
     </record>
 
     <!-- Menu Items -->
@@ -153,14 +163,14 @@
       parent="asset_management_menu_root" />
 
     <!-- Sub-menus under Asset Move -->
-    <menuitem name="Customer Moves" id="asset_move_customer_menu"
-      parent="asset_move_menu_root" action="asset_move_customer_action" sequence="1" />
-    <menuitem name="Technician Moves" id="asset_move_technician_menu"
+    <!-- <menuitem name="Customer Moves" id="asset_move_customer_menu"
+      parent="asset_move_menu_root" action="asset_move_customer_action" sequence="1" /> -->
+    <menuitem name="Service Delivery Asset" id="asset_move_technician_menu"
       parent="asset_move_menu_root" action="asset_move_technician_action" sequence="2" />
 
     <!-- Separate Menu for Employee -->
-    <menuitem name="Employee Moves" id="asset_move_employee_menu"
-      parent="asset_management_menu_root" action="asset_move_employee_action" sequence="12" />
+    <menuitem name="Employee Assigned Asset" id="asset_move_employee_menu"
+      parent="asset_move_menu_root" action="asset_move_employee_action" sequence="12" />
 
   </data>
 </odoo>

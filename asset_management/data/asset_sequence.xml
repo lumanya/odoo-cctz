@@ -8,5 +8,14 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
+
+
+        <record id="seq_asset_move" model="ir.sequence">
+            <field name="name">Asset Move</field>
+            <field name="code">move.number</field>
+            <field name="prefix">MV</field>
+            <field name="padding">6</field>
+            <field name="company_id" eval="False"/>
+        </record>
     </data>
 </odoo>

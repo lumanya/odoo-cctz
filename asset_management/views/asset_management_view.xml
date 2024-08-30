@@ -14,15 +14,12 @@
             <group>
               <group>
                 <field name="asset_name_id" />
+                <field name="device_purpose"/>
+                <field name="quantity" />
                 <field name="date" />
                 <field name="supplier_id" />
                 <field name="device_part_number" />
-                <field name="quantity" />
-              </group>
-              <group>
-                <field name="invoice_number"/>
-                <field name="device_purpose"/>
-              </group>
+              </group>         
             </group>
             <notebook>
               <page string="Description">
@@ -49,7 +46,6 @@
           <field name="supplier_id" />
           <field name="device_part_number" />
           <field name="quantity" />
-          <field name="invoice_number" />
           <field name="device_purpose"/>
         </tree>
       </field>

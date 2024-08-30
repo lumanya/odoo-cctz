@@ -17,7 +17,13 @@ class AssetMoveHistory(models.Model):
         string='Technician',
         required=True
     )
-    
+   
+    employee_id = fields.Many2one(
+        'hr.employee', 
+        string='Employee',
+        
+    )
+ 
     start_date = fields.Date(
         string='Taken Date',
 
@@ -29,6 +35,10 @@ class AssetMoveHistory(models.Model):
         string='Return Date'
         
     )
+    
+    return_condition_tech = fields.Selection([('good', 'Good'), ('repairable', 'Repairable'), ('damaged', 'Damaged')], string='Return Condition')
+    
+    status = fields.Selection([('assigned', 'Assigned'), ('returned','Returned')], string='Status')
    
     @api.model
     def create(self, vals):

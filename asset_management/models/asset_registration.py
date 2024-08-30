@@ -1,4 +1,5 @@
 from odoo import models, fields, api,_
+from odoo.exceptions import ValidationError
 
 class asset_registration(models.Model):
     _name = 'asset.registration'
@@ -16,10 +17,10 @@ class asset_registration(models.Model):
     date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
 
     device_purpose = fields.Selection([
-        ('customer', 'Customer'), 
-        ('employee', 'Employee'), 
-        ('technician', 'Technician')
-        ], string='Device Purpose', required=True)
+        ('service_delivery','Service-Delivery Asset'), 
+        ('employee_assigned', 'Employee Asset'), 
+        ('operational_support', 'Operational Support Asset')
+        ], string='Asset Type', required=True)
 
     supplier_id = fields.Many2one(
         'res.partner', 
@@ -28,11 +29,11 @@ class asset_registration(models.Model):
         )
     
     invoice_number = fields.Char(string='Invoice number', required=True) 
-    device_part_number = fields.Char(string='Device Part Number', required=True)
+    device_part_number = fields.Char(string='Serial Number/Part Number', required=True)
 
-    quantity = fields.Integer(string= 'Quantity', required=True)
+    quantity = fields.Integer(string= 'Quantity', required=True, default = 1)
 
-    description = fields.Char(related='asset_name_id.name', string= 'Description') 
+    description = fields.Text(string= 'Description', store=True) 
 
     
 
@@ -47,6 +48,7 @@ class asset_registration(models.Model):
     def create(self, vals):
         if vals.get('asset_number', _('New'))== _('New'):
             vals['asset_number'] = self.env['ir.sequence'].next_by_code('asset.number') or _('New')
+        
         res = super(asset_registration, self).create(vals)
 
         move_vals = {
@@ -59,4 +61,9 @@ class asset_registration(models.Model):
            
         return res
     
+    @api.constrains('quantity')
+    def _check_quantity(self):
+        for record in self:
+            if record.quantity <= 0:
+                raise ValidationError("Quantity must be greater than zero.")
 
