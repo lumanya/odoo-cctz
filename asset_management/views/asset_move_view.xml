@@ -39,13 +39,16 @@
                   attrs="{'invisible' : ['|', ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
                 <field name="status_tech"
                   attrs="{'invisible': [('device_purpose', 'not in', ['service_delivery', 'employee_assigned'])]}" />
+                <field name="current_location_move"
+                  attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}" />
                 <field name="return_date"
                   attrs="{'invisible': ['|', ('status', '=', 'assigned'), ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
                 <field name="return_condition"
                   attrs="{'invisible': ['|', ('status', '=', 'assigned'), ('device_purpose',  '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
               </group>
             </group>
-            <notebook>\ <page string="Description">
+            <notebook>
+               <page string="Description">
                 <field name="display_description" widget='html' />
               </page>
               <page
@@ -71,7 +74,18 @@
                     <field name="return_condition_tech" />
                   </tree>
                 </field>
-
+              </page>
+              <page
+                string="Operational Support Asset Movements"
+                attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}">
+                <field name="asset_oprational_move_ids">
+                  <tree editable="bottom">
+                    <field name="from_department" />
+                    <field name="to_department" />
+                    <field name="movement_date" />
+                    <field name="device_condition" />
+                  </tree>
+                </field>
               </page>
             </notebook>
           </sheet>
@@ -83,26 +97,20 @@
       </field>
     </record>
 
-    <!-- <record model="ir.ui.view" id="asset_move_custom_tree_view">
-      <field name="name">asset.move.custom.tree</field>
+    <record model="ir.ui.view" id="asset_move_operational_tree_view">
+      <field name="name">asset.move.operational.tree</field>
       <field name="model">asset.move</field>
       <field name="arch" type="xml">
-        <tree string="Asset move - Customer">
+        <tree string="Asset move - Operational">
           <field name="asset_id" />
           <field name="asset_name" />
-          <field name="customer_id" />
-          <field name="order_id" />
+          <field name="current_location_move" />
           <field name="quantity" />
           <field name="move_date" />
           <field name="status" />
-          <field name="invoice_status" decoration-success="invoice_status == 'invoiced'"
-            decoration-info="invoice_status == 'to_be_invoiced'"
-            decoration-warning="invoice_status == 'pending'" widget="badge" optional="show"
-            modifiers="{&quot;readonly&quot;: true}" />
-          <field name="invoice_number_move" />
         </tree>
       </field>
-    </record> -->
+    </record>
 
     <record model="ir.ui.view" id="asset_move_employee_tree_view">
       <field name="name">asset.move.employee.tree</field>
@@ -113,7 +121,7 @@
           <field name="asset_name" />
           <field name="move_date" />
           <field name="device_part_number" />
-          <field name="status_tech"/>
+          <field name="status_tech" />
         </tree>
       </field>
     </record>
@@ -133,13 +141,13 @@
     </record>
 
     <!-- Actions for Filtered Views -->
-    <!-- <record model="ir.actions.act_window" id="asset_move_customer_action">
-      <field name="name">Asset Moves - Customer</field>
+    <record model="ir.actions.act_window" id="asset_move_operational_action">
+      <field name="name">Asset Moves - Operational Support</field>
       <field name="res_model">asset.move</field>
       <field name="view_mode">tree,form</field>
-      <field name="view_id" ref="asset_move_custom_tree_view" />
-      <field name="domain">[('device_purpose', '=', 'customer')]</field>
-    </record> -->
+      <field name="view_id" ref="asset_move_operational_tree_view" />
+      <field name="domain">[('device_purpose', '=', 'operational_support')]</field>
+    </record>
 
     <record model="ir.actions.act_window" id="asset_move_technician_action">
       <field name="name">Asset Moves - Technician</field>
@@ -163,8 +171,9 @@
       parent="asset_management_menu_root" />
 
     <!-- Sub-menus under Asset Move -->
-    <!-- <menuitem name="Customer Moves" id="asset_move_customer_menu"
-      parent="asset_move_menu_root" action="asset_move_customer_action" sequence="1" /> -->
+    <menuitem name="Operational Support Asset " id="asset_move_operational_menu"
+      parent="asset_move_menu_root" action="asset_move_operational_action" sequence="1" />
+
     <menuitem name="Service Delivery Asset" id="asset_move_technician_menu"
       parent="asset_move_menu_root" action="asset_move_technician_action" sequence="2" />
 

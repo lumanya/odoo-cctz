@@ -28,7 +28,9 @@ class asset_registration(models.Model):
         required=False
         )
     
-    invoice_number = fields.Char(string='Invoice number', required=True) 
+    current_location = fields.Char(string="Current Location")
+    
+    invoice_number = fields.Char(string='Invoice number') 
     device_part_number = fields.Char(string='Serial Number/Part Number', required=True)
 
     quantity = fields.Integer(string= 'Quantity', required=True, default = 1)
@@ -54,7 +56,8 @@ class asset_registration(models.Model):
         move_vals = {
             'asset_id': res.id,
             'move_date':fields.Date.today(),
-            'device_purpose': res.device_purpose
+            'device_purpose': res.device_purpose,
+            'current_location_move':res.current_location,
         } 
 
         self.env['asset.move'].create(move_vals)

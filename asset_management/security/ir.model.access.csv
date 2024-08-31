@@ -1,5 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_asset_registration,asset_registration.asset_registration,model_asset_registration,base.group_user,1,1,1,1
 access_asset_move,asset.move,model_asset_move,base.group_user,1,1,1,1
-access_asset_move_history, asset_move_history,model_asset_move_history,base.group_user,1,1,1,1
-access_asset_move_employee, asset.move.employee,model_asset_move_employee,base.group_user,1,1,1,1
+access_asset_move_history,asset_move_history,model_asset_move_history,base.group_user,1,1,1,1
+access_asset_move_employee,asset.move.employee,model_asset_move_employee,base.group_user,1,1,1,1
+access_asset_operational_move,asset.operational.move,model_asset_operational_move,base.group_user,1,1,1,1
