@@ -18,7 +18,7 @@ class AssetMove(models.Model):
     #     ('technician', 'Technician'),
     # ], string= 'Device Purpose',required=True)
 
-    move_number = fields.Char(string='Move Number', copy=False, readonly=True, required=True, store=True, default=lambda self: _('New'))
+    move_number = fields.Char(string='Move Number', copy=False, readonly=True, required=True, store=True)
 
     asset_name = fields.Many2one(related='asset_id.asset_name_id', string='Asset Name', readonly=True, required=True)
 
@@ -85,6 +85,13 @@ class AssetMove(models.Model):
     #     if 'invoice_status' in vals and vals['invoice_status'] in ['to_be_invoiced', 'pending']:
     #         vals['invoice_number_move'] = False
     #     return super(AssetMove, self).write(vals)
+    
+    def name_get(self):
+        result = []
+        for record in self:
+            name = f'{record.move_number}'
+            result.append((record.id, name))
+        return result
     
     @api.onchange('status')
     def _onchange_status(self):

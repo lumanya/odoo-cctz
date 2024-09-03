@@ -14,7 +14,6 @@ class AssetOperationalMove(models.Model):
     
     from_department = fields.Char(
         string='From Department',
-        related='asset_operational_id.current_location_move',
         readonly=True,
         store=True,
     )
@@ -37,6 +36,9 @@ class AssetOperationalMove(models.Model):
     
     @api.model
     def create(self, vals):
+        asset_move = self.env['asset.move'].browse(vals['asset_operational_id'])
+        vals['from_department'] = asset_move.current_location_move
+        
         record = super(AssetOperationalMove, self).create(vals)
         
         if record.to_department:
@@ -44,3 +46,4 @@ class AssetOperationalMove(models.Model):
         else:
             raise ValidationError(_('Please specify which Department asset is moved'))
         return record
+    
