@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from odoo import models, fields, api,_
 from odoo.exceptions import UserError
 from odoo.http import request
@@ -52,7 +53,11 @@ class loanform(models.Model):
     reason = fields.Text(string='Reason', required=True)
     constant = fields.Float(default=0.01)
     constant1 = fields.Float(default=0.005)
-
+    
+    approval_time = fields.Datetime(string="Approval Time", readonly=True)
+    second_approval_time = fields.Datetime(string="Second Approval Time", readonly=True)
+    third_approval_time = fields.Datetime(string="Third Approval Time", readonly=True)
+    
     service_charge = fields.Float(string='service charge', compute= '_calculate_service_charge')
     subtotal = fields.Float(string='subtotal', compute='_calculate_subtotal')
     monthly_rate=fields.Float(string='Monthly Rate', compute='_calculate_monthly_rate')
@@ -175,6 +180,7 @@ class loanform(models.Model):
         if self.env.user.employee_id and self.env.user.employee_id.loan_officer_id:      
             self.state = 'to_approve'
             self.send_email_to_accountant()
+            self.approval_time = datetime.now()
         else:
             raise UserError("Please contact your Administrator to set your Loan Officer.")
 
@@ -215,7 +221,8 @@ class loanform(models.Model):
 
 
     def action_approve(self):
-        self.state = 'second_approval'      
+        self.state = 'second_approval'
+        self.second_approval_time = datetime.now()      
         self.send_email_to_loan_officer()
         
 
@@ -225,7 +232,8 @@ class loanform(models.Model):
 
 
     def action_approve1(self):
-        self.state = 'third_approval'         
+        self.state = 'third_approval'
+        self.third_approval_time = datetime.now()         
         self.send_email_to_general_manager()
 
     def action_reject1(self):
@@ -244,10 +252,78 @@ class loanform(models.Model):
 
     menu_id = fields.Integer(string='Menu ID')
     action_id = fields.Integer(string='Action ID')
+   
+   
+    def send_approval_reminders(self):
+        reminder_time = datetime.now() - timedelta(minutes=1)
+
+        to_approve_records = self.search([('state', '=', 'to_approve'), ('approval_time', '<', reminder_time)])
+        for record in to_approve_records:
+            record.send_reminder_to_accountant()
+
+        second_approval_records = self.search([('state', '=', 'second_approval'), ('second_approval_time', '<', reminder_time)])
+        for record in second_approval_records:
+            record.send_reminder_to_loan_officer()
+            
+        third_approval_records = self.search([('state', '=', 'third_approval'), ('third_approval_time', '<', reminder_time)])
+        for record in third_approval_records:
+            record.send_reminder_to_managers() 
+            
     
+    def send_reminder_to_loan_officer(self):
+        users = self.env.user.employee_id.loan_officer_id
+        template = self.env.ref('loan_form.email_template_loan_officer_reminder')
+        
+        if template and users:
+            for user in users:
+                if user.email:
+                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.email})
+                    _logger.info("Email sent to %s (%s)" % (user.name, user.email))
+                else:
+                    _logger.warning("User %s does not have an email address." % user.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_loan_officer_approver' not found.")
+            if not users:
+                _logger.warning("No users found in the 'Loan Officers' group.")
+
+          
+    def send_reminder_to_accountant(self):
+        accountant = self.env['hr.employee'].search([('job_title', '=', 'Head of Procurement & Accountant')], limit=1)           
+        template = self.env.ref('loan_form.email_template_accountant_reminder')    
+        
+        if template and accountant:
+            if accountant.work_email:
+                template.send_mail(self.id, force_send=True, email_values={'email_to': accountant.work_email})
+                _logger.info("Email sent to %s (%s)" % (accountant.name, accountant.work_email))
+            else:
+                _logger.warning("User %s does not have an email address." % accountant.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_accountant_approver' not found.")
+            if not accountant:
+                _logger.warning("No users found in the 'Accountant'")
+
+          
+    def send_reminder_to_managers(self):
+        manager = self.env['hr.employee'].search([('job_title', '=', 'General Manager')], limit=1)           
+        template = self.env.ref('loan_form.email_template_manager_reminder')    
+        
+        if template and manager:
+            if manager.work_email:
+                template.send_mail(self.id, force_send=True, email_values={'email_to': manager.work_email})
+                _logger.info("Email sent to %s (%s)" % (manager.name, manager.work_email))
+            else:
+                _logger.warning("User %s does not have an email address." % manager.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_general_manager_approver' not found.")
+            if not manager:
+                _logger.warning("No users found in the 'manager'")  
+
 
     @api.model
-    def generate_link(self, menu_id, action_id):
+    def generate_link(self, menu_id, action_id): 
         
         base_url = request.httprequest.url_root
         

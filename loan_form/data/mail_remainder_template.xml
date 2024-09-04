@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="email_template_loan_officer_reminder" model="mail.template">
+            <field name="model_id" ref="model_loan_form" />
+            <field name="name">Remainder: Approval Required for Loan Officer</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Reminder: Action Required - Approval Pending</field>
+            <field name="body_html" type="html">
+                <p>
+                    <t t-foreach="object._get_loan_officer_emails()" t-as="user">
+                        <t>Dear <t t-out="user.name" />,</t>
+                        <br />
+                    </t>
+                </p>
+                <p>This is a reminder that the following record is pending your approval:</p>
+                <p>Please review and take the necessary action.</p>
+                <p>You can view the details of the request </p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br />CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+        <record id="email_template_accountant_reminder" model="mail.template">
+            <field name="model_id" ref="model_loan_form" />
+            <field name="name">Remainder: Approval Required for Accountant</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Reminder: Action Required - Approval Pending</field>
+            <field name="body_html" type="html">
+                <p>
+                    <t t-foreach="object._get_accountant_emails()" t-as="user">
+                        <t>Dear <t t-out="user.name" />,</t>
+                        <br />
+                    </t>
+                </p>
+                <p>This is a reminder that the following record is pending your approval:</p>
+                <p>Please review and take the necessary action.</p>
+                <p>You can view the details of the request </p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br />CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+        <record id="email_template_manager_reminder" model="mail.template">
+            <field name="model_id" ref="model_loan_form" />
+            <field name="name">Remainder: Approval Required for Manager</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Reminder: Action Required - Approval Pending</field>
+            <field name="body_html" type="html">
+                <p>
+                    <t t-foreach="object._get_general_manager_emails()" t-as="user">
+                        <t>Dear <t t-out="user.name" />,</t>
+                        <br />
+                    </t>
+                </p>
+                <p>This is a reminder that the following record is pending your approval:</p>      
+                <p>Please review and take the necessary action.</p>
+                <p>You can view the details of the request </p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br />CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+    </data>
+</odoo>
