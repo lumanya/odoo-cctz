@@ -4,6 +4,7 @@ class AssetMove(models.Model):
     _name = 'asset.move'
     _inherit = 'mail.thread'
     _description = 'Asset Move'
+    _order = 'create_date desc'
 
     asset_id = fields.Many2one(
         'asset.registration',
@@ -30,7 +31,7 @@ class AssetMove(models.Model):
 
     # invoice_number = fields.Char(related='asset_id.invoice_number', string='Invoice Number', readonly=True, store=True)
 
-    device_part_number = fields.Char(related='asset_id.device_part_number', string='Device Part Number', readonly=True, store=True)
+    device_part_number = fields.Char(related='asset_id.device_part_number', string='Serial Number/Part Number', readonly=True, store=True)
 
     quantity = fields.Integer(related='asset_id.quantity', string='Quantity', readonly=True, store=True)
 

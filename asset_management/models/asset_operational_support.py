@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError
 class AssetOperationalMove(models.Model):
     _name = 'asset.operational.move'
     _description = 'Asset Operational Move'
+    _order = 'create_date desc'
 
     asset_operational_id = fields.Many2one(
         'asset.move', 

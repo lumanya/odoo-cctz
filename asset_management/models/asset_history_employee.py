@@ -4,6 +4,7 @@ from odoo.exceptions import ValidationError
 class AssetMoveEmployee(models.Model):
     _name = 'asset.move.employee'
     _description = 'Asset Move History'
+    _order = 'create_date desc'
 
     asset_employee_id = fields.Many2one(
         'asset.move', 
