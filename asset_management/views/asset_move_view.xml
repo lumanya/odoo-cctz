@@ -43,8 +43,7 @@
                   attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}" />
                 <field name="return_date"
                   attrs="{'invisible': ['|', ('status', '=', 'assigned'), '|', ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
-                <field name="return_condition"
-                  attrs="{'invisible': ['|', ('status', '=', 'assigned'), '|', ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
+                <field name="return_condition"/>
               </group>
             </group>
             <notebook>
@@ -83,7 +82,7 @@
                     <field name="from_department" />
                     <field name="to_department" />
                     <field name="movement_date" />
-                    <field name="device_condition" />
+                    <field name="device_condition"/>
                   </tree>
                 </field>
               </page>
@@ -105,8 +104,8 @@
           <field name="asset_id" />
           <field name="asset_name" />
           <field name="device_part_number"/>
-          <field name="quantity" />
           <field name="current_location_move" />
+          <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
         </tree>
       </field>
     </record>
@@ -118,9 +117,9 @@
         <tree string="Asset move - Employee">
           <field name="asset_id" />
           <field name="asset_name" />
-          <field name="move_date" />
           <field name="device_part_number" />
-          <field name="status_tech" />
+          <field name="status_tech" widget="badge" decoration-success="status_tech == 'available'" decoration-danger="status_tech == 'in_use'"/>
+          <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
         </tree>
       </field>
     </record>
@@ -133,8 +132,8 @@
           <field name="asset_id" />
           <field name="asset_name" />
           <field name="device_part_number" />
-          <field name="status_tech" />
-          <field name="return_condition" />
+          <field name="status_tech" widget="badge" decoration-success="status_tech == 'available'" decoration-danger="status_tech == 'in_use'"/>
+          <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
         </tree>
       </field>
     </record>

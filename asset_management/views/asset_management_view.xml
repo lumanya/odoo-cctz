@@ -46,8 +46,8 @@
           <field name="date" />
           <field name="supplier_id" />
           <field name="device_part_number" />
-          <field name="quantity" />
           <field name="device_purpose"/>
+          <field name="quantity" />
         </tree>
       </field>
     </record>

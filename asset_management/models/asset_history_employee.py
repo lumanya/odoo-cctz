@@ -31,7 +31,7 @@ class AssetMoveEmployee(models.Model):
         
     )
     
-    return_condition_tech = fields.Selection([('good', 'Good'), ('repairable', 'Repairable'), ('damaged', 'Damaged')], string='Return Condition')
+    return_condition_tech = fields.Selection([('good', 'Good'), ('repairable', 'Repairable'), ('damaged', 'Damaged')], string='Asset Condition')
     
     status = fields.Selection([('assigned', 'Assigned'), ('returned','Returned')], string='Status')
    
@@ -43,7 +43,10 @@ class AssetMoveEmployee(models.Model):
         
         record = super(AssetMoveEmployee, self).create(vals)
         
-        asset_move.status_tech = 'in_use' if not record.end_date else 'available' 
+        asset_move.status_tech = 'in_use' if not record.end_date else 'available'
+        
+        if record.return_condition_tech:
+            asset_move.return_condition = record.return_condition_tech 
         
         return record
     
@@ -54,6 +57,9 @@ class AssetMoveEmployee(models.Model):
                 record.asset_employee_id.status_tech = 'available'
             elif 'start_date' in vals and not record.end_date:
                 record.asset_employee_id.status_tech = 'in_use'
+                
+            if 'return_condition_tech' in vals:
+                record.asset_employee_id.return_condition = vals['return_condition_tech']
         return res
     
  

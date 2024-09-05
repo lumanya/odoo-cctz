@@ -57,7 +57,7 @@ class AssetMove(models.Model):
     
     return_date = fields.Date(string='Return Date')
 
-    return_condition = fields.Selection([('good', 'Good'), ('repairable', 'Repairable'), ('damaged', 'Damaged')], string='Return Condition')
+    return_condition = fields.Selection([('good', 'Good'), ('repairable', 'Repairable'), ('damaged', 'Damaged')], string='Device Condition', default='good',readonly=True)
 
     # invoice_status = fields.Selection([
     #     ('to_be_invoiced', 'To be Invoiced'),

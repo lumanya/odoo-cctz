@@ -51,6 +51,11 @@ class AssetMoveHistory(models.Model):
         
         asset_move.status_tech = 'in_use' if not record.end_date else 'available' 
         
+        asset_move.status_tech = 'in_use' if not record.end_date else 'available'
+        
+        if record.return_condition_tech:
+            asset_move.return_condition = record.return_condition_tech 
+        
         return record
     
     def write(self, vals):
@@ -60,6 +65,9 @@ class AssetMoveHistory(models.Model):
                 record.asset_move_id.status_tech = 'available'
             elif 'start_date' in vals and not record.end_date:
                 record.asset_move_id.status_tech = 'in_use'
+                
+            if 'return_condition_tech' in vals:
+                record.asset_move_id.return_condition = vals['return_condition_tech']
         return res
     
     # Optionally, add a computed field or method to display additional information or handle specific logic

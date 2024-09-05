@@ -31,7 +31,7 @@ class AssetOperationalMove(models.Model):
     
     device_condition = fields.Selection([
         ('good', 'Good'),
-        ('bad', 'Bad'),
+        ('damaged', 'Damaged'),
         ('repairable', 'Repairable')
     ], string='Device Condition', required=True)
     
@@ -46,5 +46,15 @@ class AssetOperationalMove(models.Model):
             record.asset_operational_id.asset_id.current_location = record.to_department
         else:
             raise ValidationError(_('Please specify which Department asset is moved'))
+        
+        if record.device_condition:
+            asset_move.return_condition = record.device_condition 
+        
         return record
     
+    def write(self, vals):
+        res = super(AssetOperationalMove, self).write(vals)
+        for record in self:                
+            if 'device_condition' in vals:
+                record.asset_operational_id.return_condition = vals['device_condition']
+        return res

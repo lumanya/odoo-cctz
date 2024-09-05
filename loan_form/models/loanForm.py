@@ -255,7 +255,7 @@ class loanform(models.Model):
    
    
     def send_approval_reminders(self):
-        reminder_time = datetime.now() - timedelta(minutes=1)
+        reminder_time = datetime.now() - timedelta(days=1)
 
         to_approve_records = self.search([('state', '=', 'to_approve'), ('approval_time', '<', reminder_time)])
         for record in to_approve_records:
