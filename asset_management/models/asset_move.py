@@ -71,7 +71,7 @@ class AssetMove(models.Model):
     
     asset_move_employee_ids = fields.One2many('asset.move.employee', 'asset_employee_id', string='Employee History')
     
-    current_location_move = fields.Char(related='asset_id.current_location', string='Current Location', readonly=True)
+    current_location_move = fields.Many2one('hr.department', related='asset_id.current_location', string='Current Location', readonly=True)
     
     asset_oprational_move_ids = fields.One2many('asset.operational.move', 'asset_operational_id', string='Operational Asset Asset' )
 

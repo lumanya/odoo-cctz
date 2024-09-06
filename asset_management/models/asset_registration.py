@@ -28,7 +28,7 @@ class asset_registration(models.Model):
         required=False
         )
     
-    current_location = fields.Char(string="Current Location")
+    current_location = fields.Many2one('hr.department', string="Current Location")
     
     invoice_number = fields.Char(string='Invoice number') 
     device_part_number = fields.Char(string='Serial Number/Part Number', required=True)

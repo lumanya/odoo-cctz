@@ -13,13 +13,15 @@ class AssetOperationalMove(models.Model):
         ondelete='cascade',  # Ensure history records are deleted if the related asset move is deleted
     )
     
-    from_department = fields.Char(
+    from_department = fields.Many2one(
+        'hr.department',
         string='From Department',
         readonly=True,
         store=True,
     )
     
-    to_department = fields.Char(
+    to_department = fields.Many2one(
+        'hr.department',
         string='To Department',
         required=True,
     )
@@ -38,12 +40,12 @@ class AssetOperationalMove(models.Model):
     @api.model
     def create(self, vals):
         asset_move = self.env['asset.move'].browse(vals['asset_operational_id'])
-        vals['from_department'] = asset_move.current_location_move
+        vals['from_department'] = asset_move.current_location_move.id
         
         record = super(AssetOperationalMove, self).create(vals)
         
         if record.to_department:
-            record.asset_operational_id.asset_id.current_location = record.to_department
+            record.asset_operational_id.asset_id.current_location = record.to_department.id
         else:
             raise ValidationError(_('Please specify which Department asset is moved'))
         
