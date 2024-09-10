@@ -14,7 +14,7 @@
                         <br />
                     </t>
                 </p>
-                <p>This is a reminder that the following record is pending your approval:</p>
+                <p>This is a reminder that the following record is pending your approval: <a t-att-href="object.generate_link(object.menu_id, object.action_id)">here</a></p>
                 <p>Please review and take the necessary action.</p>
                 <p>You can view the details of the request </p>
                 <p>Thank you for your attention to this matter.</p>
@@ -35,7 +35,7 @@
                         <br />
                     </t>
                 </p>
-                <p>This is a reminder that the following record is pending your approval:</p>
+                <p>This is a reminder that the following record is pending your approval: <a t-att-href="object.generate_link(object.menu_id, object.action_id)">here</a></p>
                 <p>Please review and take the necessary action.</p>
                 <p>You can view the details of the request </p>
                 <p>Thank you for your attention to this matter.</p>
@@ -56,7 +56,7 @@
                         <br />
                     </t>
                 </p>
-                <p>This is a reminder that the following record is pending your approval:</p>      
+                <p>This is a reminder that the following record is pending your approval: <a t-att-href="object.generate_link(object.menu_id, object.action_id)">here</a></p>      
                 <p>Please review and take the necessary action.</p>
                 <p>You can view the details of the request </p>
                 <p>Thank you for your attention to this matter.</p>

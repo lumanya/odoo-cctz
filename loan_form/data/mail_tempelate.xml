@@ -16,7 +16,7 @@
                         <t t-out="object.state" />
                     </strong>.</p>
                 <p>You can view the details of the Loan request <a
-                        t-att-href="object.generate_link(object.menu_id, object.action_id)">here</a>
+                        t-att-href="{{object.generate_link(object.menu_id, object.action_id)}}">here</a>
                     .</p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br />CCTZ</p>
@@ -39,7 +39,7 @@
                 <p>Please note that it will take two business days to process your disbursement.
                     After this period, you may visit an accountant to collect your cash.</p>
                 <p>You can view the details of the loan request <a
-                        t-att-href="object.generate_link(object.menu_id, object.action_id)">here</a>
+                        t-att-href="{{object.generate_link(object.menu_id, object.action_id)}}">here</a>
                     .</p>
                 <p>Thank you for choosing our services.</p>
                 <p>Best regards,<br />CCTZ</p>

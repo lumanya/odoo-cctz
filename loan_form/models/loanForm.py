@@ -324,32 +324,37 @@ class loanform(models.Model):
 
     @api.model
     def generate_link(self, menu_id, action_id): 
-        
-        base_url = request.httprequest.url_root
-        
-        # Find menu_id based on the menu name
-        menu = self.env['ir.ui.menu'].search([('name', '=', 'Loan Request')])       
-        menu_id = menu.id if menu else False
-        
-        # Find action_id based on the action name
-        action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'Loan View')])       
-        action_id = action.id if action else False
-        
-        if menu_id and action_id:
-            params = {'menu_id': menu_id, 'action': action_id}
-            if hasattr(self, '_origin') and self._origin:  # Check if called within a record context
-                params['id'] = self._origin.id  # Automatically include current record ID
-                
-                # Find the view ID associated with the current record
-                view_id = self._origin.get_formview_id()
-                if view_id:
-                    params['view_type'] = 'form'
-                    params['view_id'] = view_id        
-                
-            return base_url + 'web#' + url_encode(params)
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        if base_url:
+            return f"{base_url}/web#id={self.id} & view_type=form&model={self._name}"
         else:
-            # Handle the case where either menu or action is not found
             return False
+        
+        # base_url = request.httprequest.url_root
+        
+        # # Find menu_id based on the menu name
+        # menu = self.env['ir.ui.menu'].search([('name', '=', 'Loan Request')])       
+        # menu_id = menu.id if menu else False
+        
+        # # Find action_id based on the action name
+        # action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'Loan View')])       
+        # action_id = action.id if action else False
+        
+        # if menu_id and action_id:
+        #     params = {'menu_id': menu_id, 'action': action_id}
+        #     if hasattr(self, '_origin') and self._origin:  # Check if called within a record context
+        #         params['id'] = self._origin.id  # Automatically include current record ID
+                
+        #         # Find the view ID associated with the current record
+        #         view_id = self._origin.get_formview_id()
+        #         if view_id:
+        #             params['view_type'] = 'form'
+        #             params['view_id'] = view_id        
+                
+        #     return base_url + 'web#' + url_encode(params)
+        # else:
+        #     # Handle the case where either menu or action is not found
+        #     return False
         
     def _get_my_records(self):
         return self.search([('create_uid', '=', self.env.uid)])
