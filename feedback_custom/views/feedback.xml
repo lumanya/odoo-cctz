@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="custom_feedback_form">
+      <field name="name">custom_feedback.form</field>
+      <field name="model">feedback.custom</field>
+      <field name="arch" type="xml">
+        <form string="Customer Feedback">
+          <sheet>
+            <group>
+              <group>
+                <field name="customer_id" />
+                <field name="feedback_type"/>
+                <field name="rating"/>
+                <field name="comments" />
+                <field name="status" />
+                <field name="submission_date" />
+              </group>         
+            </group>
+            <notebook>
+              <page string="Description">
+                <field name="description" widget = "html"/>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" />
+            <field name="message_ids" options="{'post_refresh': 'always'}" />
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="custom_feedback_tree_view">
+      <field name="name">custom.feedback.tree</field>
+      <field name="model">feedback.custom</field>
+      <field name="arch" type="xml">
+        <tree string="Customer Feedback">
+          <field name="customer_id" />
+          <field name="feedback_type" />
+          <field name="rating" />
+          <field name="status" />
+          <field name="submission_date" />
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="custom_feedback_action">
+      <field name="name">Customer Feedback</field>
+      <field name="res_model">feedback.custom</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="custom_feedback_tree_view" />
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+          Click to create a new Customer Feedback.
+        </p>
+      </field>
+    </record>
+
+    <menuitem name="Customer Feedback" id="customer_feedback_menu_root" sequence="10" />
+
+    <menuitem name="Customer Feedback" id="customer_feedback_menu" sequence="11"
+      parent="customer_feedback_menu_root" action="custom_feedback_action" />
+
+  </data>
+</odoo>
