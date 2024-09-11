@@ -17,5 +17,13 @@
             <field name="padding">6</field>
             <field name="company_id" eval="False"/>
         </record>
+
+        <record id="seq_asset_serial_number" model="ir.sequence">
+            <field name="name">Asset Serial Number</field>
+            <field name="code">asset.serial.number</field>
+            <field name="padding">6</field>
+            <field name="prefix">CC/AT/</field>
+            <field name="implementation">no_gap</field>
+        </record>
     </data>
 </odoo>

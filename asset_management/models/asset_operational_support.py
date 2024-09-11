@@ -40,9 +40,13 @@ class AssetOperationalMove(models.Model):
     @api.model
     def create(self, vals):
         asset_move = self.env['asset.move'].browse(vals['asset_operational_id'])
-        vals['from_department'] = asset_move.current_location_move.id
+        last_move = self.search([('asset_operational_id', '=', asset_move.id)], order="create_date desc", limit=1)
         
+        if last_move and last_move.device_condition == 'damaged':
+            raise ValidationError(_('You cannot move a damaged asset'))
+        vals['from_department'] = asset_move.current_location_move.id
         record = super(AssetOperationalMove, self).create(vals)
+        
         
         if record.to_department:
             record.asset_operational_id.asset_id.current_location = record.to_department.id

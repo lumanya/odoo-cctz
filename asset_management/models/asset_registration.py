@@ -31,7 +31,7 @@ class asset_registration(models.Model):
     current_location = fields.Many2one('hr.department', string="Current Location")
     
     invoice_number = fields.Char(string='Invoice number') 
-    device_part_number = fields.Char(string='Serial Number/Part Number', required=True)
+    device_part_number = fields.Char(string='Serial Number/Part Number', required=False)
 
     quantity = fields.Integer(string= 'Quantity', required=True, default = 1)
 
@@ -48,6 +48,9 @@ class asset_registration(models.Model):
 
     @api.model
     def create(self, vals):
+        if vals.get('device_purpose') == 'operational_support' and not vals.get('device_part_number'):
+            vals['device_part_number'] = self.env['ir.sequence'].next_by_code('asset.serial.number') or _('Auto-Generated')
+            
         if vals.get('asset_number', _('New'))== _('New'):
             vals['asset_number'] = self.env['ir.sequence'].next_by_code('asset.number') or _('New')
         
