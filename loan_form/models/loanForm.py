@@ -271,7 +271,7 @@ class loanform(models.Model):
             
     
     def send_reminder_to_loan_officer(self):
-        users = self.env.user.employee_id.loan_officer_id
+        users = self.env.create_uid.employee_id.loan_officer_id
         template = self.env.ref('loan_form.email_template_loan_officer_reminder')
         
         if template and users:
@@ -323,13 +323,16 @@ class loanform(models.Model):
 
 
     @api.model
-    def generate_link(self, menu_id, action_id): 
+    def generate_link(self, menu_id, action_id, create_uid): 
+        _logger.warning(f"create_uid: {create_uid}, menu_id: {menu_id}, action_id: {action_id}")
+        
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         if base_url:
-            return f"{base_url}/web#id={self.id} & view_type=form&model={self._name}"
+            return f"{base_url}/web#id={self.id}&view_type=form&model={self._name}"
         else:
-            return False
+            return "#"
         
+
         # base_url = request.httprequest.url_root
         
         # # Find menu_id based on the menu name
@@ -372,11 +375,11 @@ class loanform(models.Model):
 
     
     def _get_loan_officer_emails(self):
-        users = self.env.user.employee_id.loan_officer_id
+        users = self.create_uid.employee_id.loan_officer_id
         return [user for user in users if user.email]
     
     def send_email_to_loan_officer(self):
-        users = self.env.user.employee_id.loan_officer_id
+        users = self.create_uid.employee_id.loan_officer_id
         template = self.env.ref('loan_form.email_template_loan_officer_approver')
         
         if template and users:

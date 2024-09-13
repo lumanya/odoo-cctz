@@ -14,9 +14,7 @@ class LoanInstallment(models.Model):
     loan_id = fields.Many2one('loan.form', string='Loan Form', required=True)
     amount = fields.Float(string='Installment Amount', required=True)    
     payment_date = fields.Date(string='Payment Date')
-
-    user_id = fields.Many2one('res.users', string='Accountant
-    ', compute='_compute_user', store=True, readonly=True)
+    user_id = fields.Many2one('res.users', string='Accountant', compute='_compute_user', store=True, readonly=True)
 
     status = fields.Selection([
         ('pending', 'Pending'),
