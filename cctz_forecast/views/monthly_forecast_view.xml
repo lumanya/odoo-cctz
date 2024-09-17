@@ -1,0 +1,76 @@
+<odoo>
+  <data>
+    <!-- monthly Forecast Tree View -->
+    <record model="ir.ui.view" id="monthly_forecast_tree_view">
+      <field name="name">monthly.forecast.tree</field>
+      <field name="model">cctz.forecast</field>
+      <field name="arch" type="xml">
+        <tree string="Monthly Forecasts">
+          <field name="forecast_number" />
+          <field name="forecast_type" />
+          <field name="month" />
+          <field name="year" />
+          <field name="user_id" string="Sales Person" widget="many2one_avatar_user" />
+          <field name="forecast_amount" />
+          <field name="forecast_gp" />
+        </tree>
+      </field>
+    </record>
+
+    <!-- monthly Forecast Form View -->
+    <record model="ir.ui.view" id="monthly_forecast_form">
+      <field name="name">monthly.forecast.form</field>
+      <field name="model">cctz.forecast</field>
+      <field name="arch" type="xml">
+        <form string="monthly Forecast">
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="forecast_number" />
+              </h1>
+            </div>
+            <group colspan="2">
+              <group>
+                <field name="forecast_type" readonly="1"/>
+                <field name="week" attrs="{'invisible': [('forecast_type', '=', 'monthly')]}"/>
+                <field name="month"/>
+                <field name="year"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+              </group>
+              <group>
+                <field name="forecast_amount"/>
+                <field name="forecast_gp"/>
+                <field name="actual_amount" attrs="{'invisible': [('forecast_amount', '=', 0.0), ('forecast_gp', '=', 0.0)]}"/>
+                <field name="actual_gp" attrs="{'invisible': [('forecast_amount', '=', 0.0), ('forecast_gp', '=', 0.0)]}"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Additional Information">
+                  <group>
+                      <field name="total_expected_revenue" readonly="1"/>
+                  </group>
+              </page>
+          </notebook>
+          </sheet>
+          <div class="oe_chatter">
+            <field name="message_follower_ids" widget="mail_followers"/>
+            <field name="message_ids" widget="mail_thread"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_monthly_forecast">
+      <field name="name">Monthly Forecasts</field>
+      <field name="res_model">cctz.forecast</field>
+      <field name="view_mode">tree,form</field>
+      <field name="view_id" ref="monthly_forecast_tree_view" />
+      <field name="context">{'default_forecast_type': 'monthly'}</field>
+      <field name="domain">[('forecast_type', '=', 'monthly')]</field>
+    </record>
+
+    <!-- monthly Forecast Menu Item -->
+    <menuitem name="Monthly Forecasts" id="menu_forecast_monthly" parent="menu_forecast"
+      action="action_monthly_forecast" sequence="20" />
+  </data>
+</odoo>

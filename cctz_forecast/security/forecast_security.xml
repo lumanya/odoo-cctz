@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Category for Forecast Management -->
+    <record id="module_category_forecast" model="ir.module.category">
+        <field name="name">Forecast Management</field>
+        <field name="description">Category for managing forecasts</field>
+        <field name="sequence">50</field>
+    </record>
+
+    <!-- Group for Forecast Users -->
+    <record id="group_forecast_user" model="res.groups">
+        <field name="name">Forecast User</field>
+        <field name="category_id" ref="module_category_forecast"/>
+    </record>
+
+    <!-- Group for BU Managers -->
+    <record id="group_forecast_bu_manager" model="res.groups">
+        <field name="name">Business Unit Manager</field>
+        <field name="category_id" ref="module_category_forecast"/>
+        <field name="implied_ids" eval="[(4, ref('group_forecast_user'))]"/>
+    </record>
+
+    <!-- Group for Department Heads -->
+    <record id="group_forecast_department_head" model="res.groups">
+        <field name="name">Department Head</field>
+        <field name="category_id" ref="module_category_forecast"/>
+        <field name="implied_ids" eval="[(4, ref('group_forecast_bu_manager'))]"/>
+    </record>
+
+    <!-- Record Rules -->
+
+    <!-- Rule for Forecast Users to see only their own forecasts -->
+    <record id="forecast_user_rule" model="ir.rule">
+        <field name="name">See Own Forecast</field>
+        <field name="model_id" ref="model_cctz_forecast"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_forecast_user'))]"/>
+    </record>
+
+    <!-- Rule for BU Managers to see forecasts from users in their unit -->
+    <record id="forecast_bu_manager_rule" model="ir.rule">
+        <field name="name">See Unit's Forecasts</field>
+        <field name="model_id" ref="model_cctz_forecast"/>
+        <field name="domain_force">['|', ('user_id', '=', user.id), ('user_id.department_id.manager_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_forecast_bu_manager'))]"/>
+    </record>
+
+    <!-- Rule for Department Heads to see all forecasts -->
+    <record id="forecast_department_head_rule" model="ir.rule">
+        <field name="name">See All Forecasts</field>
+        <field name="model_id" ref="model_cctz_forecast"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_forecast_department_head'))]"/>
+    </record>
+</odoo>
