@@ -271,7 +271,7 @@ class loanform(models.Model):
             
     
     def send_reminder_to_loan_officer(self):
-        users = self.env.create_uid.employee_id.loan_officer_id
+        users = self.create_uid.employee_id.loan_officer_id
         template = self.env.ref('loan_form.email_template_loan_officer_reminder')
         
         if template and users:

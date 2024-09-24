@@ -16,8 +16,6 @@
         "views/loan_form.xml",
         "report/loan_request_report.xml",
         "report/loan_request_report_template.xml",
-     
-     
     ],
     'images': ['static/description/banner.png'],
     "application": True,
