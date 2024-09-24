@@ -1,0 +1,11 @@
+<odoo>
+  <data noupdate="1">
+      <record id="seq_forecast_number" model="ir.sequence">
+          <field name="name">Forecast Number</field>
+          <field name="code">cctz.forecast</field>
+          <field name="prefix">FRC</field>
+          <field name="padding">4</field>
+          <field name="company_id" eval="False"/>
+      </record>
+  </data>
+</odoo>
