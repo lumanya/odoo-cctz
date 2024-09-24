@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="email_asset_approval_status" model="mail.template">
+            <field name="model_id" ref="model_asset_operational_move" />
+            <field name="name">Asset Movement Approval Status Email </field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Asset Movement Approval Status Update</field>
+            <field name="email_to">{{ object.create_uid.email }}</field>
+            <field name="body_html" type="html">
+                <p>Dear <t t-out="object.create_uid.name" />,</p>
+                <p>Asset Movement <strong>
+                    </strong> has been <strong>
+                        <t t-out="object.state" />
+                    </strong>.</p>
+                    <p>You can view the details of the request <a
+                        t-attf-href="{{object.generate_link(object.menu_id, object.action_id, object.create_uid)}}">
+                    here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br />CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+        <record id="asset_movement_approver" model="mail.template">
+            <field name="model_id" ref="model_asset_operational_move" />
+            <field name="name">Asset Movement Approver Email Template</field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Asset Movement Request</field>
+            <field name="body_html" type="html">
+                <p>
+                    <t t-foreach="object.get_department_managers()" t-as="user">
+                        <t>Dear <t t-out="user.name" />,</t>
+                        <br />
+                    </t>
+                </p>
+                <p>Please validate an asset movement request <strong>
+                        <t t-out="object.asset_operational_id.asset_id.asset_number" />
+                    </strong> for <strong>
+                        <t t-out="object.create_uid.name" />
+                    </strong>.</p>
+                <p>You can view the details of the request <a
+                        t-attf-href="{{object.generate_link(object.menu_id, object.action_id, object.create_uid)}}">
+                    here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br />CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+    </data>
+</odoo>

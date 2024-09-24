@@ -1,5 +1,8 @@
 from queue import Full
 from odoo import models, fields, api,_
+import logging
+
+_logger = logging.getLogger(__name__)
 class AssetMove(models.Model):
     _name = 'asset.move'
     _inherit = 'mail.thread'
@@ -74,6 +77,15 @@ class AssetMove(models.Model):
     current_location_move = fields.Many2one('hr.department', related='asset_id.current_location', string='Current Location', readonly=True)
     
     asset_oprational_move_ids = fields.One2many('asset.operational.move', 'asset_operational_id', string='Operational Asset Asset' )
+    
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('to_approve', 'To Approve'),
+        ('second_approval', 'Second Approval'),
+        ('third_approval', 'Third Approval'),
+        ('approved', 'Approved'),
+        ('rejected','Rejected')
+        ], string='Status', default='draft', track_visibility='onchange', tracking=True)
 
     # invoice_status = fields.Selection(related='order_id.invoice_status', string='Invoice Status')
     # @api.model
@@ -86,7 +98,7 @@ class AssetMove(models.Model):
     #     if 'invoice_status' in vals and vals['invoice_status'] in ['to_be_invoiced', 'pending']:
     #         vals['invoice_number_move'] = False
     #     return super(AssetMove, self).write(vals)
-    
+     
     def name_get(self):
         result = []
         for record in self:
@@ -106,19 +118,17 @@ class AssetMove(models.Model):
         self.employee_id_move = False
         # if self.device_purpose != 'for_customer':
         #     self.order_id = False
-        
+   
     @api.depends('description')
     def _compute_display_description(self):
         for record in self:
             record.display_description = record.description if record.description else 'There is no description'
-
 
     # @api.onchange('order_id')
     # def onchange_order_id(self):
     #     if self.order_id:
     #         self.customer_id = self.order_id.partner_id
     #         self.sales_id = self.order_id.user_id
-
 
     def action_confirm(self):
         self.write({'state': 'done'})  

@@ -1,5 +1,9 @@
 from odoo import models, fields, api,_
 from odoo.exceptions import ValidationError
+import logging
+
+_logger = logging.getLogger(__name__)
+
 
 class asset_registration(models.Model):
     _name = 'asset.registration'
@@ -38,7 +42,6 @@ class asset_registration(models.Model):
     description = fields.Text(string= 'Description', store=True) 
 
     
-
     def name_get(self):
         result = []
         for record in self:
