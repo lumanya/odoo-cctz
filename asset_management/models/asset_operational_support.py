@@ -40,6 +40,8 @@ class AssetOperationalMove(models.Model):
         ('repairable', 'Repairable')
     ], string='Device Condition', required=True)
     
+    manager_id = fields.Many2one('hr.employee', string='Owner', readonly=True)
+    
     menu_id = fields.Integer(string='Menu ID')
     action_id = fields.Integer(string='Action ID')
     
@@ -55,6 +57,13 @@ class AssetOperationalMove(models.Model):
     def action_approve(self):
         # self.state = 'second_approval'      
         self.send_email_to_head_of_department()
+        
+    @api.onchange('to_department')
+    def _onchange_to_department(self):
+        if self.to_department:
+            self.manager_id = self.to_department.manager_id.id if self.to_department.manager_id else False
+        else:
+            self.manager_id = False
 
     def generate_link(self, menu_id, action_id, create_uid): 
         _logger.warning(f"create_uid: {create_uid}, menu_id: {menu_id}, action_id: {action_id}")
@@ -75,21 +84,17 @@ class AssetOperationalMove(models.Model):
 
     
     def send_email_to_head_of_department(self):
-    # Ensure from_department is not empty
         if not self.from_department:
             _logger.warning("No department set for asset movement.")
             return
         
-        # Fetch the manager user for the department
         manager_user = self.from_department.manager_id.user_id if self.from_department.manager_id else None
         
         if manager_user:
             template = self.env.ref('asset_management.asset_movement_approver', raise_if_not_found=False)
             
             if template:
-                # Check if the manager has an email
                 if manager_user.work_email:
-                    # Send the email to the department head
                     template.with_context(user=manager_user).send_mail(
                         self.id, 
                         force_send=True, 
@@ -109,7 +114,6 @@ class AssetOperationalMove(models.Model):
     def create(self, vals):
         asset_move = self.env['asset.move'].browse(vals['asset_operational_id'])
         
-        # Debugging log to ensure asset_move is retrieved
         _logger.info(f"Asset Move Retrieved: {asset_move}")
         
         last_move = self.search([('asset_operational_id', '=', asset_move.id)], order="create_date desc", limit=1)
@@ -117,12 +121,14 @@ class AssetOperationalMove(models.Model):
         if last_move and last_move.device_condition == 'damaged':
             raise ValidationError(_('You cannot move a damaged asset'))
         
-        # Assign from_department based on the current location of the asset
         if asset_move.current_location_move:
             vals['from_department'] = asset_move.current_location_move.id
             _logger.info(f"from_department set to: {vals['from_department']}")
         else:
             _logger.warning(f"Asset Move {asset_move.id} has no current location set.")
+            
+        to_department = self.env['hr.department'].browse(vals['to_department'])
+        vals['manager_id'] = to_department.manager_id.id if to_department.manager_id else False
         
         record = super(AssetOperationalMove, self).create(vals)
         
@@ -132,9 +138,11 @@ class AssetOperationalMove(models.Model):
             raise ValidationError(_('Please specify which Department the asset is moved to'))
         
         if record.device_condition:
-            asset_move.return_condition = record.device_condition 
+            asset_move.return_condition = record.device_condition
+            
+        if record.manager_id:
+            asset_move.manager_id_move = record.manager_id
         
-        # Call send_email_to_head_of_department only if from_department is set
         if record.from_department:
             record.send_email_to_head_of_department()
         

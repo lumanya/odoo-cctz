@@ -44,6 +44,7 @@
                 <field name="return_date"
                   attrs="{'invisible': ['|', ('status', '=', 'assigned'), '|', ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
                 <field name="return_condition"/>
+                <field name="manager_id_move" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}" />
               </group>
             </group>
             <notebook>
@@ -105,6 +106,7 @@
           <field name="asset_name" />
           <field name="device_part_number"/>
           <field name="current_location_move" />
+          <field name="manager_id_move" widget="many2one_avatar_user" optional="show"/>
           <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
         </tree>
       </field>

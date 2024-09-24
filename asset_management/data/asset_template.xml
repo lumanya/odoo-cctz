@@ -34,10 +34,12 @@
                         <br />
                     </t>
                 </p>
-                <p>Please validate an asset movement request <strong>
-                        <t t-out="object.asset_operational_id.asset_id.asset_number" />
-                    </strong> for <strong>
-                        <t t-out="object.create_uid.name" />
+                <p>Please validate an asset movement request for <strong>
+                        <t t-out="object.asset_operational_id.asset_id.asset_number" />.
+                    </strong> The asset is moved from <strong>
+                        <t t-out="object.from_department.name" /> department
+                    </strong> to <strong>
+                        <t t-out="object.to_department.name"/> department
                     </strong>.</p>
                 <p>You can view the details of the request <a
                         t-attf-href="{{object.generate_link(object.menu_id, object.action_id, object.create_uid)}}">
