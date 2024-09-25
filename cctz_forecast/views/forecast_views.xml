@@ -7,9 +7,18 @@
       <field name="view_mode">tree,form</field>
     </record>
 
+    <!-- Action for Target -->
+    <record model="ir.actions.act_window" id="action_target">
+      <field name="name">Target</field>
+      <field name="res_model">cctz.forecast</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
     <!-- Menu Items -->
     <menuitem name="Forecast" id="menu_forecast_root" sequence="10" />
     <menuitem name="Sales Forecasts" id="menu_forecast" parent="menu_forecast_root"
       action="action_forecast" sequence="10" />
+    <menuitem name="Target" id="menu_target" parent="menu_forecast_root"
+      action="action_target" sequence="10" />
   </data>
 </odoo>

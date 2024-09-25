@@ -8,11 +8,14 @@
         <tree string="Weekly Forecasts">
           <field name="forecast_number" />
           <field name="forecast_type" />
+          <field name="week_date" />
           <field name="month" />
           <field name="year" />
           <field name="user_id" string="Sales Person" widget="many2one_avatar_user" />
           <field name="forecast_amount" />
           <field name="forecast_gp" />
+          <field name="actual_amount" />
+          <field name="actual_gp" />
         </tree>
       </field>
     </record>
@@ -39,6 +42,7 @@
               </group>
               <group>
                 <field name="forecast_amount"/>
+                <field name="week_date"/>
                 <field name="forecast_gp"/>
                 <field name="actual_amount" attrs="{'invisible': [('forecast_amount', '=', 0.0), ('forecast_gp', '=', 0.0)]}"/>
                 <field name="actual_gp" attrs="{'invisible': [('forecast_amount', '=', 0.0), ('forecast_gp', '=', 0.0)]}"/>
@@ -46,11 +50,16 @@
             </group>
             <notebook>
               <page string="Additional Information">
-                  <group>
-                      <field name="total_expected_revenue" readonly="1"/>
-                  </group>
+                <group>
+                  <field name="total_expected_revenue" readonly="1"/>
+                </group>
               </page>
-          </notebook>
+              <page string="User Leads Information">
+                <group>
+                    <field name="total_expected_revenue" readonly="1"/>
+                </group>
+              </page>
+            </notebook>
           </sheet>
           <div class="oe_chatter">
             <field name="message_follower_ids" widget="mail_followers"/>
@@ -66,7 +75,7 @@
       <field name="view_mode">tree,form</field>
       <field name="view_id" ref="weekly_forecast_tree_view" />
       <field name="context">{'default_forecast_type': 'weekly'}</field>
-      <field name="domain">[('forecast_type', '=', 'weekly')]</field> 
+      <field name="domain">[('forecast_type', '=', 'weekly')]</field>
     </record>
 
     <!-- Weekly Forecast Menu Item -->
