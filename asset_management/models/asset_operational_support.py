@@ -83,30 +83,30 @@ class AssetOperationalMove(models.Model):
             return []
 
     
-    def send_email_to_head_of_department(self):
-        if not self.from_department:
-            _logger.warning("No department set for asset movement.")
-            return
+    # def send_email_to_head_of_department(self):
+    #     if not self.from_department:
+    #         _logger.warning("No department set for asset movement.")
+    #         return
         
-        manager_user = self.from_department.manager_id.user_id if self.from_department.manager_id else None
+    #     manager_user = self.from_department.manager_id.user_id if self.from_department.manager_id else None
         
-        if manager_user:
-            template = self.env.ref('asset_management.asset_movement_approver', raise_if_not_found=False)
+    #     if manager_user:
+    #         template = self.env.ref('asset_management.asset_movement_approver', raise_if_not_found=False)
             
-            if template:
-                if manager_user.work_email:
-                    template.with_context(user=manager_user).send_mail(
-                        self.id, 
-                        force_send=True, 
-                        email_values={'email_to': manager_user.work_email}
-                    )
-                    _logger.info(f"Email sent to {manager_user.name} ({manager_user.work_email})")
-                else:
-                    _logger.warning(f"Manager {manager_user.name} does not have an email address.")
-            else:
-                _logger.warning("Email template 'asset_management.asset_movement_approver' not found.")
-        else:
-            _logger.warning("No manager of department found.")
+    #         if template:
+    #             if manager_user.work_email:
+    #                 template.with_context(user=manager_user).send_mail(
+    #                     self.id, 
+    #                     force_send=True, 
+    #                     email_values={'email_to': manager_user.work_email}
+    #                 )
+    #                 _logger.info(f"Email sent to {manager_user.name} ({manager_user.work_email})")
+    #             else:
+    #                 _logger.warning(f"Manager {manager_user.name} does not have an email address.")
+    #         else:
+    #             _logger.warning("Email template 'asset_management.asset_movement_approver' not found.")
+    #     else:
+    #         _logger.warning("No manager of department found.")
 
 
     
@@ -143,8 +143,8 @@ class AssetOperationalMove(models.Model):
         if record.manager_id:
             asset_move.manager_id_move = record.manager_id
         
-        if record.from_department:
-            record.send_email_to_head_of_department()
+        # if record.from_department:
+        #     record.send_email_to_head_of_department()
         
         return record
 
