@@ -1,5 +1,4 @@
 from odoo import fields, api, models, _
-from datetime import datetime, timedelta
 from odoo.exceptions import ValidationError, UserError
 from odoo.http import request
 from werkzeug.urls import url_encode
@@ -14,8 +13,6 @@ class Warranty(models.Model):
     _description = 'Warrant Request'
     _order = 'name desc, id desc'
 
-    approval_time = fields.Datetime(string="Approval Time", readonly=True)
-    second_approval_time = fields.Datetime(string="Second Approval Time", readonly=True)
 
     name = fields.Char(
         string="IR Number",
@@ -24,6 +21,7 @@ class Warranty(models.Model):
     customer_id = fields.Many2one('res.partner', tracking=True, string="Customer", required=True)
     fault_reported = fields.Char(string='Fault Reported', tracking=True)
     date_received = fields.Date(string='Date Received', tracking=True)
+    event_end_date = fields.Date(string='Event End Date', tracking=True)
     job_status = fields.Selection([
         ('open', 'Open'),
         ('unused', 'Unused'),
@@ -67,11 +65,9 @@ class Warranty(models.Model):
     equipment_type = fields.Char(string='Equipment Type', tracking=True)
     equipment_serial_number = fields.Char(string='Equipment Serial Number')
     warranty_status = fields.Selection([
-        ('HPE 3PAR Storage', 'HPE 3PAR Storag'),
-        ('closed', 'Closed'),
-        ('HPE Server warrant', 'HPE Server Warrant'),
-        ('HPE Aruba switch', 'HPE Aruba Switch'),
-        ('None', 'None')
+        ('HPE 3PAR Storage', 'HPE Storage'),
+        ('HPE Server warrant', 'HPE Server'),
+        ('HPE Aruba switch', 'HPE Networking'),
     ], string='Warranty Status', tracking=True)
     part_number = fields.Char(string='Order Part Number')
     part_description = fields.Char(string='Part Description')
@@ -87,7 +83,7 @@ class Warranty(models.Model):
     part_return_awb = fields.Char(string='Part Return AWB')
     part_credit_reference = fields.Char(string='Part Credit Reference Number')
     part_credit_received_date = fields.Datetime(string='Part Credit Received Date')
-    # part_credit_amount = fields.Float('Part Credit Amount', tracking=True)
+    part_credit_amount = fields.Float('Part Credit Amount', tracking=True)
     part_warranty_status = fields.Selection([
         ('Yes', 'Yes'),
         ('No', 'No')
@@ -140,59 +136,13 @@ class Warranty(models.Model):
 
     def action_submit(self):
         self.state = 'to_approve'
-        self.approval_time = datetime.now()
         self.send_email_to_managed_service()       
 
 
     def action_approve(self):
-        self.state = 'second_approval'
-        self.second_approval_time = datetime.now()      
+        self.state = 'second_approval'      
         self.send_email_to_head_of_enterprise()
-
-
-    def check_approval_reminders(self):
-        reminder_time = datetime.now() - timedelta(hours=2)
-
-        to_approve_records = self.search([('state', '=', 'to_approve'), ('approval_time', '<', reminder_time)])
-        for record in to_approve_records:
-            record.send_reminder_to_managed_service()
-
-        second_approval_records = self.search([('state', '=', 'second_approval'), ('second_approval_time', '<', reminder_time)])
-        for record in second_approval_records:
-            record.send_reminder_to_head_of_enterprise()
-
-
-    def send_reminder_to_managed_service(self):
-        manager = self.env['hr.employee'].search([('job_title', '=', 'Managed Service - Account Manager')], limit=1) 
-        template = self.env.ref('cctz_warranty.email_template_managed_service_reminder')
-        if template and manager:
-            if manager.work_email:
-                template.send_mail(self.id, force_send=True, email_values={'email_to': manager.work_email})
-                _logger.info("Email sent to %s (%s)" % (manager.name, manager.work_email))
-            else:
-                _logger.warning("User %s does not have an email address." % manager.name)
-        else:
-            if not template:
-                _logger.warning("Email template 'email_template_managed_service_reminder' not found.")
-            if not manager:
-                _logger.warning("No users found in the 'manager'")  
-
-
-    def send_reminder_to_head_of_enterprise(self):
-        manager = self.env['hr.employee'].search([('job_title', '=', 'Head of Enterprise')], limit=1)   
-        template = self.env.ref('cctz_warranty.email_template_head_of_enterprise_reminder')
-        if template and manager:
-            if manager.work_email:
-                template.send_mail(self.id, force_send=True, email_values={'email_to': manager.work_email})
-                _logger.info("Email sent to %s (%s)" % (manager.name, manager.work_email))
-            else:
-                _logger.warning("User %s does not have an email address." % manager.name)
-        else:
-            if not template:
-                _logger.warning("Email template 'email_template_head_of_enterprise_reminder' not found.")
-            if not manager:
-                _logger.warning("No users found in the 'manager'")  
-   
+        
 
     def action_reject(self):
         self.state = 'rejected'
