@@ -8,95 +8,131 @@
         <form string="Asset Registration">
           <sheet>
             <div class="oe_title"> Asset Number <h1>
-                <field name="asset_number" />
-              </h1>
-            </div>
-            <group>
-              <group>
-                <field name="asset_name_id" />
-                <field name="device_purpose" />
-                <field name="current_location"
-                  attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}" />
-                <field name="quantity" />
-                <field name="date" />
-              </group>
-              <group>
-                <field name="supplier_id" />
-                <field name="device_part_number" />
-              </group>
-            </group>
-            <notebook>
-              <page string="Description">
-                <field name="description" widget="html" />
-              </page>
-            </notebook>
-          </sheet>
-          <div class="oe_chatter">
-            <field name="message_follower_ids" />
-            <field name="message_ids" options="{'post_refresh': 'always'}" />
+              <field name="asset_number" />
+            </h1>
           </div>
-        </form>
-      </field>
-    </record>
+          <group>
+            <group>
+              <field name="asset_name_id" />
+              <field name="device_purpose" />
+              <field name="current_location" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}" />
+              <field name="quantity" />
+              <field name="date" />
+            </group>
+            <group>
+              <field name="supplier_id" />
+              <field name="device_part_number" />
+            </group>
+          </group>
+          <notebook>
+            <page string="Description">
+              <field name="description" widget="html" />
+            </page>
+          </notebook>
+        </sheet>
+        <div class="oe_chatter">
+          <field name="message_follower_ids" />
+          <field name="message_ids" options="{'post_refresh': 'always'}" />
+        </div>
+      </form>
+    </field>
+  </record>
 
-    <record model="ir.ui.view" id="asset_registration_tree_view">
-      <field name="name">asset.registration.tree</field>
-      <field name="model">asset.registration</field>
-      <field name="arch" type="xml">
-        <tree string="Asset Registrations">
-          <field name="asset_number" />
-          <field name="asset_name_id" />
-          <field name="date" />
-          <field name="supplier_id" />
-          <field name="device_part_number" />
-          <field name="device_purpose" />
-          <field name="quantity" />
-        </tree>
-      </field>
-    </record>
+  <record model="ir.ui.view" id="asset_registration_tree_view">
+    <field name="name">asset.registration.tree</field>
+    <field name="model">asset.registration</field>
+    <field name="arch" type="xml">
+      <tree string="Asset Registrations">
+        <field name="asset_number" />
+        <field name="asset_name_id" />
+        <field name="date" />
+        <field name="supplier_id" />
+        <field name="device_part_number" />
+        <field name="device_purpose" />
+        <field name="quantity" />
+      </tree>
+    </field>
+  </record>
 
-    <record model="ir.actions.act_window" id="asset_registration_action">
-      <field name="name">Asset Registration</field>
-      <field name="res_model">asset.registration</field>
-      <field name="view_mode">tree,form</field>
-      <field name="view_id" ref="asset_registration_tree_view" />
-      <field name="help" type="html">
-        <p class="oe_view_nocontent_create">
+  <record model="ir.actions.act_window" id="asset_registration_action">
+    <field name="name">Asset Registration</field>
+    <field name="res_model">asset.registration</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="asset_registration_tree_view" />
+    <field name="help" type="html">
+      <p class="oe_view_nocontent_create">
           Click to create a new asset registration.
-        </p>
-      </field>
-    </record>
+      </p>
+    </field>
+  </record>
 
-    <record id="asset_type_graph" model="ir.ui.view">
-      <field name="name">asset.registration.graph</field>
-      <field name="model">asset.registration</field>
-      <field name="arch" type="xml">
-        <graph string="Asset Type Graph" type="pie">
-          <field name="device_purpose" />
-        </graph>
-      </field>
-    </record>
+  <record id="asset_type_graph" model="ir.ui.view">
+    <field name="name">asset.registration.graph</field>
+    <field name="model">asset.registration</field>
+    <field name="arch" type="xml">
+      <graph string="Asset Type Graph" type="pie">
+        <field name="device_purpose"/>
+      </graph>
+    </field>
+  </record>
 
-    <record id="request_view_search" model="ir.ui.view">
-      <field name="name">asset.registration.search</field>
-      <field name="model">asset.registration</field>
-      <field name="arch" type="xml">
-        <search>
-          <field name="asset_name_id" />
-          <field name="supplier_id" />
-          <field name="device_part_number" />
-          <searchpanel>
-            <field name="device_purpose" string="Asset Type" />
-          </searchpanel>
-        </search>
-      </field>
-    </record>
-
-    <menuitem name="Asset Management" id="asset_management_menu_root" sequence="10" />
-
-    <menuitem name="Asset Registration" id="asset_registration_menu_root" sequence="11"
-      parent="asset_management_menu_root" action="asset_registration_action" />
+  <record id="asset_current_location_graph" model="ir.ui.view">
+    <field name="name">asset.move.graph</field>
+    <field name="model">asset.registration</field>
+    <field name="arch" type="xml">
+      <graph string="Assets Count Graph" type="bar">
+        <field name="current_location" type="row"/>
+        <field name="asset_count" type="measure"/>
+      </graph>
+    </field>
+  </record>
 
 
-  </data>
+  <record id="view_asset_dashboard_kanban" model="ir.ui.view">
+    <field name="name">asset.registration.kanban.dashboard</field>
+    <field name="model">asset.registration</field>
+    <field name="arch" type="xml">
+      <kanban class="o_dashboard">
+        <templates>
+          <t t-name="kanban-box">
+            <div class="o_kanban_card">
+              <div class="o_kanban_image">
+                <div class="o_kanban_image_flip">
+                  <span class="fa fa-bar-chart fa-3x"/>
+                </div>
+              </div>
+              <div class="o_kanban_details">
+                <field name="total_assets"/>
+                <div class="o_kanban_details_text">
+                  <strong>Total Registered Assets</strong>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <record id="request_view_search" model="ir.ui.view">
+    <field name="name">asset.registration.search</field>
+    <field name="model">asset.registration</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="asset_name_id" />
+        <field name="supplier_id" />
+        <field name="device_part_number" />
+        <searchpanel>
+          <field name="device_purpose" string="Asset Type" />
+        </searchpanel>
+      </search>
+    </field>
+  </record>
+
+  <menuitem name="Asset Management" id="asset_management_menu_root" sequence="10" />
+
+  <menuitem name="Asset Registration" id="asset_registration_menu_root" sequence="11" parent="asset_management_menu_root" action="asset_registration_action" />
+
+
+</data>
 </odoo>

@@ -54,11 +54,12 @@ class AssetMove(models.Model):
     
     asset_move_employee_ids = fields.One2many('asset.move.employee', 'asset_employee_id', string='Employee History')
     
-    current_location_move = fields.Many2one('hr.department', related='asset_id.current_location', string='Current Location', readonly=True)
+    current_location_move = fields.Many2one('hr.department', related='asset_id.current_location', string='Current Location', readonly=True, store=True)
     
     manager_id_move = fields.Many2one('hr.employee', string='Owner', readonly=True)
     
     asset_oprational_move_ids = fields.One2many('asset.operational.move', 'asset_operational_id', string='Operational Asset Asset' )
+    
     
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -85,7 +86,7 @@ class AssetMove(models.Model):
     def _onchange_device_purpose(self):
         self.technician_id_move = False
         self.employee_id_move = False
-   
+        
     @api.depends('description')
     def _compute_display_description(self):
         for record in self:

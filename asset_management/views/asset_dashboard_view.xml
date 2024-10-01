@@ -8,16 +8,37 @@
             <field name="view_id" ref="asset_management.asset_type_graph"/>
         </record>
 
+        <record id="asset_location_graph" model="ir.actions.act_window">
+            <field name="name">Asset Location</field>
+            <field name="res_model">asset.registration</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="asset_management.asset_current_location_graph"/>
+        </record>
+
+        <record id="action_asset_dashboard_kanban" model="ir.actions.act_window">
+            <field name="name">Asset Dashboard</field>
+            <field name="res_model">asset.registration</field>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_asset_dashboard_kanban"/>
+            <field name="help" type="html">
+                <p>This dashboard shows the total number of registered assets.</p>
+            </field>
+        </record>
+
         <record id="asset_registration_dashboard" model="ir.ui.view">
             <field name="name">asset.registration.dashboard</field>
             <field name="model">board.board</field>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Asset Dashboard">
-                    <board style="1-2">
+                    <board style="1-1">
                         <column>
-                            <action string="Asset Tree" name="%(asset_registration_action)d"/>
                             <action string="Asset Type Graph" name="%(asset_type_dashboard_graph)d"/>
+                            <action string="Asset Tree" name="%(asset_registration_action)d"/>
+                        </column>
+                        <column>
+                            <action string="Asset Dashboard" name="%(action_asset_dashboard_kanban)d"/>
+                            <action string="Assets Per Department" name="%(asset_location_graph)d"/>
                         </column>
                     </board>
                 </form>
@@ -32,7 +53,6 @@
             <field name="view_id" ref="asset_registration_dashboard" />
         </record>
 
-        <menuitem name="Asset Dashboard" id="asset_dashboard_menu_root" sequence="12"
-            parent="asset_management_menu_root" action="asset_dashboard_action" />
+        <menuitem name="Asset Dashboard" id="asset_dashboard_menu_root" sequence="1" parent="asset_management_menu_root" action="asset_dashboard_action" />
     </data>
 </odoo> 

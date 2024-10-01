@@ -32,7 +32,9 @@ class asset_registration(models.Model):
         required=False
         )
     
-    current_location = fields.Many2one('hr.department', string="Current Location")
+    current_location = fields.Many2one('hr.department', string="Current Location", store=True)
+    
+    asset_count = fields.Integer(string='Number of Assets', compute='_compute_asset_count', store=True)
     
     invoice_number = fields.Char(string='Invoice number') 
     device_part_number = fields.Char(string='Serial Number/Part Number', required=False)
@@ -41,7 +43,7 @@ class asset_registration(models.Model):
 
     description = fields.Text(string= 'Description', store=True) 
     
-    total_assets = fields.Integer(string='Total Assets', compute='_compute_total_assets')
+    total_assets = fields.Integer(string='Total Assets', compute='_compute_total_assets', store=True)
     
     total_quantity = fields.Integer(string='Total Quantity', compute='_compute_total_quantity')
 
@@ -83,9 +85,21 @@ class asset_registration(models.Model):
             
     @api.depends('quantity')
     def _compute_total_assets(self):
+        total = self.env['asset.registration'].search_count([])
         for record in self:
-            record.total_assets = self.search_count([])
+            record.total_assets = total
+            
+    @api.depends('current_location')
+    def _compute_asset_count(self):
+        for record in self:
+            if record.current_location:
+                record.asset_count = self.env['asset.registration'].search_count([
+                    ('current_location', '=', record.current_location.id)
+                ])
+            else:
+                record.asset_count = 0
 
+            
     @api.depends('quantity')
     def _compute_total_quantity(self):
         for record in self:
