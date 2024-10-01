@@ -22,17 +22,7 @@
                 <field name="device_part_number" />
               </group>
 
-              <group>
-                <!-- <field name="order_id"
-                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" /> -->
-                <!-- <field name="customer_id"
-                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" /> -->
-                <!-- <field name="sales_id"
-                  attrs="{'invisible': [('device_purpose', '!=', 'customer')]}" /> -->
-                <!-- <field name="technician_id"
-                  attrs="{'invisible': [('device_purpose', '!=', 'technician')]}" /> -->
-                <!-- <field name="employee_id_move"
-                  attrs="{'invisible': [('device_purpose', '!=', 'employee')]}" /> -->
+              <group>       
                 <field name="move_date"
                   attrs="{'invisible' : ['|', ('device_purpose', '=', 'service_delivery'), '|', ('device_purpose', '=', 'employee_assigned'), ('device_purpose', '=', 'operational_support')]}" />
                 <field name="status"

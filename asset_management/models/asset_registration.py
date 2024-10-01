@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class asset_registration(models.Model):
     _name = 'asset.registration'
-    _inherit = 'mail.thread'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Asset'
     
     asset_number = fields.Char(string='Asset Number', copy=False, readonly=True, required=True, store=True, default=lambda self: _('New'))
@@ -40,6 +40,10 @@ class asset_registration(models.Model):
     quantity = fields.Integer(string= 'Quantity', required=True, default = 1)
 
     description = fields.Text(string= 'Description', store=True) 
+    
+    total_assets = fields.Integer(string='Total Assets', compute='_compute_total_assets')
+    
+    total_quantity = fields.Integer(string='Total Quantity', compute='_compute_total_quantity')
 
     
     def name_get(self):
@@ -76,4 +80,15 @@ class asset_registration(models.Model):
         for record in self:
             if record.quantity <= 0:
                 raise ValidationError("Quantity must be greater than zero.")
+            
+    @api.depends('quantity')
+    def _compute_total_assets(self):
+        for record in self:
+            record.total_assets = self.search_count([])
+
+    @api.depends('quantity')
+    def _compute_total_quantity(self):
+        for record in self:
+            total_qty = sum(asset.quantity for asset in self.search([]))
+            record.total_quantity = total_qty
 
