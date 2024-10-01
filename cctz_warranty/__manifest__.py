@@ -26,9 +26,7 @@
         'security/ir.model.access.csv',
         'security/security.xml',
         'data/ir_sequence_data.xml',
-        'data/email_reminder_template.xml',
         'data/email_template.xml',
-        'data/email_reminder_cron.xml',
         'reports/warranty_plus_template.xml',
         'reports/warranty_plus_reports.xml',           
 
