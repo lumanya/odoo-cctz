@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="view_asset_dashboard_kanban" model="ir.ui.view">
+            <field name="name">asset.dashboard.kanban</field>
+            <field name="model">asset.dashboard</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_dashboard">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <!-- First Kanban Box: Total Assets -->
+                            <div class="o_kanban_record" style="min-height: 120px; text-align: center; border:none;">
+                                <div>
+                                    <strong>Total Assets</strong>
+                                    <div>
+                                        <span t-esc="record.total_assets.raw_value"/>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <!-- Second Kanban Box: Total Quantity -->
+                            <div class="o_kanban_record" style="min-height: 120px; text-align: center; border:none">
+                                <div>
+                                    <strong>Total Quantity</strong>
+                                    <div>
+                                        <span t-esc="record.total_quantity.raw_value"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                    <field name="total_assets"/>
+                    <field name="total_quantity"/>
+                </kanban>
+            </field>
+        </record>
+        
         <record id="asset_type_dashboard_graph" model="ir.actions.act_window">
             <field name="name">Asset Types</field>
             <field name="res_model">asset.registration</field>
@@ -17,7 +51,7 @@
 
         <record id="action_asset_dashboard_kanban" model="ir.actions.act_window">
             <field name="name">Asset Dashboard</field>
-            <field name="res_model">asset.registration</field>
+            <field name="res_model">asset.dashboard</field>
             <field name="view_mode">kanban</field>
             <field name="view_id" ref="view_asset_dashboard_kanban"/>
             <field name="help" type="html">
@@ -31,14 +65,14 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Asset Dashboard">
-                    <board style="1-1">
+                    <board style="2-1">
                         <column>
                             <action string="Asset Type Graph" name="%(asset_type_dashboard_graph)d"/>
                             <action string="Asset Tree" name="%(asset_registration_action)d"/>
                         </column>
                         <column>
-                            <action string="Asset Dashboard" name="%(action_asset_dashboard_kanban)d"/>
                             <action string="Assets Per Department" name="%(asset_location_graph)d"/>
+                            <action string="Asset Dashboard" name="%(action_asset_dashboard_kanban)d"/>
                         </column>
                     </board>
                 </form>
