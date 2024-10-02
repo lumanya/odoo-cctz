@@ -22,6 +22,8 @@
             <group>
               <field name="supplier_id" />
               <field name="device_part_number" />
+              <field name="warranty_start_date" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
+              <field name="warranty_end_date" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
             </group>
           </group>
           <notebook>

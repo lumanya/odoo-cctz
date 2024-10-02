@@ -46,6 +46,10 @@ class asset_registration(models.Model):
     total_assets = fields.Integer(string='Total Assets', compute='_compute_total_assets', store=True)
     
     total_quantity = fields.Integer(string='Total Quantity', compute='_compute_total_quantity')
+    
+    warranty_start_date = fields.Date(string='Warranty Start Date')
+    
+    warranty_end_date = fields.Date(string='Warranty End Date')
 
     
     def name_get(self):
@@ -92,14 +96,13 @@ class asset_registration(models.Model):
     @api.depends('current_location')
     def _compute_asset_count(self):
         for record in self:
-            if record.current_location:
+            if record.current_location and record.device_purpose == 'operational_support':
                 record.asset_count = self.env['asset.registration'].search_count([
                     ('current_location', '=', record.current_location.id)
                 ])
             else:
                 record.asset_count = 0
-
-            
+                        
     @api.depends('quantity')
     def _compute_total_quantity(self):
         for record in self:

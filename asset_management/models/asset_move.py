@@ -23,7 +23,11 @@ class AssetMove(models.Model):
     date = fields.Date(related='asset_id.date', string='Receiving Date', readonly=True)
 
     device_purpose = fields.Selection(related='asset_id.device_purpose', string='Asset Type', readonly=True)
+    
+    warranty_start_date_move = fields.Date(related='asset_id.warranty_start_date', string='Warranty Start Date', readonly=True)
 
+    warranty_end_date_move = fields.Date(related='asset_id.warranty_end_date', string='Warranty End Date', readonly=True)
+    
     supplier_id = fields.Many2one(related='asset_id.supplier_id', string='Supplier Name', readonly=True)
 
     device_part_number = fields.Char(related='asset_id.device_part_number', string='Serial Number/Part Number', readonly=True, store=True)
@@ -39,6 +43,8 @@ class AssetMove(models.Model):
     technician_id_move = fields.Many2one('res.users', string='Technician')
 
     employee_id_move = fields.Many2one('hr.employee', string='Employee')
+    
+    customer_move_id = fields.Many2one('res.partner', string='Customer', readonly=True)
     
     status_tech = fields.Selection([('in_use', 'In Use'), ('available', 'Available')], string='Availability', default ='available', readonly=True)
     

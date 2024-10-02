@@ -19,9 +19,9 @@ class AssetMoveHistory(models.Model):
         required=True
     )
    
-    employee_id = fields.Many2one(
-        'hr.employee', 
-        string='Employee',
+    customer_id = fields.Many2one(
+        'res.partner', 
+        string='Customer',
         
     )
  
@@ -51,10 +51,14 @@ class AssetMoveHistory(models.Model):
         
         asset_move.status_tech = 'in_use' if not record.end_date else 'available' 
         
-        asset_move.status_tech = 'in_use' if not record.end_date else 'available'
-        
         if record.return_condition_tech:
-            asset_move.return_condition = record.return_condition_tech 
+            asset_move.return_condition = record.return_condition_tech
+            
+        if record.customer_id:
+            asset_move.customer_move_id = record.customer_id
+        
+        if record.technician_id:
+            asset_move.technician_id_move = record.technician_id
         
         return record
     
