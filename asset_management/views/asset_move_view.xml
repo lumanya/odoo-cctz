@@ -147,6 +147,7 @@
         <field name="current_location_move" string="Asset Location" />
       </searchpanel>
     </field>
+     <field name="type">search</field>
  </record>
 
  <record model="ir.ui.view" id="asset_move_technician_search_view">
@@ -164,6 +165,7 @@
                 domain="[('status_tech', '=', 'available')]"/>
      </search>
   </field>
+  <field name="type">search</field>
 </record>
 
 <record model="ir.ui.view" id="asset_move_employee_search_view">
@@ -184,6 +186,7 @@
                 domain="[('status_tech', '=', 'in_use')]"/>
      </search>
   </field>
+  <field name="type">search</field>
 </record>
 
 <!-- Actions for Filtered Views -->

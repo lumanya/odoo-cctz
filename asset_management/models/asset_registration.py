@@ -73,7 +73,7 @@ class asset_registration(models.Model):
             'asset_id': res.id,
             'move_date':fields.Date.today(),
             'device_purpose': res.device_purpose,
-            'current_location_move':res.current_location,
+            'current_location_move':res.current_location.id,
             'move_number': self.env['ir.sequence'].next_by_code('asset.move.number') or _('New'),
         } 
 
