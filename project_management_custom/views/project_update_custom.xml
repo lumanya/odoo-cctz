@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_project_update_kanban" model="ir.ui.view">
+            <field name="name">project.update.kanban.view</field>
+            <field name="model">project.update</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <!-- Existing kanban view structure -->
+
+                    <!-- Status Bubble Rendering (only show on_track and at_risk) -->
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_global_click o_kanban_record_status_{{record.status.raw_value}}">
+                                <!-- Only show status bubble for Completed (on_track) and In-Progress (at_risk) -->
+                                <div t-if="record.status.raw_value == 'on_track'" class="badge badge-success">
+                                    Completed
+                                </div>
+                                <div t-if="record.status.raw_value == 'at_risk'" class="badge badge-warning">
+                                    In-Progress
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+    </data>
+</odoo>

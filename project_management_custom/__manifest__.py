@@ -7,6 +7,7 @@
     'depends': ['project'],  # Ensure 'project' is installed
     'data': [
         'views/project_management_view.xml',
+        'views/project_update_custom.xml',
     ],
     'installable': True,
     'application': False,

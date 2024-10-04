@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <xpath expr="//progressbar[@field='last_update_status']" position="attributes">
                 <attribute name="colors">
-                    {"on_track": "success", "at_risk": "warning", "off_track": "danger", "on_hold": "info", "completed": "success"}
+                    {"on_track": "success", "at_risk": "warning"}
                 </attribute>
             </xpath>
         </field>

@@ -4,12 +4,8 @@ class ProjectProject(models.Model):
 
     last_update_status = fields.Selection(
         selection=[
-            ('on_track', 'On Track'),
-            ('at_risk', 'At Risk'),
-            ('off_track', 'Off Track'),
-            ('on_hold', 'On Hold'),
-            ('to_define', 'Set Status'),
-            ('completed', 'Completed'), 
+            ('on_track', 'Completed'),
+            ('at_risk', 'In-Progress'),
         ],
         string="Last Update Status"
     )
@@ -17,10 +13,6 @@ class ProjectProject(models.Model):
     STATUS_COLOR = {
         'on_track': 20,
         'at_risk': 2,
-        'off_track': 23,
-        'on_hold': 4,
-        'to_define': 0,
-        'completed': 0,
     }
 
     last_update_color = fields.Integer(compute='_compute_last_update_color', string='Last Update Color')
@@ -44,6 +36,8 @@ class ProjectProject(models.Model):
             {'name': 'Risk'},
             {'name': 'Sign-off'},
             {'name': 'Training'},
+            {'name': 'Payment'},
+            {'name': 'Postmortem'},
         ]
         for stage in default_stages:
             project.type_ids += self.env['project.task.type'].sudo().create(stage)
