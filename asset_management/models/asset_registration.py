@@ -18,6 +18,26 @@ class asset_registration(models.Model):
         required=True,
         )
     
+    price_unit = fields.Float(string='Unit Price', compute='_compute_price_unit', store=True)
+    
+    depreciation_method = fields.Selection([
+        ('straight_line', 'Straight Line'),
+        ('declining_balance', 'Declining Balance'),
+    ], string='Depreciation Method', default='straight_line')
+    
+    depreciation_rate = fields.Float(string='Depreciation Rate (%)', required=True)
+    
+    depreciation_period = fields.Selection([
+        ('monthly', 'Monthly'),
+        ('yearly', 'Yearly')
+    ], string='Depreciation Period', default='yearly')
+    
+    cumulative_depreciation = fields.Float(string='Cumulative Depreciation', compute='_compute_depreciation')
+    
+    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
+    
+    net_book_value = fields.Float(string='Net Book Value', compute='_compute_net_value')
+    
     date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
 
     device_purpose = fields.Selection([
@@ -50,7 +70,7 @@ class asset_registration(models.Model):
     warranty_start_date = fields.Date(string='Warranty Start Date')
     
     warranty_end_date = fields.Date(string='Warranty End Date')
-
+    
     
     def name_get(self):
         result = []
@@ -108,4 +128,33 @@ class asset_registration(models.Model):
         for record in self:
             total_qty = sum(asset.quantity for asset in self.search([]))
             record.total_quantity = total_qty
+            
+    @api.depends('asset_name_id')
+    def _compute_price_unit(self):
+        for record in self:
+            if record.asset_name_id:
+                record.price_unit = record.asset_name_id.list_price
+            else:
+                record.price_unit = 0.0
+                
+    @api.depends('price_unit', 'depreciation_rate', 'depreciation_method', 'depreciation_period')
+    def _compute_depreciation(self):
+        for record in self:
+            if record.depreciation_method == 'straight_line':
+                depreciation_per_period = (record.price_unit * (record.depreciation_rate / 100))
+                if record.depreciation_period == 'yearly':
+                    record.cumulative_depreciation = depreciation_per_period
+                elif record.depreciation_period == 'monthly':
+                    record.cumulative_depreciation = depreciation_per_period / 12
+            elif record.depreciation_method == 'declining_balance':
+                depreciation_per_period = (record.price_unit * (record.depreciation_rate / 100))
+                if record.depreciation_period == 'yearly':
+                    record.cumulative_depreciation = depreciation_per_period
+                elif record.depreciation_period == 'monthly':
+                    record.cumulative_depreciation = depreciation_per_period / 12
+                    
+    @api.depends('price_unit','cumulative_depreciation')
+    def _compute_net_value(self):
+        for record in self:
+            record.net_book_value = record.price_unit - record.cumulative_depreciation
 

@@ -14,12 +14,16 @@
           <group>
             <group>
               <field name="asset_name_id" />
+              <field name="price_unit"/>
               <field name="device_purpose" />
               <field name="current_location" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}" />
-              <field name="quantity" />
-              <field name="date" />
+              <field name="depreciation_method"/>
+              <field name="depreciation_rate"/>
+              <field name="depreciation_period"/>
             </group>
             <group>
+              <field name="quantity" />
+              <field name="date" />
               <field name="supplier_id" />
               <field name="device_part_number" />
               <field name="warranty_start_date" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
@@ -29,6 +33,12 @@
           <notebook>
             <page string="Description">
               <field name="description" widget="html" />
+            </page>
+            <page string="Depreciation">
+              <group>    
+                <field name="cumulative_depreciation" options="{'currency_field': 'currency_id'}"/>
+                <field name="net_book_value" options="{'currency_field': 'currency_id'}"/>
+              </group>
             </page>
           </notebook>
         </sheet>
