@@ -88,6 +88,17 @@
     </field>
   </record>
 
+  <record id="asset_depreciation_type" model="ir.ui.view">
+    <field name="name">asset.depreciation.graph</field>
+    <field name="model">asset.registration</field>
+    <field name="arch" type="xml">
+      <graph string="Asset Depreciation Graph" type="pie">
+          <field name="fully_depreciated_count"/>
+          <field name="non_depreciated_count"/>
+      </graph>
+    </field>
+  </record>
+
   <record id="asset_current_location_graph" model="ir.ui.view">
     <field name="name">asset.move.graph</field>
     <field name="model">asset.registration</field>

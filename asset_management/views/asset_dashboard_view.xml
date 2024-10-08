@@ -34,6 +34,8 @@
                 </kanban>
             </field>
         </record>
+
+        
         
         <record id="asset_type_dashboard_graph" model="ir.actions.act_window">
             <field name="name">Asset Types</field>
@@ -59,6 +61,13 @@
             </field>
         </record>
 
+        <record id="asset_depreciation_dashboard_graph" model="ir.actions.act_window">
+            <field name="name">Asset Depreciation</field>
+            <field name="res_model">asset.registration</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="asset_management.asset_depreciation_type"/>
+        </record>
+
         <record id="asset_registration_dashboard" model="ir.ui.view">
             <field name="name">asset.registration.dashboard</field>
             <field name="model">board.board</field>
@@ -73,6 +82,7 @@
                         <column>
                             <action string="Assets Per Department" name="%(asset_location_graph)d"/>
                             <action string="Asset Dashboard" name="%(action_asset_dashboard_kanban)d"/>
+                            <action string="Asset Depreciation" name="%(asset_depreciation_dashboard_graph)d"/>
                         </column>
                     </board>
                 </form>

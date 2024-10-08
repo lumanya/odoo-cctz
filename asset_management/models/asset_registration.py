@@ -38,6 +38,16 @@ class asset_registration(models.Model):
     
     net_book_value = fields.Float(string='Net Book Value', compute='_compute_net_value')
     
+    state = fields.Selection([
+    ('fully_depreciated', 'Fully Depreciated'),
+    ('non_depreciated', 'Non-Depreciated'),
+    ], string='Depreciation State', compute='_compute_state', store=True)
+    
+    fully_depreciated_count = fields.Integer(string='Fully Depreciated Assets', compute='_compute_fully_depreciated_count', store=True)
+    
+    non_depreciated_count = fields.Integer(string='Non-Depreciated Assets', compute='_compute_non_depreciated_count', store=True)
+
+    
     date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
 
     device_purpose = fields.Selection([
@@ -158,3 +168,24 @@ class asset_registration(models.Model):
         for record in self:
             record.net_book_value = record.price_unit - record.cumulative_depreciation
 
+    @api.depends('net_book_value')
+    def _compute_fully_depreciated_count(self):
+        for record in self:
+            record.fully_depreciated_count = self.search_count([
+                ('net_book_value', '=', 0.0)
+            ])
+            
+    @api.depends('net_book_value')
+    def _compute_non_depreciated_count(self):
+        for record in self:
+            record.non_depreciated_count = self.search_count([
+                ('net_book_value', '>', 0.0)
+            ])
+            
+    @api.depends('fully_depreciated_count', 'non_depreciated_count')
+    def _compute_state(self):
+        for record in self:
+            if record.fully_depreciated_count:
+                record.state = 'fully_depreciated'
+            else:
+                record.state = 'non_depreciated'
