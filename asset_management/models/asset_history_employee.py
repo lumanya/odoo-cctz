@@ -46,7 +46,10 @@ class AssetMoveEmployee(models.Model):
         asset_move.status_tech = 'in_use' if not record.end_date else 'available'
         
         if record.return_condition_tech:
-            asset_move.return_condition = record.return_condition_tech 
+            asset_move.return_condition = record.return_condition_tech
+            
+        if record.employee_id:
+            asset_move.employee_id_move = record.employee_id 
         
         return record
     

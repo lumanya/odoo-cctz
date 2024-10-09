@@ -34,6 +34,7 @@
               <field name="customer_move_id" attrs="{'invisible': [('device_purpose', '!=', 'service_delivery')]}"/>
               <field name="warranty_start_date_move" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
               <field name="warranty_end_date_move" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
+              <field name="employee_id_move" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
             </group>
           </group>
           <notebook>
@@ -104,6 +105,7 @@
         <field name="asset_id" />
         <field name="asset_name" />
         <field name="device_part_number" />
+        <field name="employee_id_move" widget="many2one_avatar_user" optional="show"/>
         <field name="status_tech" widget="badge" decoration-success="status_tech == 'available'" decoration-danger="status_tech == 'in_use'"/>
         <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
       </tree>

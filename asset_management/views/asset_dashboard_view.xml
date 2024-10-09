@@ -35,6 +35,39 @@
             </field>
         </record>
 
+        <record id="view_depreciation_dashboard_kanban" model="ir.ui.view">
+            <field name="name">asset.dashboard.kanban</field>
+            <field name="model">asset.dashboard</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_dashboard">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <!-- First Kanban Box: Total Assets -->
+                            <div class="o_kanban_record" style="min-height: 120px; text-align: center; border:none;">
+                                <div>
+                                    <strong>Fully Depreciated</strong>
+                                    <div>
+                                        <span t-esc="record.fully_depreciated_count.raw_value"/>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <!-- Second Kanban Box: Total Quantity -->
+                            <div class="o_kanban_record" style="min-height: 120px; text-align: center; border:none">
+                                <div>
+                                    <strong>Depreciating</strong>
+                                    <div>
+                                        <span t-esc="record.non_depreciated_count.raw_value"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                    <field name="fully_depreciated_count"/>
+                    <field name="non_depreciated_count"/>
+                </kanban>
+            </field>
+        </record>
         
         
         <record id="asset_type_dashboard_graph" model="ir.actions.act_window">
@@ -63,9 +96,9 @@
 
         <record id="asset_depreciation_dashboard_graph" model="ir.actions.act_window">
             <field name="name">Asset Depreciation</field>
-            <field name="res_model">asset.registration</field>
-            <field name="view_mode">graph</field>
-            <field name="view_id" ref="asset_management.asset_depreciation_type"/>
+            <field name="res_model">asset.dashboard</field>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_depreciation_dashboard_kanban"/>
         </record>
 
         <record id="asset_registration_dashboard" model="ir.ui.view">

@@ -9,6 +9,7 @@ class asset_registration(models.Model):
     _name = 'asset.registration'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Asset'
+    _order = 'create_date desc'
     
     asset_number = fields.Char(string='Asset Number', copy=False, readonly=True, required=True, store=True, default=lambda self: _('New'))
 
@@ -36,7 +37,7 @@ class asset_registration(models.Model):
     
     currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
     
-    net_book_value = fields.Float(string='Net Book Value', compute='_compute_net_value')
+    net_book_value = fields.Float(string='Net Book Value', compute='_compute_net_value', store=True)
     
     state = fields.Selection([
     ('fully_depreciated', 'Fully Depreciated'),
@@ -46,6 +47,9 @@ class asset_registration(models.Model):
     fully_depreciated_count = fields.Integer(string='Fully Depreciated Assets', compute='_compute_fully_depreciated_count', store=True)
     
     non_depreciated_count = fields.Integer(string='Non-Depreciated Assets', compute='_compute_non_depreciated_count', store=True)
+    depreciation_start_date = fields.Date(string="Depreciation Start Date", required=True, default=fields.Date.context_today)
+    depreciation_end_date = fields.Date(string="Depreciation End Date", compute='_compute_depreciation_end_date', store=True)
+    depreciation_duration = fields.Integer(string='Depreciation Duration (Months)', compute='_compute_depreciation_duration', store=True)
 
     
     date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
@@ -147,21 +151,66 @@ class asset_registration(models.Model):
             else:
                 record.price_unit = 0.0
                 
-    @api.depends('price_unit', 'depreciation_rate', 'depreciation_method', 'depreciation_period')
-    def _compute_depreciation(self):
+    @api.depends('depreciation_start_date', 'price_unit', 'depreciation_rate', 'depreciation_period', 'depreciation_method')
+    def _compute_depreciation_end_date(self):
         for record in self:
             if record.depreciation_method == 'straight_line':
                 depreciation_per_period = (record.price_unit * (record.depreciation_rate / 100))
-                if record.depreciation_period == 'yearly':
-                    record.cumulative_depreciation = depreciation_per_period
-                elif record.depreciation_period == 'monthly':
-                    record.cumulative_depreciation = depreciation_per_period / 12
+                
+                if depreciation_per_period > 0:
+                    # Calculate how many periods are needed for the asset value to become 0
+                    if record.depreciation_period == 'yearly':
+                        total_periods = record.price_unit / depreciation_per_period
+                        record.depreciation_end_date = fields.Date.add(record.depreciation_start_date, years=int(total_periods))
+                    elif record.depreciation_period == 'monthly':
+                        total_periods = record.price_unit / (depreciation_per_period / 12)
+                        record.depreciation_end_date = fields.Date.add(record.depreciation_start_date, months=int(total_periods))
+                else:
+                    record.depreciation_end_date = record.depreciation_start_date  # Or set it to a default/fallback date
             elif record.depreciation_method == 'declining_balance':
-                depreciation_per_period = (record.price_unit * (record.depreciation_rate / 100))
-                if record.depreciation_period == 'yearly':
-                    record.cumulative_depreciation = depreciation_per_period
-                elif record.depreciation_period == 'monthly':
-                    record.cumulative_depreciation = depreciation_per_period / 12
+                # For declining balance, more complex, with faster depreciation at the beginning
+                total_periods = 0
+                current_value = record.price_unit
+                depreciation_rate = record.depreciation_rate / 100
+                
+                if depreciation_rate > 0:
+                    if record.depreciation_period == 'yearly':
+                        while current_value > 0.01:  # Threshold for when to stop depreciating
+                            current_value -= (current_value * depreciation_rate)
+                            total_periods += 1
+                        record.depreciation_end_date = fields.Date.add(record.depreciation_start_date, years=total_periods)
+                    elif record.depreciation_period == 'monthly':
+                        while current_value > 0.01:
+                            current_value -= (current_value * depreciation_rate / 12)
+                            total_periods += 1
+                        record.depreciation_end_date = fields.Date.add(record.depreciation_start_date, months=total_periods)
+                else:
+                    record.depreciation_end_date = record.depreciation_start_date  # Or set it to a default/fallback date
+
+
+    @api.depends('depreciation_start_date', 'depreciation_end_date')
+    def _compute_depreciation_duration(self):
+            for record in self:
+                start_date = fields.Date.from_string(record.depreciation_start_date)
+                end_date = fields.Date.from_string(record.depreciation_end_date)
+                record.depreciation_duration = (end_date.year - start_date.year) * 12 + (end_date.month - start_date.month)
+                    
+        
+    @api.depends('price_unit', 'depreciation_rate', 'depreciation_period')
+    def _compute_depreciation(self):
+            for record in self:
+                if record.depreciation_method == 'straight_line':
+                    depreciation_per_period = (record.price_unit * (record.depreciation_rate / 100))
+                    if record.depreciation_period == 'yearly':
+                        record.cumulative_depreciation = depreciation_per_period
+                    elif record.depreciation_period == 'monthly':
+                        record.cumulative_depreciation = depreciation_per_period / 12
+                elif record.depreciation_method == 'declining_balance':
+                    depreciation_per_period = (record.price_unit * (record.depreciation_rate / 100))
+                    if record.depreciation_period == 'yearly':
+                        record.cumulative_depreciation = depreciation_per_period
+                    elif record.depreciation_period == 'monthly':
+                        record.cumulative_depreciation = depreciation_per_period / 12
                     
     @api.depends('price_unit','cumulative_depreciation')
     def _compute_net_value(self):

@@ -7,6 +7,9 @@ class AssetDashboard(models.Model):
 
     total_assets = fields.Integer(string="Total Assets")
     total_quantity = fields.Integer(string="Total Quantity")
+    fully_depreciated_count = fields.Integer(string="Fully Depreciated Assets")
+    non_depreciated_count = fields.Integer(string="Non-Depreciated Assets")
+
 
     @api.model
     def init(self):
@@ -16,7 +19,9 @@ class AssetDashboard(models.Model):
                 SELECT
                     1 as id,
                     COUNT(*) as total_assets,
-                    SUM(quantity) as total_quantity
+                    SUM(quantity) as total_quantity,
+                    COUNT(CASE WHEN net_book_value = 0.0 THEN 1 END) as fully_depreciated_count,
+                    COUNT(CASE WHEN net_book_value > 0.0 THEN 1 END) as non_depreciated_count
                 FROM asset_registration
             )
         """)
