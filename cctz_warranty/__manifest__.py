@@ -27,6 +27,8 @@
         'security/security.xml',
         'data/ir_sequence_data.xml',
         'data/email_template.xml',
+        'data/email_reminder_cron.xml',
+        'data/email_reminder_template.xml',
         'reports/warranty_plus_template.xml',
         'reports/warranty_plus_reports.xml',           
 

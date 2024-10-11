@@ -276,9 +276,9 @@ class loanform(models.Model):
         
         if template and users:
             for user in users:
-                if user.email:
-                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.email})
-                    _logger.info("Email sent to %s (%s)" % (user.name, user.email))
+                if user.work_email:
+                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.work_email})
+                    _logger.info("Email sent to %s (%s)" % (user.name, user.work_email))
                 else:
                     _logger.warning("User %s does not have an email address." % user.name)
         else:
@@ -356,9 +356,9 @@ class loanform(models.Model):
         
         if template and users:
             for user in users:
-                if user.email:
-                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.email})
-                    _logger.info("Email sent to %s (%s)" % (user.name, user.email))
+                if user.work_email:
+                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.work_email})
+                    _logger.info("Email sent to %s (%s)" % (user.name, user.work_email))
                 else:
                     _logger.warning("User %s does not have an email address." % user.name)
         else:

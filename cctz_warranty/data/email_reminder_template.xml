@@ -4,7 +4,7 @@
 
         <record id="email_template_managed_service_reminder" model="mail.template">
             <field name="model_id" ref="model_warranty_request" />
-            <field name="name">Reminder: Approval Required for Managed Service</field>
+            <field name="name">Warranty: Reminder Approval for Managed Service</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Reminder: Action Required - Approval Pending</field>
             <field name="email_cc">ebenezeri.maleko@cctz.co.tz</field>
@@ -21,7 +21,7 @@
                     <li>Description: <t t-out="object.name or ''"/></li>
                 </ul>
                 <p>Please review and take necessary action </p>
-                <p>You can view the details of the request </p>
+                <p>You can view the details of the request. <a t-att-href="object.generate_link()">here</a></p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br />CCTZ</p>
             </field>
@@ -30,7 +30,7 @@
 
         <record id="email_template_head_of_enterprise_reminder" model="mail.template">
             <field name="model_id" ref="model_warranty_request" />
-            <field name="name">Remainder: Approval Required for Head of Enterprise</field>
+            <field name="name">Warranty: Reminder Approval for Head of Enterprise</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Reminder: Action Required - Approval Pending</field>
             <field name="email_cc">ebenezeri.maleko@cctz.co.tz</field>
@@ -47,7 +47,7 @@
                     <li>Description: <t t-out="object.name or ''"/></li>
                 </ul>
                 <p>Please review and take the necessary action.</p>
-                <p>You can view the details of the request </p>
+                <p>You can view the details of the request. <a t-att-href="object.generate_link()">here</a></p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br />CCTZ</p>
             </field>

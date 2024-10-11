@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from odoo import fields, api, models, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.http import request
@@ -119,6 +120,8 @@ class Warranty(models.Model):
     location = fields.Char(string="Location (of work to be done)")
     warranty_end_date = fields.Date(string="Warranty End Date")
     event_number = fields.Char(string='Event number')
+    approval_time = fields.Datetime(string="Approval Time", readonly=True)
+    second_approval_time = fields.Datetime(string="Second Approval Time", readonly=True)
 
     exceptional_landed_cost = fields.Selection([
         ('Yes', 'Yes'),
@@ -136,11 +139,13 @@ class Warranty(models.Model):
 
     def action_submit(self):
         self.state = 'to_approve'
+        self.approval_time = datetime.now()
         self.send_email_to_managed_service()       
 
 
     def action_approve(self):
-        self.state = 'second_approval'      
+        self.state = 'second_approval'
+        self.second_approval_time = datetime.now()      
         self.send_email_to_head_of_enterprise()
         
 
@@ -211,7 +216,65 @@ class Warranty(models.Model):
             if not template:
                 _logger.warning("Email template 'email_template_head_of_enterprise_approver' not found.")
             if not manager:
-                _logger.warning("No users found in the 'manager'")  
+                _logger.warning("No users found in the 'manager'")
+    
+    
+    @api.model
+    def generate_link(self):         
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        if base_url:
+            return f"{base_url}/web#id={self.id}&view_type=form&model={self._name}"
+        else:
+            return "#"           
+    
+    #send approval reminders
+    def check_approval_reminders(self):
+        reminder_time = datetime.now() - timedelta(minutes=2)
+
+        to_approve_records = self.search([('state', '=', 'to_approve'), ('approval_time', '<', reminder_time)])
+        for record in to_approve_records:
+            record.send_reminder_to_manager()
+
+        second_approval_records = self.search([('state', '=', 'second_approval'), ('second_approval_time', '<', reminder_time)])
+        for record in second_approval_records:
+            record.send_reminder_to_head_enterprise()
+                 
+    
+    def send_reminder_to_manager(self):
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Managed Service - Account Manager')], limit=1) 
+        template = self.env.ref('cctz_warranty.email_template_managed_service_reminder')
+        
+        if template and manager:
+            for user in manager:
+                if user.work_email:
+                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.work_email})
+                    _logger.info("Email sent to %s (%s)" % (user.name, user.work_email))
+                else:
+                    _logger.warning("User %s does not have an email address." % user.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_loan_officer_approver' not found.")
+            if not manager:
+                _logger.warning("No users found in the 'Loan Officers' group.")
+                
+    
+    def send_reminder_to_head_enterprise(self):
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Head of Enterprise')], limit=1)  
+        template = self.env.ref('cctz_warranty.email_template_head_of_enterprise_reminder')
+        
+        if template and manager:
+            for user in manager:
+                if user.work_email:
+                    template.with_context(user=user).send_mail(self.id, force_send=True, email_values={'email_to': user.work_email})
+                    _logger.info("Email sent to %s (%s)" % (user.name, user.work_email))
+                else:
+                    _logger.warning("User %s does not have an email address." % user.name)
+        else:
+            if not template:
+                _logger.warning("Email template 'email_template_loan_officer_approver' not found.")
+            if not manager:
+                _logger.warning("No users found in the 'Loan Officers' group.")
+
 
     
 

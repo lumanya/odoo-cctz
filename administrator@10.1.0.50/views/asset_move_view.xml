@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- Asset Move Form View -->
+    <record model="ir.ui.view" id="asset_move_form">
+      <field name="name">asset_move.form</field>
+      <field name="model">asset.move</field>
+      <field name="arch" type="xml">
+        <form string="Asset Move">
+          <sheet>
+            <div class="oe_title"> Asset Number <h1>
+              <field name="asset_id" />
+            </h1>
+          </div>
+          <group>
+            <group>
+              <field name="asset_name" />
+              <field name="device_purpose" />
+              <field name="quantity" />
+              <field name="date" />
+              <field name="supplier_id" />
+              <field name="device_part_number" />
+            </group>
+
+            <group>
+              <field name="move_date" attrs="{'invisible' : ['|', ('device_purpose', '=', 'service_delivery'), '|', ('device_purpose', '=', 'employee_assigned'), ('device_purpose', '=', 'operational_support')]}" />
+              <field name="status" attrs="{'invisible' : ['|', ('device_purpose', '=', 'service_delivery'), '|', ('device_purpose', '=', 'employee_assigned'), ('device_purpose', '=', 'operational_support')]}" />
+              <field name="status_tech" attrs="{'invisible': [('device_purpose', 'not in', ['service_delivery', 'employee_assigned'])]}" />
+              <field name="current_location_move" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}" />
+              <field name="return_date" attrs="{'invisible': ['|', ('status', '=', 'assigned'), '|', ('device_purpose', '=', 'service_delivery'), ('device_purpose', '=', 'employee_assigned')]}" />
+              <field name="return_condition"/>
+              <field name="manager_id_move" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}" />
+              <field name="technician_id_move" attrs="{'invisible': [('device_purpose', '!=', 'service_delivery')]}"/>
+              <field name="customer_move_id" attrs="{'invisible': [('device_purpose', '!=', 'service_delivery')]}"/>
+              <field name="warranty_start_date_move" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
+              <field name="warranty_end_date_move" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
+              <field name="employee_id_move" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}"/>
+            </group>
+          </group>
+          <notebook>
+            <page string="Description">
+              <field name="display_description" widget='html' />
+            </page>
+            <page string="Technician Bin" attrs="{'invisible': [('device_purpose', '!=', 'service_delivery')]}">
+              <field name="asset_move_history_ids">
+                <tree editable="top">
+                  <field name="technician_id" />
+                  <field name="start_date" />
+                  <field name="customer_id"/>
+                  <field name="end_date" />
+                  <field name="return_condition_tech" />
+                </tree>
+              </field>
+            </page>
+            <page string="Employee Bin" attrs="{'invisible': [('device_purpose', '!=', 'employee_assigned')]}">
+              <field name="asset_move_employee_ids">
+                <tree editable="top">
+                  <field name="employee_id" />
+                  <field name="start_date" />
+                  <field name="end_date" />
+                  <field name="return_condition_tech" />
+                </tree>
+              </field>
+            </page>
+            <page string="Operational Support Asset Movements" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}">
+              <field name="asset_oprational_move_ids">
+                <tree editable="top">
+                  <field name="from_department" />
+                  <field name="to_department" />
+                  <field name="movement_date" />
+                  <field name="device_condition"/>
+                </tree>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+        <div class="oe_chatter">
+          <field name="message_follower_ids" />
+          <field name="message_ids" options="{'post_refresh': 'always'}" />
+        </div>
+      </form>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="asset_move_operational_tree_view">
+    <field name="name">asset.move.operational.tree</field>
+    <field name="model">asset.move</field>
+    <field name="arch" type="xml">
+      <tree string="Asset move - Operational">
+        <field name="asset_id" />
+        <field name="asset_name" />
+        <field name="device_part_number"/>
+        <field name="current_location_move" />
+        <field name="manager_id_move" widget="many2one_avatar_user" optional="show"/>
+        <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
+      </tree>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="asset_move_employee_tree_view">
+    <field name="name">asset.move.employee.tree</field>
+    <field name="model">asset.move</field>
+    <field name="arch" type="xml">
+      <tree string="Asset move - Employee">
+        <field name="asset_id" />
+        <field name="asset_name" />
+        <field name="device_part_number" />
+        <field name="employee_id_move" widget="many2one_avatar_user" optional="show"/>
+        <field name="status_tech" widget="badge" decoration-success="status_tech == 'available'" decoration-danger="status_tech == 'in_use'"/>
+        <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
+      </tree>
+    </field>
+  </record>
+
+  <record model="ir.ui.view" id="asset_move_technician_tree_view">
+    <field name="name">asset.move.technician.tree</field>
+    <field name="model">asset.move</field>
+    <field name="arch" type="xml">
+      <tree string="Asset move - Technicians">
+        <field name="asset_id" />
+        <field name="asset_name" />
+        <field name="device_part_number" />
+        <field name="technician_id_move" widget="many2one_avatar_user" optional="show"/>
+        <field name="customer_move_id" />
+        <field name="status_tech" widget="badge" decoration-success="status_tech == 'available'" decoration-danger="status_tech == 'in_use'"/>
+        <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
+      </tree>
+    </field>
+  </record>
+  
+  <record model="ir.ui.view" id="asset_move_operational_search_view">
+    <field name="name">asset.move.operational.search</field>
+    <field name="model">asset.move</field>
+    <field name="arch" type="xml">
+       <search>
+          <field name="asset_name"/>
+          <field name="device_part_number"/>
+          <filter name="good_condition" 
+                  string="Good Condition" 
+                  domain="[('return_condition', '=', 'good')]"/>
+          <filter name="repairable_condition" 
+                  string="Repairable Condition" 
+                  domain="[('return_condition', '=', 'repairable')]"/>
+          <filter name="damaged_condition" 
+                  string="Damaged Condition" 
+                  domain="[('return_condition', '=', 'damaged')]"/>
+       </search>
+       <searchpanel>
+        <field name="current_location_move" string="Asset Location" />
+      </searchpanel>
+    </field>
+     <field name="type">search</field>
+ </record>
+
+ <record model="ir.ui.view" id="asset_move_technician_search_view">
+  <field name="name">asset.move.technician.search</field>
+  <field name="model">asset.move</field>
+  <field name="arch" type="xml">
+     <search>
+        <field name="asset_name"/>
+        <field name="status_tech"/>
+        <filter name="in_use_tech" 
+                string="In Use" 
+                domain="[('status_tech', '=', 'in_use')]"/>
+        <filter name="available_tech" 
+                string="Available" 
+                domain="[('status_tech', '=', 'available')]"/>
+     </search>
+  </field>
+  <field name="type">search</field>
+</record>
+
+<record model="ir.ui.view" id="asset_move_employee_search_view">
+  <field name="name">asset.move.employee.search</field>
+  <field name="model">asset.move</field>
+  <field name="arch" type="xml">
+     <search>
+        <field name="asset_name"/>
+        <field name="employee_id_move"/>
+        <filter name="good_condition" 
+                string="Good Condition" 
+                domain="[('return_condition', '=', 'good')]"/>
+        <filter name="available_tech_employee" 
+                string="Available" 
+                domain="[('status_tech', '=', 'available')]"/>
+        <filter name="in_use_tech_employee" 
+                string="In Use" 
+                domain="[('status_tech', '=', 'in_use')]"/>
+     </search>
+  </field>
+  <field name="type">search</field>
+</record>
+
+<!-- Actions for Filtered Views -->
+
+<record model="ir.actions.act_window" id="asset_move_operational_action">
+  <field name="name">Asset Moves - Operational Support</field>
+  <field name="res_model">asset.move</field>
+  <field name="view_mode">tree,form</field>
+  <field name="view_id" ref="asset_move_operational_tree_view" />
+  <field name="domain">[('device_purpose', '=', 'operational_support')]</field>
+  <field name="search_view_id" ref="asset_move_operational_search_view"/>
+</record>
+
+<record model="ir.actions.act_window" id="asset_move_technician_action">
+  <field name="name">Asset Moves - Technician</field>
+  <field name="res_model">asset.move</field>
+  <field name="view_mode">tree,form</field>
+  <field name="view_id" ref="asset_move_technician_tree_view" />
+  <field name="domain">[('device_purpose', '=', 'service_delivery')]</field>
+  <field name="search_view_id" ref="asset_move_technician_search_view"/>
+</record>
+
+<record model="ir.actions.act_window" id="asset_move_employee_action">
+  <field name="name">Asset Moves - Employee</field>
+  <field name="res_model">asset.move</field>
+  <field name="view_mode">tree,form</field>
+  <field name="view_id" ref="asset_move_employee_tree_view" />
+  <field name="domain">[('device_purpose', '=', 'employee_assigned')]</field>
+  <field name="search_view_id" ref="asset_move_employee_search_view"/>
+</record>
+
+ 
+
+  <!-- Menu Items -->
+
+  <menuitem name="Asset Move" id="asset_move_menu_root" sequence="11" parent="asset_management_menu_root" />
+
+  <!-- Sub-menus under Asset Move -->
+  <menuitem name="Operational Support Asset " id="asset_move_operational_menu" parent="asset_move_menu_root" action="asset_move_operational_action" sequence="1" />
+
+  <menuitem name="Service Delivery Asset" id="asset_move_technician_menu" parent="asset_move_menu_root" action="asset_move_technician_action" sequence="2" />
+
+  <!-- Separate Menu for Employee -->
+  <menuitem name="Employee Assigned Asset" id="asset_move_employee_menu" parent="asset_move_menu_root" action="asset_move_employee_action" sequence="12" />
+  </data>
+</odoo>
