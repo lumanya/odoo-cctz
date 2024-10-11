@@ -7,7 +7,7 @@
             <field name="state">code</field>
             <field name="code">model.check_approval_reminders()</field>
             <field name="interval_number">2</field>
-            <field name="interval_type">minutes</field>
+            <field name="interval_type">hours</field>
             <field name="numbercall">-1</field>
             <field name="doall">False</field>
             <field name="active">True</field>

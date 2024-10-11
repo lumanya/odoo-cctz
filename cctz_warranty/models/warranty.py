@@ -229,7 +229,7 @@ class Warranty(models.Model):
     
     #send approval reminders
     def check_approval_reminders(self):
-        reminder_time = datetime.now() - timedelta(minutes=2)
+        reminder_time = datetime.now() - timedelta(hours=2)
 
         to_approve_records = self.search([('state', '=', 'to_approve'), ('approval_time', '<', reminder_time)])
         for record in to_approve_records:
