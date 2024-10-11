@@ -4,7 +4,7 @@
 
         <record id="email_template_loan_officer_reminder" model="mail.template">
             <field name="model_id" ref="model_loan_form" />
-            <field name="name">Remainder: Approval Required for Loan Officer</field>
+            <field name="name">Loan: Reminder Approval for Loan Officer</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Reminder: Action Required - Approval Pending</field>
             <field name="body_html" type="html">
@@ -14,8 +14,8 @@
                         <br />
                     </t>
                 </p>
-                <p>This is a reminder that the following record is pending your approval: <a t-att-href="object.generate_link(object.menu_id, object.action_id, object.create_uid)">here</a></p>
-                <p>Please review and take the necessary action.</p>
+                <p>This is a reminder that the following record is pending your approval: <t t-out="object.loan_form_number"/></p>
+                <p>Please review and take the necessary action.<a t-att-href="object.generate_link()">here</a></p>
                 <p>You can view the details of the request </p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br />CCTZ</p>
@@ -25,7 +25,7 @@
 
         <record id="email_template_accountant_reminder" model="mail.template">
             <field name="model_id" ref="model_loan_form" />
-            <field name="name">Remainder: Approval Required for Accountant</field>
+            <field name="name">Loan: Reminder Approval for Accountant</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Reminder: Action Required - Approval Pending</field>
             <field name="body_html" type="html">
@@ -35,8 +35,8 @@
                         <br />
                     </t>
                 </p>
-                <p>This is a reminder that the following record is pending your approval: <a t-att-href="object.generate_link(object.menu_id, object.action_id, object.create_uid)">here</a></p>
-                <p>Please review and take the necessary action.</p>
+                <p>This is a reminder that the following record is pending your approval: <t t-out="object.loan_form_number"/></p>
+                <p>Please review and take the necessary action.<a t-att-href="object.generate_link()">here</a></p>
                 <p>You can view the details of the request </p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br />CCTZ</p>
@@ -46,7 +46,7 @@
 
         <record id="email_template_manager_reminder" model="mail.template">
             <field name="model_id" ref="model_loan_form" />
-            <field name="name">Remainder: Approval Required for Manager</field>
+            <field name="name">Loan: Reminder Approval for Manager</field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Reminder: Action Required - Approval Pending</field>
             <field name="body_html" type="html">
@@ -56,8 +56,8 @@
                         <br />
                     </t>
                 </p>
-                <p>This is a reminder that the following record is pending your approval: <a t-att-href="object.generate_link(object.menu_id, object.action_id, object_create_uid)">here</a></p>      
-                <p>Please review and take the necessary action.</p>
+                <p>This is a reminder that the following record is pending your approval: <t t-out="object.loan_form_number"/></p>
+                <p>Please review and take the necessary action.<a t-att-href="object.generate_link()">here</a></p>
                 <p>You can view the details of the request </p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br />CCTZ</p>

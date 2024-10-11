@@ -323,41 +323,13 @@ class loanform(models.Model):
 
 
     @api.model
-    def generate_link(self, menu_id, action_id, create_uid): 
-        _logger.warning(f"create_uid: {create_uid}, menu_id: {menu_id}, action_id: {action_id}")
-        
+    def generate_link(self):         
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         if base_url:
             return f"{base_url}/web#id={self.id}&view_type=form&model={self._name}"
         else:
             return "#"
         
-
-        # base_url = request.httprequest.url_root
-        
-        # # Find menu_id based on the menu name
-        # menu = self.env['ir.ui.menu'].search([('name', '=', 'Loan Request')])       
-        # menu_id = menu.id if menu else False
-        
-        # # Find action_id based on the action name
-        # action = self.env['ir.actions.act_window'].sudo().search([('name', '=', 'Loan View')])       
-        # action_id = action.id if action else False
-        
-        # if menu_id and action_id:
-        #     params = {'menu_id': menu_id, 'action': action_id}
-        #     if hasattr(self, '_origin') and self._origin:  # Check if called within a record context
-        #         params['id'] = self._origin.id  # Automatically include current record ID
-                
-        #         # Find the view ID associated with the current record
-        #         view_id = self._origin.get_formview_id()
-        #         if view_id:
-        #             params['view_type'] = 'form'
-        #             params['view_id'] = view_id        
-                
-        #     return base_url + 'web#' + url_encode(params)
-        # else:
-        #     # Handle the case where either menu or action is not found
-        #     return False
         
     def _get_my_records(self):
         return self.search([('create_uid', '=', self.env.uid)])
@@ -448,29 +420,3 @@ class loanform(models.Model):
             self.payment_status = 'completed'
 
    
-
-    # def action_new_installment(self):
-    #     action = self.env["ir.actions.actions"]._for_xml_id("loan_form.action_repayment_view")
-    #     action['context'] = self._prepare_installement_context()
-    #     action['context']['default_loan_id'] = self.id   
-    #     print("Installment:", action['context'])      
-    #     return action   
-
-    # def _prepare_installement_context(self):
-        # """
-        # Create loan installments based on the current loan data.
-        # This method will be triggered after a loan request is approved.
-        # """
-        # self.ensure_one()        
-              
-
-        # installment_context = {
-        #             'loan_id': self.id,
-        #             'amount': self.repayment_schedule,
-        #             'status': 'pending',  
-        #         }
-
-        # # Print the installment context to debug
-        # print("Installment Context:", installment_context)  
-
-        # return installment_context

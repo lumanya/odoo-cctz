@@ -11,7 +11,7 @@
         'security/security.xml',
         "data/loan_sequence.xml",
         "data/mail_tempelate.xml",
-        "data/mail_approval_remainder.xml",
+        "data/mail_approval_remainder_cron.xml",
         "data/mail_remainder_template.xml",     
         "views/loan_form.xml",
         "report/loan_request_report.xml",
