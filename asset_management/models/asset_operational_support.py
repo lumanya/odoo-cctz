@@ -45,18 +45,18 @@ class AssetOperationalMove(models.Model):
     menu_id = fields.Integer(string='Menu ID')
     action_id = fields.Integer(string='Action ID')
     
-    # state = fields.Selection([
-    #     ('draft', 'Draft'),
-    #     ('to_approve', 'To Approve'),
-    #     ('second_approval', 'Second Approval'),
-    #     ('third_approval', 'Third Approval'),
-    #     ('approved', 'Approved'),
-    #     ('rejected','Rejected')
-    #     ], string='Status', default='draft', track_visibility='onchange', tracking=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('to_approve', 'To Approve'),
+        ('approved', 'Approved'),
+        ('rejected','Rejected')
+        ], string='Status', default='draft', track_visibility='onchange', tracking=True)
     
-    def action_approve(self):
-        # self.state = 'second_approval'      
+    
+    def action_submit(self):
+        self.state = 'to_approve'
         self.send_email_to_head_of_department()
+        
         
     @api.onchange('to_department')
     def _onchange_to_department(self):
@@ -65,14 +65,22 @@ class AssetOperationalMove(models.Model):
         else:
             self.manager_id = False
 
-    def generate_link(self, menu_id, action_id, create_uid): 
-        _logger.warning(f"create_uid: {create_uid}, menu_id: {menu_id}, action_id: {action_id}")
-        
+    def generate_link(self):   
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         if base_url:
             return f"{base_url}/web#id={self.id}&view_type=form&model={self._name}"
         else:
             return "#"
+        
+    def action_send_accepted_email(self):
+        template = self.env.ref('asset_management.email_asset_approval_status_accepted')
+        for rec in self:
+            template.send_mail(rec.id, force_send=True)
+            
+    def action_send_rejected_email(self):
+        template = self.env.ref('asset_management.email_asset_approval_status_rejected')
+        for rec in self:
+            template.send_mail(rec.id, force_send=True)
     
     def get_department_managers(self):
         department = self.from_department
@@ -83,39 +91,35 @@ class AssetOperationalMove(models.Model):
             return []
 
     
-    # def send_email_to_head_of_department(self):
-    #     if not self.from_department:
-    #         _logger.warning("No department set for asset movement.")
-    #         return
+    def send_email_to_head_of_department(self):
+        if not self.from_department:
+            _logger.warning("No department set for asset movement.")
+            return
         
-    #     manager_user = self.from_department.manager_id.user_id if self.from_department.manager_id else None
+        manager_user = self.from_department.manager_id.user_id if self.from_department.manager_id else None
         
-    #     if manager_user:
-    #         template = self.env.ref('asset_management.asset_movement_approver', raise_if_not_found=False)
+        if manager_user:
+            template = self.env.ref('asset_management.asset_movement_approver', raise_if_not_found=False)
             
-    #         if template:
-    #             if manager_user.work_email:
-    #                 template.with_context(user=manager_user).send_mail(
-    #                     self.id, 
-    #                     force_send=True, 
-    #                     email_values={'email_to': manager_user.work_email}
-    #                 )
-    #                 _logger.info(f"Email sent to {manager_user.name} ({manager_user.work_email})")
-    #             else:
-    #                 _logger.warning(f"Manager {manager_user.name} does not have an email address.")
-    #         else:
-    #             _logger.warning("Email template 'asset_management.asset_movement_approver' not found.")
-    #     else:
-    #         _logger.warning("No manager of department found.")
+            if template:
+                if manager_user.work_email:
+                    template.with_context(user=manager_user).send_mail(
+                        self.id, 
+                        force_send=True, 
+                        email_values={'email_to': manager_user.work_email}
+                    )
+                    _logger.info(f"Email sent to {manager_user.name} ({manager_user.work_email})")
+                else:
+                    _logger.warning(f"Manager {manager_user.name} does not have an email address.")
+            else:
+                _logger.warning("Email template 'asset_management.asset_movement_approver' not found.")
+        else:
+            _logger.warning("No manager of department found.")
 
-
-    
     @api.model
     def create(self, vals):
         asset_move = self.env['asset.move'].browse(vals['asset_operational_id'])
-        
         _logger.info(f"Asset Move Retrieved: {asset_move}")
-        
         last_move = self.search([('asset_operational_id', '=', asset_move.id)], order="create_date desc", limit=1)
         
         if last_move and last_move.device_condition == 'damaged':
@@ -126,10 +130,8 @@ class AssetOperationalMove(models.Model):
             _logger.info(f"from_department set to: {vals['from_department']}")
         else:
             _logger.warning(f"Asset Move {asset_move.id} has no current location set.")
-            
         to_department = self.env['hr.department'].browse(vals['to_department'])
         vals['manager_id'] = to_department.manager_id.id if to_department.manager_id else False
-        
         record = super(AssetOperationalMove, self).create(vals)
         
         if record.to_department:
@@ -143,9 +145,11 @@ class AssetOperationalMove(models.Model):
         if record.manager_id:
             asset_move.manager_id_move = record.manager_id
         
-        # if record.from_department:
-        #     record.send_email_to_head_of_department()
+        record.action_submit()
         
+        if record.state:
+            asset_move.state_move = record.state
+                  
         return record
 
     

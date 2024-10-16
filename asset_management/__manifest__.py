@@ -1,8 +1,8 @@
 {
-    'name': "asset_management",
+    'name': "Asset management",
     'summary': "Asset Management",
     'sequence':15,
-    'author': "Computer Center",
+    'author': "Ebenezeri",
     'category': 'Uncategorized',
     'version': '0.1',
     'depends': ['base', 'web', 'mail', 'sale', 'board'],

@@ -7,6 +7,11 @@
       <field name="model">asset.move</field>
       <field name="arch" type="xml">
         <form string="Asset Move">
+          <header>
+            <button name="action_approve" string="Approve" type="object" class="btn-primary"  attrs="{'invisible':  ['|', ('state_move', 'in', ['draft','approved', 'rejected']), ('device_purpose', '!=', 'operational_support')]}"/>
+            <button name="action_reject" string="Reject" type="object"  attrs="{'invisible':  ['|', ('state_move', 'in', ['draft','approved', 'rejected']), ('device_purpose', '!=', 'operational_support')]}"/>
+            <field name="state_move" widget="statusbar" statusbar_visible="draft,to_approve,approved" attrs="{'invisible' : [('device_purpose', '!=', 'operational_support')]}"/>
+          </header>
           <sheet>
             <div class="oe_title"> Asset Number <h1>
               <field name="asset_id" />
@@ -63,7 +68,7 @@
               </field>
             </page>
             <page string="Operational Support Asset Movements" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}">
-              <field name="asset_oprational_move_ids">
+              <field name="asset_oprational_move_ids" attrs="{'readonly': [('state_move', '!=', 'draft'), ('state_move', '!=', 'approved')]}">
                 <tree editable="top">
                   <field name="from_department" />
                   <field name="to_department" />
@@ -93,6 +98,7 @@
         <field name="current_location_move" />
         <field name="manager_id_move" widget="many2one_avatar_user" optional="show"/>
         <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
+        <field name="state_move" widget="badge" decoration-success="state_move == 'approved'" decoration-danger="state_move == 'rejected'"/>
       </tree>
     </field>
   </record>

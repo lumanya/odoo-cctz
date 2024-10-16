@@ -84,6 +84,7 @@ class asset_registration(models.Model):
     warranty_start_date = fields.Date(string='Warranty Start Date')
     
     warranty_end_date = fields.Date(string='Warranty End Date')
+
     
     
     def name_get(self):
@@ -96,13 +97,10 @@ class asset_registration(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('device_purpose') == 'operational_support' and not vals.get('device_part_number'):
-            vals['device_part_number'] = self.env['ir.sequence'].next_by_code('asset.serial.number') or _('Auto-Generated')
-            
+            vals['device_part_number'] = self.env['ir.sequence'].next_by_code('asset.serial.number') or _('Auto-Generated')          
         if vals.get('asset_number', _('New'))== _('New'):
             vals['asset_number'] = self.env['ir.sequence'].next_by_code('asset.number') or _('New')
-        
         res = super(asset_registration, self).create(vals)
-
         move_vals = {
             'asset_id': res.id,
             'move_date':fields.Date.today(),
@@ -110,11 +108,9 @@ class asset_registration(models.Model):
             'current_location_move':res.current_location.id,
             'move_number': self.env['ir.sequence'].next_by_code('asset.move.number') or _('New'),
         } 
-
-        self.env['asset.move'].create(move_vals)
-           
+        self.env['asset.move'].create(move_vals)    
         return res
-    
+
     @api.constrains('quantity')
     def _check_quantity(self):
         for record in self:

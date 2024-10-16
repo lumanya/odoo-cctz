@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Asset Dashboard Kanban View -->
         <record id="view_asset_dashboard_kanban" model="ir.ui.view">
             <field name="name">asset.dashboard.kanban</field>
             <field name="model">asset.dashboard</field>
             <field name="arch" type="xml">
-                <kanban class="o_kanban_dashboard">
+                <kanban class="o_kanban_dashboard" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 40px;">
                     <templates>
                         <t t-name="kanban-box">
                             <!-- First Kanban Box: Total Assets -->
-                            <div class="o_kanban_record" style="min-height: 120px; text-align: center; border:none;">
-                                <div>
+                            <div class="o_kanban_record" style="min-height: 200px; width: 500px; text-align: center; border:none; padding: 30px; font-size: 22px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+                                <div style="border:none; width:100%">
                                     <strong>Total Assets</strong>
-                                    <div>
+                                    <div style="margin-top: 20px; font-size: 26px; font-weight: bold;">
                                         <span t-esc="record.total_assets.raw_value"/>
                                     </div>
                                 </div>
                             </div>
         
                             <!-- Second Kanban Box: Total Quantity -->
-                            <div class="o_kanban_record" style="min-height: 120px; text-align: center; border:none">
-                                <div>
+                            <div class="o_kanban_record" style="min-height: 200px; width: 500px; text-align: center; border:none; padding: 30px; font-size: 22px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+                                <div style="border:none; width:100%">
                                     <strong>Total Quantity</strong>
-                                    <div>
+                                    <div style="margin-top: 20px; font-size: 26px; font-weight: bold;">
                                         <span t-esc="record.total_quantity.raw_value"/>
                                     </div>
                                 </div>
@@ -34,29 +35,30 @@
                 </kanban>
             </field>
         </record>
-
+        
+        <!-- Depreciation Dashboard Kanban View -->
         <record id="view_depreciation_dashboard_kanban" model="ir.ui.view">
             <field name="name">asset.dashboard.kanban</field>
             <field name="model">asset.dashboard</field>
             <field name="arch" type="xml">
-                <kanban class="o_kanban_dashboard">
+                <kanban class="o_kanban_dashboard" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 40px;">
                     <templates>
                         <t t-name="kanban-box">
-                            <!-- First Kanban Box: Total Assets -->
-                            <div class="o_kanban_record" style="min-height: 120px; text-align: center; border:none;">
-                                <div>
+                            <!-- First Kanban Box: Fully Depreciated -->
+                            <div class="o_kanban_record" style="min-height: 200px; width: 500px; text-align: center; border:none; padding: 30px; font-size: 22px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+                                <div style="border:none; width:100%">
                                     <strong>Fully Depreciated</strong>
-                                    <div>
+                                    <div style="margin-top: 20px; font-size: 26px; font-weight: bold;">
                                         <span t-esc="record.fully_depreciated_count.raw_value"/>
                                     </div>
                                 </div>
                             </div>
         
-                            <!-- Second Kanban Box: Total Quantity -->
-                            <div class="o_kanban_record" style="min-height: 120px; text-align: center; border:none">
-                                <div>
+                            <!-- Second Kanban Box: Depreciating -->
+                            <div class="o_kanban_record" style="min-height: 200px; width: 100%; text-align: center; border: none; padding: 30px; font-size: 22px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+                                <div style="border:none; width:100%">
                                     <strong>Depreciating</strong>
-                                    <div>
+                                    <div style="margin-top: 20px; font-size: 26px; font-weight: bold;">
                                         <span t-esc="record.non_depreciated_count.raw_value"/>
                                     </div>
                                 </div>
@@ -69,7 +71,8 @@
             </field>
         </record>
         
-        
+
+        <!-- Graph Views -->
         <record id="asset_type_dashboard_graph" model="ir.actions.act_window">
             <field name="name">Asset Types</field>
             <field name="res_model">asset.registration</field>
@@ -77,13 +80,14 @@
             <field name="view_id" ref="asset_management.asset_type_graph"/>
         </record>
 
-        <record id="asset_location_graph" model="ir.actions.act_window">
+        <!-- <record id="asset_location_graph" model="ir.actions.act_window">
             <field name="name">Asset Location</field>
             <field name="res_model">asset.registration</field>
             <field name="view_mode">graph</field>
             <field name="view_id" ref="asset_management.asset_current_location_graph"/>
-        </record>
+        </record> -->
 
+        <!-- Asset Dashboard Kanban Action -->
         <record id="action_asset_dashboard_kanban" model="ir.actions.act_window">
             <field name="name">Asset Dashboard</field>
             <field name="res_model">asset.dashboard</field>
@@ -94,6 +98,7 @@
             </field>
         </record>
 
+        <!-- Depreciation Dashboard Kanban Action -->
         <record id="asset_depreciation_dashboard_graph" model="ir.actions.act_window">
             <field name="name">Asset Depreciation</field>
             <field name="res_model">asset.dashboard</field>
@@ -101,6 +106,7 @@
             <field name="view_id" ref="view_depreciation_dashboard_kanban"/>
         </record>
 
+        <!-- Asset Registration Dashboard -->
         <record id="asset_registration_dashboard" model="ir.ui.view">
             <field name="name">asset.registration.dashboard</field>
             <field name="model">board.board</field>
@@ -113,7 +119,6 @@
                             <action string="Asset Tree" name="%(asset_registration_action)d"/>
                         </column>
                         <column>
-                            <action string="Assets Per Department" name="%(asset_location_graph)d"/>
                             <action string="Asset Dashboard" name="%(action_asset_dashboard_kanban)d"/>
                             <action string="Asset Depreciation" name="%(asset_depreciation_dashboard_graph)d"/>
                         </column>
@@ -122,14 +127,16 @@
             </field>
         </record>
 
+        <!-- Asset Dashboard Menu -->
         <record id="asset_dashboard_action" model="ir.actions.act_window">
             <field name="name">Asset Dashboard</field>
             <field name="res_model">board.board</field>
             <field name="view_mode">form</field>
             <field name="usage">menu</field>
-            <field name="view_id" ref="asset_registration_dashboard" />
+            <field name="view_id" ref="asset_registration_dashboard"/>
         </record>
 
-        <menuitem name="Asset Dashboard" id="asset_dashboard_menu_root" sequence="1" parent="asset_management_menu_root" action="asset_dashboard_action" />
+        <!-- Menu Item -->
+        <menuitem name="Asset Dashboard" id="asset_dashboard_menu_root" sequence="1" parent="asset_management_menu_root" action="asset_dashboard_action"/>
     </data>
-</odoo> 
+</odoo>

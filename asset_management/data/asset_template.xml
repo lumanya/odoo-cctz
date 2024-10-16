@@ -1,20 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="email_asset_approval_status" model="mail.template">
+        <record id="email_asset_approval_status_accepted" model="mail.template">
             <field name="model_id" ref="model_asset_operational_move" />
-            <field name="name">Asset Movement Approval Status Email </field>
+            <field name="name">Asset Movement Approval Status Accepted Email </field>
             <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
             <field name="subject">Asset Movement Approval Status Update</field>
             <field name="email_to">{{ object.create_uid.email }}</field>
             <field name="body_html" type="html">
                 <p>Dear <t t-out="object.create_uid.name" />,</p>
-                <p>Asset Movement <strong>
+                <p>Asset Movement Request<strong>
                     </strong> has been <strong>
-                        <t t-out="object.state" />
+                        accepted
                     </strong>.</p>
                     <p>You can view the details of the request <a
-                        t-attf-href="{{object.generate_link(object.menu_id, object.action_id, object.create_uid)}}">
+                        t-attf-href="{{object.generate_link()}}">
+                    here</a>.</p>
+                <p>Thank you for your attention to this matter.</p>
+                <p>Best regards,<br />CCTZ</p>
+            </field>
+            <field name="auto_delete">False</field>
+        </record>
+
+        <record id="email_asset_approval_status_rejected" model="mail.template">
+            <field name="model_id" ref="model_asset_operational_move" />
+            <field name="name">Asset Movement Approval Status Rejected Email </field>
+            <field name="email_from">{{ object.create_uid.email or 'noreply@example.com' }}</field>
+            <field name="subject">Asset Movement Approval Status Update</field>
+            <field name="email_to">{{ object.create_uid.email }}</field>
+            <field name="body_html" type="html">
+                <p>Dear <t t-out="object.create_uid.name" />,</p>
+                <p>Asset Movement Request<strong>
+                    </strong> has been <strong>
+                        rejected
+                    </strong>.</p>
+                    <p>You can view the details of the request <a
+                        t-attf-href="{{object.generate_link()}}">
                     here</a>.</p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br />CCTZ</p>
@@ -42,7 +63,7 @@
                         <t t-out="object.to_department.name"/> department
                     </strong>.</p>
                 <p>You can view the details of the request <a
-                        t-attf-href="{{object.generate_link(object.menu_id, object.action_id, object.create_uid)}}">
+                        t-attf-href="{{object.generate_link()}}">
                     here</a>.</p>
                 <p>Thank you for your attention to this matter.</p>
                 <p>Best regards,<br />CCTZ</p>
