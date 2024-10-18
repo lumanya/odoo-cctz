@@ -1,5 +1,5 @@
 {
-    'name': "Asset management",
+    'name': " asset_management",
     'summary': "Asset Management",
     'sequence':15,
     'author': "Ebenezeri",

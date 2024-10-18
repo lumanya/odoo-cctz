@@ -70,10 +70,11 @@
             <page string="Operational Support Asset Movements" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}">
               <field name="asset_oprational_move_ids" attrs="{'readonly': [('state_move', '!=', 'draft'), ('state_move', '!=', 'approved')]}">
                 <tree editable="top">
-                  <field name="from_department" />
-                  <field name="to_department" />
-                  <field name="movement_date" />
-                  <field name="device_condition"/>
+                  <field name="from_department"/>
+                  <field name="to_department" attrs="{'readonly': [('id', '!=', False)]}" />
+                  <field name="movement_date" attrs="{'readonly': [('id', '!=', False)]}" />
+                  <field name="device_condition" attrs="{'readonly': [('id', '!=', False)]}" />
+                  <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'to_approve'" decoration-danger="state == 'rejected'"/>
                 </tree>
               </field>
             </page>
@@ -98,7 +99,7 @@
         <field name="current_location_move" />
         <field name="manager_id_move" widget="many2one_avatar_user" optional="show"/>
         <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
-        <field name="state_move" widget="badge" decoration-success="state_move == 'approved'" decoration-danger="state_move == 'rejected'"/>
+        <field name="state_move" widget="badge" decoration-success="state_move == 'approved'" decoration-warning="state_move == 'to_approve'" decoration-danger="state_move == 'rejected'"/>
       </tree>
     </field>
   </record>

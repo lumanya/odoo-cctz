@@ -50,7 +50,7 @@ class AssetOperationalMove(models.Model):
         ('to_approve', 'To Approve'),
         ('approved', 'Approved'),
         ('rejected','Rejected')
-        ], string='Status', default='draft', track_visibility='onchange', tracking=True)
+        ], string='Status', default='draft', track_visibility='onchange', tracking=True, readonly=True)
     
     
     def action_submit(self):
@@ -123,7 +123,7 @@ class AssetOperationalMove(models.Model):
         last_move = self.search([('asset_operational_id', '=', asset_move.id)], order="create_date desc", limit=1)
         
         if last_move and last_move.device_condition == 'damaged':
-            raise ValidationError(_('You cannot move a damaged asset'))
+            raise ValidationError(_(f'You cannot move a damaged asset:{asset_move.asset_id.name}'))
         
         if asset_move.current_location_move:
             vals['from_department'] = asset_move.current_location_move.id
@@ -149,10 +149,16 @@ class AssetOperationalMove(models.Model):
         
         if record.state:
             asset_move.state_move = record.state
-                  
+            
+        record.asset_operational_id.message_post(
+            body=_("Operational Support Move Created: From %s to %s on %s") % (
+                record.from_department.name, 
+                record.to_department.name, 
+                record.movement_date
+            )
+        )     
         return record
 
-    
     def write(self, vals):
         res = super(AssetOperationalMove, self).write(vals)
         for record in self:                
