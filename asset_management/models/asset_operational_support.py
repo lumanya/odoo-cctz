@@ -13,7 +13,7 @@ class AssetOperationalMove(models.Model):
         'asset.move', 
         string='Asset Move',
         required=True,
-        ondelete='cascade',  # Ensure history records are deleted if the related asset move is deleted
+        ondelete='cascade', 
     )
     
     from_department = fields.Many2one(
@@ -97,10 +97,8 @@ class AssetOperationalMove(models.Model):
             return
         
         manager_user = self.from_department.manager_id.user_id if self.from_department.manager_id else None
-        
         if manager_user:
             template = self.env.ref('asset_management.asset_movement_approver', raise_if_not_found=False)
-            
             if template:
                 if manager_user.work_email:
                     template.with_context(user=manager_user).send_mail(
@@ -119,7 +117,9 @@ class AssetOperationalMove(models.Model):
     @api.model
     def create(self, vals):
         asset_move = self.env['asset.move'].browse(vals['asset_operational_id'])
+        
         _logger.info(f"Asset Move Retrieved: {asset_move}")
+        
         last_move = self.search([('asset_operational_id', '=', asset_move.id)], order="create_date desc", limit=1)
         
         if last_move and last_move.device_condition == 'damaged':
@@ -130,8 +130,11 @@ class AssetOperationalMove(models.Model):
             _logger.info(f"from_department set to: {vals['from_department']}")
         else:
             _logger.warning(f"Asset Move {asset_move.id} has no current location set.")
+            
         to_department = self.env['hr.department'].browse(vals['to_department'])
+        
         vals['manager_id'] = to_department.manager_id.id if to_department.manager_id else False
+        
         record = super(AssetOperationalMove, self).create(vals)
         
         if record.to_department:

@@ -3,7 +3,7 @@ from odoo import models, fields, api
 class AssetDashboard(models.Model):
     _name = 'asset.dashboard'
     _description = 'Asset Dashboard'
-    _auto = False  # We don't store data in this table; it's for display purposes only.
+    _auto = False 
 
     total_assets = fields.Integer(string="Total Assets")
     total_quantity = fields.Integer(string="Total Quantity")

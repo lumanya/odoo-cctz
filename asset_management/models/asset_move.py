@@ -66,6 +66,13 @@ class AssetMove(models.Model):
     
     asset_oprational_move_ids = fields.One2many('asset.operational.move', 'asset_operational_id', string='Operational Asset Asset' )
     
+    state_move = fields.Selection([
+        ('draft', 'Draft'),
+        ('to_approve', 'To Approve'),
+        ('approved', 'Approved'),
+        ('rejected','Rejected')
+        ], string='Status', default='draft', track_visibility='onchange', tracking=True, readonly=True)
+    
     def action_approve(self):
         self.state_move = 'approved'      
         for operational_move in self.asset_oprational_move_ids:
@@ -78,14 +85,6 @@ class AssetMove(models.Model):
             operational_move.state = 'rejected'
             operational_move.action_send_rejected_email()
             
-    
-    
-    state_move = fields.Selection([
-        ('draft', 'Draft'),
-        ('to_approve', 'To Approve'),
-        ('approved', 'Approved'),
-        ('rejected','Rejected')
-        ], string='Status', default='draft', track_visibility='onchange', tracking=True, readonly=True)
 
     def name_get(self):
         result = []

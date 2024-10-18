@@ -19,74 +19,50 @@ class asset_registration(models.Model):
         required=True,
         )
     
-    price_unit = fields.Float(string='Unit Price', compute='_compute_price_unit', store=True)
-    
+    price_unit = fields.Float(string='Unit Price', compute='_compute_price_unit', store=True)    
     depreciation_method = fields.Selection([
         ('straight_line', 'Straight Line'),
         ('declining_balance', 'Declining Balance'),
-    ], string='Depreciation Method', default='straight_line')
-    
-    depreciation_rate = fields.Float(string='Depreciation Rate (%)', required=True)
-    
+    ], string='Depreciation Method', default='straight_line')    
+    depreciation_rate = fields.Float(string='Depreciation Rate (%)', required=True)    
     depreciation_period = fields.Selection([
         ('monthly', 'Monthly'),
         ('yearly', 'Yearly')
-    ], string='Depreciation Period', default='yearly')
-    
-    cumulative_depreciation = fields.Float(string='Cumulative Depreciation', compute='_compute_depreciation')
-    
-    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
-    
-    net_book_value = fields.Float(string='Net Book Value', compute='_compute_net_value', store=True)
-    
+    ], string='Depreciation Period', default='yearly')    
+    cumulative_depreciation = fields.Float(string='Cumulative Depreciation', compute='_compute_depreciation')    
+    currency_id = fields.Many2one('res.currency', string='Currency', default=lambda self: self.env.company.currency_id)    
+    net_book_value = fields.Float(string='Net Book Value', compute='_compute_net_value', store=True)    
     state = fields.Selection([
     ('fully_depreciated', 'Fully Depreciated'),
     ('non_depreciated', 'Non-Depreciated'),
-    ], string='Depreciation State', compute='_compute_state', store=True)
-    
-    fully_depreciated_count = fields.Integer(string='Fully Depreciated Assets', compute='_compute_fully_depreciated_count', store=True)
-    
+    ], string='Depreciation State', compute='_compute_state', store=True)    
+    fully_depreciated_count = fields.Integer(string='Fully Depreciated Assets', compute='_compute_fully_depreciated_count', store=True)    
     non_depreciated_count = fields.Integer(string='Non-Depreciated Assets', compute='_compute_non_depreciated_count', store=True)
     depreciation_start_date = fields.Date(string="Depreciation Start Date", required=True, default=fields.Date.context_today)
     depreciation_end_date = fields.Date(string="Depreciation End Date", compute='_compute_depreciation_end_date', store=True)
-    depreciation_duration = fields.Integer(string='Depreciation Duration (Months)', compute='_compute_depreciation_duration', store=True)
-
-    
+    depreciation_duration = fields.Integer(string='Depreciation Duration (Months)', compute='_compute_depreciation_duration', store=True)    
     date = fields.Date(string = 'Receiving Date', required=True, default=fields.Date.context_today)
-
     device_purpose = fields.Selection([
         ('service_delivery','Service-Delivery Asset'), 
         ('employee_assigned', 'Employee Asset'), 
         ('operational_support', 'Operational Support Asset')
         ], string='Asset Type', required=True)
-
     supplier_id = fields.Many2one(
         'res.partner', 
         string= 'Supplier Name', 
         required=False
-        )
-    
-    current_location = fields.Many2one('hr.department', string="Current Location", store=True)
-    
-    asset_count = fields.Integer(string='Number of Assets', compute='_compute_asset_count', store=True)
-    
+        )    
+    current_location = fields.Many2one('hr.department', string="Current Location", store=True)    
+    asset_count = fields.Integer(string='Number of Assets', compute='_compute_asset_count', store=True)    
     invoice_number = fields.Char(string='Invoice number') 
     device_part_number = fields.Char(string='Serial Number/Part Number', required=False)
-
     quantity = fields.Integer(string= 'Quantity', required=True, default = 1)
-
-    description = fields.Text(string= 'Description', store=True) 
-    
-    total_assets = fields.Integer(string='Total Assets', compute='_compute_total_assets', store=True)
-    
-    total_quantity = fields.Integer(string='Total Quantity', compute='_compute_total_quantity')
-    
-    warranty_start_date = fields.Date(string='Warranty Start Date')
-    
+    description = fields.Text(string= 'Description', store=True)     
+    total_assets = fields.Integer(string='Total Assets', compute='_compute_total_assets', store=True)    
+    total_quantity = fields.Integer(string='Total Quantity', compute='_compute_total_quantity')    
+    warranty_start_date = fields.Date(string='Warranty Start Date')    
     warranty_end_date = fields.Date(string='Warranty End Date')
 
-    
-    
     def name_get(self):
         result = []
         for record in self:

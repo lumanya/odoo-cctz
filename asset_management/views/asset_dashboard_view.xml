@@ -36,41 +36,6 @@
             </field>
         </record>
         
-        <!-- Depreciation Dashboard Kanban View -->
-        <record id="view_depreciation_dashboard_kanban" model="ir.ui.view">
-            <field name="name">asset.dashboard.kanban</field>
-            <field name="model">asset.dashboard</field>
-            <field name="arch" type="xml">
-                <kanban class="o_kanban_dashboard" style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 40px;">
-                    <templates>
-                        <t t-name="kanban-box">
-                            <!-- First Kanban Box: Fully Depreciated -->
-                            <div class="o_kanban_record" style="min-height: 200px; width: 500px; text-align: center; border:none; padding: 30px; font-size: 22px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-                                <div style="border:none; width:100%">
-                                    <strong>Fully Depreciated</strong>
-                                    <div style="margin-top: 20px; font-size: 26px; font-weight: bold;">
-                                        <span t-esc="record.fully_depreciated_count.raw_value"/>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <!-- Second Kanban Box: Depreciating -->
-                            <div class="o_kanban_record" style="min-height: 200px; width: 100%; text-align: center; border: none; padding: 30px; font-size: 22px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
-                                <div style="border:none; width:100%">
-                                    <strong>Depreciating</strong>
-                                    <div style="margin-top: 20px; font-size: 26px; font-weight: bold;">
-                                        <span t-esc="record.non_depreciated_count.raw_value"/>
-                                    </div>
-                                </div>
-                            </div>
-                        </t>
-                    </templates>
-                    <field name="fully_depreciated_count"/>
-                    <field name="non_depreciated_count"/>
-                </kanban>
-            </field>
-        </record>
-        
 
         <!-- Graph Views -->
         <record id="asset_type_dashboard_graph" model="ir.actions.act_window">
@@ -79,13 +44,6 @@
             <field name="view_mode">graph</field>
             <field name="view_id" ref="asset_management.asset_type_graph"/>
         </record>
-
-        <!-- <record id="asset_location_graph" model="ir.actions.act_window">
-            <field name="name">Asset Location</field>
-            <field name="res_model">asset.registration</field>
-            <field name="view_mode">graph</field>
-            <field name="view_id" ref="asset_management.asset_current_location_graph"/>
-        </record> -->
 
         <!-- Asset Dashboard Kanban Action -->
         <record id="action_asset_dashboard_kanban" model="ir.actions.act_window">
@@ -96,14 +54,6 @@
             <field name="help" type="html">
                 <p>This dashboard shows the total number of registered assets.</p>
             </field>
-        </record>
-
-        <!-- Depreciation Dashboard Kanban Action -->
-        <record id="asset_depreciation_dashboard_graph" model="ir.actions.act_window">
-            <field name="name">Asset Depreciation</field>
-            <field name="res_model">asset.dashboard</field>
-            <field name="view_mode">kanban</field>
-            <field name="view_id" ref="view_depreciation_dashboard_kanban"/>
         </record>
 
         <!-- Asset Registration Dashboard -->
@@ -120,7 +70,6 @@
                         </column>
                         <column>
                             <action string="Asset Dashboard" name="%(action_asset_dashboard_kanban)d"/>
-                            <action string="Asset Depreciation" name="%(asset_depreciation_dashboard_graph)d"/>
                         </column>
                     </board>
                 </form>

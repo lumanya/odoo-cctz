@@ -10,7 +10,7 @@ class AssetMoveEmployee(models.Model):
         'asset.move', 
         string='Asset Move',
         required=True,
-        ondelete='cascade',  # Ensure history records are deleted if the related asset move is deleted
+        ondelete='cascade',
     )
     
     employee_id = fields.Many2one(
@@ -40,11 +40,11 @@ class AssetMoveEmployee(models.Model):
         asset_move = self.env['asset.move'].browse(vals['asset_employee_id'])
         if asset_move.status_tech == 'in_use':
             raise ValidationError("The asset is currently in use by another employee. It cannot be reassigned untill is returned")
-        
+               
         record = super(AssetMoveEmployee, self).create(vals)
         
         asset_move.status_tech = 'in_use' if not record.end_date else 'available'
-        
+                
         if record.return_condition_tech:
             asset_move.return_condition = record.return_condition_tech
             
