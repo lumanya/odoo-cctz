@@ -102,7 +102,8 @@ class Warranty(models.Model):
     clearing_agent_invoice_number = fields.Char(string='Clearing Agent Invoice Numbe', tracking=True)
     clearing_agent_fees = fields.Char(string='Clearing Agent Fees')
     tag_no_rma = fields.Char(string='Tag No/RMA', tracking=True)
-    landed_cost = fields.Float(string='Landed Cost', tracking=True)
+    cc_landed_cost = fields.Float(string='CC Landed Cost (USD)', compute="_compute_cc_landed_cost", tracking=True, store=True)
+    hpe_landed_cost = fields.Float(string='HPE Landed Cost (USD)', tracking=True)
     landed_cost_reference = fields.Char(string='Landed Cost Reference', tracking=True)
     landed_cost_date = fields.Datetime(string='Landed Cost Date')
     proposed_labour = fields.Float(string='Proposed Labour')
@@ -136,6 +137,15 @@ class Warranty(models.Model):
         ('rejected','Rejected')
         ], string='Approval Status', default='draft', track_visibility='onchange', tracking=True)
 
+    regulatory_pt = fields.Float(string="Regulatory-PT (TBS)", tracking=True)
+    formal_clearance = fields.Float(string="Formal Clearance (Processing Fee)", tracking=True)
+    import_duty = fields.Float(string="Import Duty", tracking=True)
+    railway_development_levy = fields.Float(string="Railway Development Levy", tracking=True)
+    customs_processing_fee = fields.Float(string="Customs Processing Fee (CPF)", tracking=True)
+    eco_levy_fee = fields.Float(string="ECO Levy Fee", tracking=True)
+    gcla_fee = fields.Float(string="GCLA Fee", tracking=True)
+    storage_fee = fields.Float(string="Storage Fee", tracking=True)
+    currency_rate = fields.Float(string="Currency Rate", tracking=True, required=True)
 
     def action_submit(self):
         self.state = 'to_approve'
@@ -178,11 +188,11 @@ class Warranty(models.Model):
     
 
     def _get_managed_service_emails(self):
-        manager = self.env['hr.employee'].search([('job_title', '=', 'Managed Service - Account Manager')], limit=1) 
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Services Business Unit Manager')], limit=1) 
         return manager
     
     def send_email_to_managed_service(self):
-        manager = self.env['hr.employee'].search([('job_title', '=', 'Managed Service - Account Manager')], limit=1)           
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Services Business Unit Manager')], limit=1)           
         template = self.env.ref('cctz_warranty.email_template_managed_service_approver')    
         
         if template and manager:
@@ -218,7 +228,6 @@ class Warranty(models.Model):
             if not manager:
                 _logger.warning("No users found in the 'manager'")
     
-    
     @api.model
     def generate_link(self):         
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -238,10 +247,9 @@ class Warranty(models.Model):
         second_approval_records = self.search([('state', '=', 'second_approval'), ('second_approval_time', '<', reminder_time)])
         for record in second_approval_records:
             record.send_reminder_to_head_enterprise()
-                 
     
     def send_reminder_to_manager(self):
-        manager = self.env['hr.employee'].search([('job_title', '=', 'Managed Service - Account Manager')], limit=1) 
+        manager = self.env['hr.employee'].search([('job_title', '=', 'Services Business Unit Manager')], limit=1) 
         template = self.env.ref('cctz_warranty.email_template_managed_service_reminder')
         
         if template and manager:
@@ -275,14 +283,10 @@ class Warranty(models.Model):
             if not manager:
                 _logger.warning("No users found in the 'Loan Officers' group.")
 
-
-    
-
     @api.depends('create_uid')
     def _compute_user(self):
         for record in self:
             record.user_id = record.create_uid
-
 
     @api.model
     def create(self, vals):
@@ -290,3 +294,22 @@ class Warranty(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('warranty.request') or _("New")
         res = super(Warranty, self).create(vals)
         return res
+    
+    @api.depends('regulatory_pt', 'formal_clearance', 'import_duty', 'railway_development_levy', 
+                'customs_processing_fee', 'eco_levy_fee', 'gcla_fee', 'storage_fee', 'currency_rate')
+    def _compute_cc_landed_cost(self):
+        for record in self:
+            total_cost = (
+                record.regulatory_pt +
+                record.formal_clearance +
+                record.import_duty +
+                record.railway_development_levy +
+                record.customs_processing_fee +
+                record.eco_levy_fee +
+                record.gcla_fee +
+                record.storage_fee
+            )
+            if record.currency_rate:
+                record.cc_landed_cost = total_cost / record.currency_rate
+            else:
+                record.cc_landed_cost = 0
