@@ -74,4 +74,3 @@ class AssetMoveHistory(models.Model):
                 record.asset_move_id.return_condition = vals['return_condition_tech']
         return res
     
-    # Optionally, add a computed field or method to display additional information or handle specific logic

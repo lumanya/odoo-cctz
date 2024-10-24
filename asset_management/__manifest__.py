@@ -1,5 +1,5 @@
 {
-    'name': "Asset management",
+    'name': " asset_management",
     'summary': "Asset Management",
     'sequence':15,
     'author': "Ebenezeri",
@@ -13,7 +13,6 @@
         'views/asset_management_view.xml',
         'views/asset_move_view.xml',
         'views/asset_dashboard_view.xml',
-        'views/templates.xml',
     ],
     "application": True,
     'installable': True,

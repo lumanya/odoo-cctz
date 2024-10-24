@@ -26,7 +26,6 @@
               <field name="supplier_id" />
               <field name="device_part_number" />
             </group>
-
             <group>
               <field name="move_date" attrs="{'invisible' : ['|', ('device_purpose', '=', 'service_delivery'), '|', ('device_purpose', '=', 'employee_assigned'), ('device_purpose', '=', 'operational_support')]}" />
               <field name="status" attrs="{'invisible' : ['|', ('device_purpose', '=', 'service_delivery'), '|', ('device_purpose', '=', 'employee_assigned'), ('device_purpose', '=', 'operational_support')]}" />
@@ -70,10 +69,11 @@
             <page string="Operational Support Asset Movements" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}">
               <field name="asset_oprational_move_ids" attrs="{'readonly': [('state_move', '!=', 'draft'), ('state_move', '!=', 'approved')]}">
                 <tree editable="top">
-                  <field name="from_department" />
-                  <field name="to_department" />
-                  <field name="movement_date" />
-                  <field name="device_condition"/>
+                  <field name="from_department"/>
+                  <field name="to_department" attrs="{'readonly': [('id', '!=', False)]}" />
+                  <field name="movement_date" attrs="{'readonly': [('id', '!=', False)]}" />
+                  <field name="device_condition" attrs="{'readonly': [('id', '!=', False)]}" />
+                  <field name="state" widget="badge" decoration-success="state == 'approved'" decoration-warning="state == 'to_approve'" decoration-danger="state == 'rejected'"/>
                 </tree>
               </field>
             </page>
@@ -98,7 +98,7 @@
         <field name="current_location_move" />
         <field name="manager_id_move" widget="many2one_avatar_user" optional="show"/>
         <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
-        <field name="state_move" widget="badge" decoration-success="state_move == 'approved'" decoration-danger="state_move == 'rejected'"/>
+        <field name="state_move" widget="badge" decoration-success="state_move == 'approved'" decoration-warning="state_move == 'to_approve'" decoration-danger="state_move == 'rejected'"/>
       </tree>
     </field>
   </record>
@@ -141,15 +141,9 @@
        <search>
           <field name="asset_name"/>
           <field name="device_part_number"/>
-          <filter name="good_condition" 
-                  string="Good Condition" 
-                  domain="[('return_condition', '=', 'good')]"/>
-          <filter name="repairable_condition" 
-                  string="Repairable Condition" 
-                  domain="[('return_condition', '=', 'repairable')]"/>
-          <filter name="damaged_condition" 
-                  string="Damaged Condition" 
-                  domain="[('return_condition', '=', 'damaged')]"/>
+          <filter name="good_condition" string="Good Condition" domain="[('return_condition', '=', 'good')]"/>
+          <filter name="repairable_condition" string="Repairable Condition" domain="[('return_condition', '=', 'repairable')]"/>
+          <filter name="damaged_condition" string="Damaged Condition" domain="[('return_condition', '=', 'damaged')]"/>
        </search>
        <searchpanel>
         <field name="current_location_move" string="Asset Location" />
@@ -165,12 +159,8 @@
      <search>
         <field name="asset_name"/>
         <field name="status_tech"/>
-        <filter name="in_use_tech" 
-                string="In Use" 
-                domain="[('status_tech', '=', 'in_use')]"/>
-        <filter name="available_tech" 
-                string="Available" 
-                domain="[('status_tech', '=', 'available')]"/>
+        <filter name="in_use_tech" string="In Use" domain="[('status_tech', '=', 'in_use')]"/>
+        <filter name="available_tech" string="Available" domain="[('status_tech', '=', 'available')]"/>
      </search>
   </field>
   <field name="type">search</field>
@@ -183,15 +173,9 @@
      <search>
         <field name="asset_name"/>
         <field name="employee_id_move"/>
-        <filter name="good_condition" 
-                string="Good Condition" 
-                domain="[('return_condition', '=', 'good')]"/>
-        <filter name="available_tech_employee" 
-                string="Available" 
-                domain="[('status_tech', '=', 'available')]"/>
-        <filter name="in_use_tech_employee" 
-                string="In Use" 
-                domain="[('status_tech', '=', 'in_use')]"/>
+        <filter name="good_condition" string="Good Condition" domain="[('return_condition', '=', 'good')]"/>
+        <filter name="available_tech_employee" string="Available" domain="[('status_tech', '=', 'available')]"/>
+        <filter name="in_use_tech_employee" string="In Use" domain="[('status_tech', '=', 'in_use')]"/>
      </search>
   </field>
   <field name="type">search</field>
