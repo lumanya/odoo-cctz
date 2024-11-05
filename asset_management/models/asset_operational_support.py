@@ -72,12 +72,16 @@ class AssetOperationalMove(models.Model):
         else:
             self.manager_id = False
 
-    def generate_link(self):   
+    def generate_link(self):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        if base_url:
-            return f"{base_url}/web#id={self.id}&view_type=form&model={self._name}"
+        asset_move_id = self.asset_operational_id.id if self.asset_operational_id else None
+        if base_url and asset_move_id:
+        # Generate the link pointing to the asset.move view with a valid ID
+            return f"{base_url}/web#id={asset_move_id}&view_type=form&model=asset.move"
         else:
-            return "#"
+            _logger.warning("No valid asset_operational_id found for generating the link.")
+        return "#"
+
         
     def action_send_accepted_email(self):
         template = self.env.ref('asset_management.email_asset_approval_status_accepted')
