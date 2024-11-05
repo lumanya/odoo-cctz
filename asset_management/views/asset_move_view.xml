@@ -8,8 +8,8 @@
       <field name="arch" type="xml">
         <form string="Asset Move">
           <header>
-            <button name="action_approve" string="Approve" type="object" class="btn-primary"  attrs="{'invisible':  ['|', ('state_move', 'in', ['draft','approved', 'rejected']), ('device_purpose', '!=', 'operational_support')]}"/>
-            <button name="action_reject" string="Reject" type="object"  attrs="{'invisible':  ['|', ('state_move', 'in', ['draft','approved', 'rejected']), ('device_purpose', '!=', 'operational_support')]}"/>
+            <button name="action_approve" string="Approve" type="object" class="btn-primary" groups='asset_management.group_Asset_manager' attrs="{'invisible':  ['|', ('state_move', 'in', ['draft','approved', 'rejected']), ('device_purpose', '!=', 'operational_support')]}"/>
+            <button name="action_reject" string="Reject" type="object" groups='asset_management.group_Asset_manager' attrs="{'invisible':  ['|', ('state_move', 'in', ['draft','approved', 'rejected']), ('device_purpose', '!=', 'operational_support')]}"/>
             <field name="state_move" widget="statusbar" statusbar_visible="draft,to_approve,approved" attrs="{'invisible' : [('device_purpose', '!=', 'operational_support')]}"/>
           </header>
           <sheet>

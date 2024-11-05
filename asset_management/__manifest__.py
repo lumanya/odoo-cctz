@@ -8,6 +8,7 @@
     'depends': ['base', 'web', 'mail', 'sale', 'board'],
     'data': [
         'security/ir.model.access.csv',
+        'security/security.xml',
         'data/asset_template.xml',
         'data/asset_sequence.xml',
         'views/asset_management_view.xml',

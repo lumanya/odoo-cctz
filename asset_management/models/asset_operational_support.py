@@ -42,6 +42,8 @@ class AssetOperationalMove(models.Model):
     
     manager_id = fields.Many2one('hr.employee', string='Owner', readonly=True)
     
+    user_id = fields.Many2one('res.users', string='Asset Manager', compute='_compute_user', store=True, readonly=True)
+    
     menu_id = fields.Integer(string='Menu ID')
     action_id = fields.Integer(string='Action ID')
     
@@ -56,6 +58,11 @@ class AssetOperationalMove(models.Model):
     def action_submit(self):
         self.state = 'to_approve'
         self.send_email_to_head_of_department()
+        
+    @api.depends('create_uid')
+    def _compute_user(self):
+        for record in self:          
+            record.user_id = record.create_uid
         
         
     @api.onchange('to_department')
