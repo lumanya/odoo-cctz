@@ -67,7 +67,7 @@
               </field>
             </page>
             <page string="Operational Support Asset Movements" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}">
-              <field name="asset_oprational_move_ids" attrs="{'readonly': [('state_move', '!=', 'draft'), ('state_move', '!=', 'approved')]}">
+              <field name="asset_oprational_move_ids" attrs="{'readonly': [('state_move', '!=', 'draft'), ('state_move', '!=', 'approved'), ('state_move', '!=', 'rejected')]}">
                 <tree editable="top">
                   <field name="from_department"/>
                   <field name="to_department" attrs="{'readonly': [('id', '!=', False)]}" />

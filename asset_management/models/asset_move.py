@@ -76,14 +76,16 @@ class AssetMove(models.Model):
     def action_approve(self):
         self.state_move = 'approved'      
         for operational_move in self.asset_oprational_move_ids:
-            operational_move.state = 'approved'
-            operational_move.action_send_accepted_email()
+            if operational_move.state == 'to_approve':
+                operational_move.state = 'approved'
+                operational_move.action_send_accepted_email()
         
     def action_reject(self):
-        self.state_move = 'reject'
+        self.state_move = 'rejected'
         for operational_move in self.asset_oprational_move_ids:
-            operational_move.state = 'rejected'
-            operational_move.action_send_rejected_email()
+            if operational_move.state == 'to_approve':
+                operational_move.state = 'rejected'
+                operational_move.action_send_rejected_email()
             
 
     def name_get(self):
