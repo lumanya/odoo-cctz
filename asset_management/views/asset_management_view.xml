@@ -17,6 +17,7 @@
                 <field name="currency_id" />
                 <field name="price_unit" widget="monetary" options="{'currency_field': 'currency_id'}"/>
                 <field name="device_purpose" />
+                <field name="asset_category" />
                 <field name="current_location" attrs="{'invisible': [('device_purpose', '!=', 'operational_support')]}"/>
                 <field name="depreciation_method" />
                 <field name="depreciation_rate" />
@@ -70,6 +71,7 @@
           <field name="supplier_id" />
           <field name="device_part_number" />
           <field name="device_purpose" />
+          <field name="asset_category" />
           <field name="quantity" />
         </tree>
       </field>
@@ -108,6 +110,7 @@
           <field name="device_part_number" />
           <searchpanel>
             <field name="device_purpose" string="Asset Type" />
+            <field name="asset_category" string="Asset Category"/>
           </searchpanel>
         </search>
       </field>

@@ -15,7 +15,7 @@ class AssetOperationalMove(models.Model):
         required=True,
         ondelete='cascade', 
     )
-    
+       
     from_department = fields.Many2one(
         'hr.department',
         string='From Department',
@@ -28,7 +28,7 @@ class AssetOperationalMove(models.Model):
         string='To Department',
         required=True,
     )
-    
+   
     movement_date = fields.Date(
         string='Movement Date',
         required=True,
@@ -45,6 +45,7 @@ class AssetOperationalMove(models.Model):
     user_id = fields.Many2one('res.users', string='Asset Manager', compute='_compute_user', store=True, readonly=True)
     
     menu_id = fields.Integer(string='Menu ID')
+    
     action_id = fields.Integer(string='Action ID')
     
     state = fields.Selection([
@@ -76,7 +77,6 @@ class AssetOperationalMove(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         asset_move_id = self.asset_operational_id.id if self.asset_operational_id else None
         if base_url and asset_move_id:
-        # Generate the link pointing to the asset.move view with a valid ID
             return f"{base_url}/web#id={asset_move_id}&view_type=form&model=asset.move"
         else:
             _logger.warning("No valid asset_operational_id found for generating the link.")

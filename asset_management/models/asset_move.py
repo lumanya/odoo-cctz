@@ -73,19 +73,23 @@ class AssetMove(models.Model):
         ('rejected','Rejected')
         ], string='Status', default='draft', track_visibility='onchange', tracking=True, readonly=True)
     
+    
     def action_approve(self):
         self.state_move = 'approved'      
         for operational_move in self.asset_oprational_move_ids:
             if operational_move.state == 'to_approve':
                 operational_move.state = 'approved'
                 operational_move.action_send_accepted_email()
-        
+            operational_move.update_asset_location_if_approved()
+            
+                
     def action_reject(self):
         self.state_move = 'rejected'
         for operational_move in self.asset_oprational_move_ids:
             if operational_move.state == 'to_approve':
                 operational_move.state = 'rejected'
                 operational_move.action_send_rejected_email()
+            _logger.info(f"Asset move rejected; location update skipped")
             
 
     def name_get(self):
@@ -95,20 +99,24 @@ class AssetMove(models.Model):
             result.append((record.id, name))
         return result
     
+    
     @api.onchange('status')
     def _onchange_status(self):
         if self.status == 'returned':
             self.return_date = fields.Date.today()
 
+
     @api.onchange('device_purpose')
     def _onchange_device_purpose(self):
         self.technician_id_move = False
         self.employee_id_move = False
+      
         
     @api.depends('description')
     def _compute_display_description(self):
         for record in self:
             record.display_description = record.description if record.description else 'There is no description'
+
 
     def action_confirm(self):
         self.write({'state': 'done'})  

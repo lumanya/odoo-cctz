@@ -62,6 +62,11 @@ class asset_registration(models.Model):
     total_quantity = fields.Integer(string='Total Quantity', compute='_compute_total_quantity')    
     warranty_start_date = fields.Date(string='Warranty Start Date')    
     warranty_end_date = fields.Date(string='Warranty End Date')
+    asset_category = fields.Selection([
+        ('furnitures', 'Furnitures'),
+        ('computers', 'Computers'),
+        ('tools', 'Tools')
+    ], string='Asset Category', required=True)
 
     def name_get(self):
         result = []
