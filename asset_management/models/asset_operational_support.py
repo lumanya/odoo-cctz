@@ -40,6 +40,7 @@ class AssetOperationalMove(models.Model):
         ('repairable', 'Repairable')
     ], string='Device Condition', required=True)
     
+    
     manager_id = fields.Many2one('hr.employee', string='Owner', readonly=True)
     
     user_id = fields.Many2one('res.users', string='Asset Manager', compute='_compute_user', store=True, readonly=True)
@@ -54,7 +55,6 @@ class AssetOperationalMove(models.Model):
         ('approved', 'Approved'),
         ('rejected','Rejected')
         ], string='Status', default='draft', track_visibility='onchange', tracking=True, readonly=True)
-    
     
     def action_submit(self):
         self.state = 'to_approve'

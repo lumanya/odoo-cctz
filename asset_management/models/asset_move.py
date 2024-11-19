@@ -73,6 +73,14 @@ class AssetMove(models.Model):
         ('rejected','Rejected')
         ], string='Status', default='draft', track_visibility='onchange', tracking=True, readonly=True)
     
+    asset_category_move = fields.Selection([
+        ('tables', 'Table'),
+        ('computer', 'Computer'),
+        ('server', 'Server'),
+        ('chairs', 'Chair'),
+    ], string='Asset Category', required=True, readonly=True)
+
+    
     
     def action_approve(self):
         self.state_move = 'approved'      

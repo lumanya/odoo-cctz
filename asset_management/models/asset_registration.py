@@ -63,9 +63,10 @@ class asset_registration(models.Model):
     warranty_start_date = fields.Date(string='Warranty Start Date')    
     warranty_end_date = fields.Date(string='Warranty End Date')
     asset_category = fields.Selection([
-        ('furnitures', 'Furnitures'),
-        ('computers', 'Computers'),
-        ('tools', 'Tools')
+        ('tables', 'Table'),
+        ('computer', 'Computer'),
+        ('server', 'Server'),
+        ('chairs', 'Chair'),
     ], string='Asset Category', required=True)
 
     def name_get(self):
@@ -82,11 +83,13 @@ class asset_registration(models.Model):
         if vals.get('asset_number', _('New'))== _('New'):
             vals['asset_number'] = self.env['ir.sequence'].next_by_code('asset.number') or _('New')
         res = super(asset_registration, self).create(vals)
+        
         move_vals = {
             'asset_id': res.id,
             'move_date':fields.Date.today(),
             'device_purpose': res.device_purpose,
             'current_location_move':res.current_location.id,
+            'asset_category_move':res.asset_category,
             'move_number': self.env['ir.sequence'].next_by_code('asset.move.number') or _('New'),
         } 
         self.env['asset.move'].create(move_vals)    

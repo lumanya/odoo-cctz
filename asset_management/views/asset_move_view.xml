@@ -21,6 +21,7 @@
             <group>
               <field name="asset_name" />
               <field name="device_purpose" />
+              <field name="asset_category_move" />
               <field name="quantity" />
               <field name="date" />
               <field name="supplier_id" />
@@ -95,6 +96,7 @@
         <field name="asset_id" />
         <field name="asset_name" />
         <field name="device_part_number"/>
+        <field name="asset_category_move" />
         <field name="current_location_move" />
         <field name="manager_id_move" widget="many2one_avatar_user" optional="show"/>
         <field name="return_condition" widget="badge" decoration-success="return_condition == 'good'" decoration-warning="return_condition == 'repairable'" decoration-danger="return_condition == 'damaged'"/>
@@ -147,6 +149,7 @@
        </search>
        <searchpanel>
         <field name="current_location_move" string="Asset Location" />
+        <field name="asset_category_move" string="Asset Category" />
       </searchpanel>
     </field>
      <field name="type">search</field>
